@@ -1,0 +1,895 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>macOS Installation - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/installation/macos.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="macos-installation-guide"><a class="header" href="#macos-installation-guide">macOS Installation Guide</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>This guide walks through installing and configuring MIDIMon v2.0.0 on macOS. MIDIMon now includes a background daemon service with a modern Tauri-based GUI for visual configuration.</p>
+<p><strong>Installation Options</strong>:</p>
+<ul>
+<li><strong>Option 1 (Recommended)</strong>: Download pre-built GUI app + daemon binaries from <a href="https://github.com/amiable-dev/midimon/releases">GitHub Releases</a></li>
+<li><strong>Option 2</strong>: Build from source (developers/advanced users)</li>
+</ul>
+<p>Installation takes approximately 10-15 minutes.</p>
+<h2 id="option-1-install-pre-built-binaries-recommended"><a class="header" href="#option-1-install-pre-built-binaries-recommended">Option 1: Install Pre-Built Binaries (Recommended)</a></h2>
+<h3 id="1-download-midimon"><a class="header" href="#1-download-midimon">1. Download MIDIMon</a></h3>
+<p>Visit the <a href="https://github.com/amiable-dev/midimon/releases/latest">Releases Page</a> and download:</p>
+<p><strong>For GUI + Daemon (Recommended)</strong>:</p>
+<ul>
+<li><code>midimon-gui-macos-universal.tar.gz</code> - GUI application with daemon</li>
+<li><strong>OR</strong> download daemon separately: <code>midimon-aarch64-apple-darwin.tar.gz</code> (Apple Silicon) or <code>midimon-x86_64-apple-darwin.tar.gz</code> (Intel)</li>
+</ul>
+<h3 id="2-install-the-gui-application"><a class="header" href="#2-install-the-gui-application">2. Install the GUI Application</a></h3>
+<pre><code class="language-bash"># Extract the GUI app
+tar xzf midimon-gui-macos-universal.tar.gz
+
+# Move to Applications folder
+mv "MIDIMon GUI.app" /Applications/
+
+# Open the app
+open /Applications/"MIDIMon GUI.app"
+</code></pre>
+<h3 id="3-install-the-daemon-binary-optional---gui-includes-daemon"><a class="header" href="#3-install-the-daemon-binary-optional---gui-includes-daemon">3. Install the Daemon Binary (Optional - GUI includes daemon)</a></h3>
+<p>If you want to use the daemon independently:</p>
+<pre><code class="language-bash"># Extract daemon binary
+tar xzf midimon-*.tar.gz
+
+# Make it executable
+chmod +x midimon
+
+# Move to PATH
+sudo mv midimon /usr/local/bin/
+
+# Verify installation
+midimon --version
+</code></pre>
+<p><strong>Skip to <a href="#configuring-macos-permissions">Configuring macOS Permissions</a></strong></p>
+<hr />
+<h2 id="option-2-build-from-source"><a class="header" href="#option-2-build-from-source">Option 2: Build from Source</a></h2>
+<h3 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h3>
+<h4 id="1-rust-toolchain"><a class="header" href="#1-rust-toolchain">1. Rust Toolchain</a></h4>
+<p>MIDIMon is written in Rust and requires the Rust compiler and Cargo build system.</p>
+<p><strong>Check if Rust is already installed</strong>:</p>
+<pre><code class="language-bash">rustc --version
+cargo --version
+</code></pre>
+<p>If you see version numbers (e.g., <code>rustc 1.75.0</code>), skip to step 2.</p>
+<p><strong>Install Rust using rustup</strong>:</p>
+<pre><code class="language-bash">curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+</code></pre>
+<p>Follow the prompts and select the default installation. Then reload your shell:</p>
+<pre><code class="language-bash">source $HOME/.cargo/env
+</code></pre>
+<p><strong>Verify installation</strong>:</p>
+<pre><code class="language-bash">rustc --version  # Should show: rustc 1.75.0 (or later)
+cargo --version  # Should show: cargo 1.75.0 (or later)
+</code></pre>
+<h4 id="2-nodejs-and-npm-for-gui-only"><a class="header" href="#2-nodejs-and-npm-for-gui-only">2. Node.js and npm (for GUI only)</a></h4>
+<p>Required if building the Tauri GUI:</p>
+<pre><code class="language-bash"># Install Node.js via Homebrew
+brew install node@20
+
+# Verify installation
+node --version  # Should show: v20.x.x
+npm --version   # Should show: 10.x.x
+</code></pre>
+<h3 id="2-native-instruments-drivers-for-maschine-mikro-mk3"><a class="header" href="#2-native-instruments-drivers-for-maschine-mikro-mk3">2. Native Instruments Drivers (for Maschine Mikro MK3)</a></h3>
+<p>If using a Maschine Mikro MK3, install Native Instruments drivers for full RGB LED support.</p>
+<p><strong>Download and install</strong>:</p>
+<ol>
+<li>Visit <a href="https://www.native-instruments.com/en/support/downloads/">Native Instruments Downloads</a></li>
+<li>Download <strong>Native Access</strong> (the NI installation manager)</li>
+<li>Install Native Access and sign in (free account)</li>
+<li>In Native Access, install:
+<ul>
+<li><strong>Maschine</strong> software (includes drivers)</li>
+<li><strong>Controller Editor</strong> (for creating custom profiles, optional)</li>
+</ul>
+</li>
+</ol>
+<p><strong>Verify driver installation</strong>:</p>
+<pre><code class="language-bash">system_profiler SPUSBDataType | grep -i maschine
+</code></pre>
+<p>You should see output like:</p>
+<pre><code>Maschine Mikro MK3:
+  Product ID: 0x1600
+  Vendor ID: 0x17cc  (Native Instruments)
+</code></pre>
+<h3 id="3-xcode-command-line-tools"><a class="header" href="#3-xcode-command-line-tools">3. Xcode Command Line Tools</a></h3>
+<p>Required for compiling native dependencies:</p>
+<pre><code class="language-bash">xcode-select --install
+</code></pre>
+<p>If already installed, you'll see: "command line tools are already installed".</p>
+<h3 id="building-from-source"><a class="header" href="#building-from-source">Building from Source</a></h3>
+<h4 id="1-clone-the-repository"><a class="header" href="#1-clone-the-repository">1. Clone the Repository</a></h4>
+<pre><code class="language-bash"># Choose a location for the project
+cd ~/projects  # or wherever you keep code
+
+# Clone the repository
+git clone https://github.com/amiable-dev/midimon.git
+cd midimon
+</code></pre>
+<h4 id="2-build-the-daemon"><a class="header" href="#2-build-the-daemon">2. Build the Daemon</a></h4>
+<p><strong>Release build</strong> (recommended for regular use):</p>
+<pre><code class="language-bash"># Build the entire workspace (daemon + core)
+cargo build --release --workspace
+
+# Or build just the daemon binary
+cargo build --release --package midimon-daemon
+</code></pre>
+<p>The release build takes 2-5 minutes on modern hardware and produces an optimized binary (~3-5MB) in <code>target/release/midimon</code>.</p>
+<p><strong>Build output</strong>:</p>
+<pre><code>   Compiling midimon-core v2.0.0 (/Users/you/projects/midimon/midimon-core)
+   Compiling midimon-daemon v2.0.0 (/Users/you/projects/midimon/midimon-daemon)
+    Finished release [optimized] target(s) in 2m 14s
+</code></pre>
+<h4 id="3-build-the-gui-optional"><a class="header" href="#3-build-the-gui-optional">3. Build the GUI (Optional)</a></h4>
+<pre><code class="language-bash"># Install frontend dependencies
+cd midimon-gui/ui
+npm ci
+
+# Build the frontend
+npm run build
+
+# Build the Tauri backend
+cd ../src-tauri
+cargo build --release
+
+# The GUI app bundle will be at:
+# midimon-gui/src-tauri/target/release/bundle/macos/MIDIMon GUI.app
+</code></pre>
+<h4 id="4-verify-the-build"><a class="header" href="#4-verify-the-build">4. Verify the Build</a></h4>
+<pre><code class="language-bash"># Test daemon binary
+./target/release/midimon --version
+
+# Or run it
+./target/release/midimon
+
+# Test GUI (if built)
+open midimon-gui/src-tauri/target/release/bundle/macos/"MIDIMon GUI.app"
+</code></pre>
+<h2 id="setting-up-configuration"><a class="header" href="#setting-up-configuration">Setting Up Configuration</a></h2>
+<h3 id="using-the-gui-recommended"><a class="header" href="#using-the-gui-recommended">Using the GUI (Recommended)</a></h3>
+<p>v2.0.0 includes a visual configuration editor:</p>
+<ol>
+<li>
+<p><strong>Open MIDIMon GUI</strong>:</p>
+<pre><code class="language-bash">open /Applications/"MIDIMon GUI.app"
+</code></pre>
+</li>
+<li>
+<p><strong>Connect your MIDI device</strong> in the device panel</p>
+</li>
+<li>
+<p><strong>Use MIDI Learn mode</strong>:</p>
+<ul>
+<li>Click "Learn" next to any trigger</li>
+<li>Press a pad/button on your controller</li>
+<li>The trigger config auto-fills</li>
+<li>Assign an action (keystroke, launch app, etc.)</li>
+</ul>
+</li>
+<li>
+<p><strong>Save configuration</strong> - automatically writes to <code>~/.config/midimon/config.toml</code></p>
+</li>
+</ol>
+<p>See <a href="../getting-started/gui-quick-start.html">GUI Quick Start</a> for detailed tutorial.</p>
+<h3 id="manual-configuration-advanced"><a class="header" href="#manual-configuration-advanced">Manual Configuration (Advanced)</a></h3>
+<p>If you prefer to edit <code>config.toml</code> manually:</p>
+<p><strong>Config location</strong>: <code>~/.config/midimon/config.toml</code></p>
+<p><strong>Create a minimal config</strong>:</p>
+<pre><code class="language-bash">mkdir -p ~/.config/midimon
+
+cat &gt; ~/.config/midimon/config.toml &lt;&lt; 'EOF'
+[device]
+name = "Mikro"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+description = "Test mapping - Copy"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[global_mappings]]
+description = "Emergency exit (hold pad 0 for 3 seconds)"
+[global_mappings.trigger]
+type = "LongPress"
+note = 0
+hold_duration_ms = 3000
+[global_mappings.action]
+type = "Shell"
+command = "killall midimon"
+EOF
+</code></pre>
+<p>This creates a basic configuration with:</p>
+<ul>
+<li>One mode (Default)</li>
+<li>One test mapping (pad 12 = Cmd+C)</li>
+<li>One emergency exit (hold pad 0 to quit)</li>
+</ul>
+<p><strong>Hot-reload</strong>: The daemon automatically reloads config within 0-10ms when you save changes.</p>
+<h2 id="configuring-macos-permissions"><a class="header" href="#configuring-macos-permissions">Configuring macOS Permissions</a></h2>
+<h3 id="input-monitoring-permission-required-for-hidled-control"><a class="header" href="#input-monitoring-permission-required-for-hidled-control">Input Monitoring Permission (Required for HID/LED Control)</a></h3>
+<p>macOS requires explicit permission for applications to access HID devices like the Maschine Mikro MK3.</p>
+<p><strong>Grant permission</strong>:</p>
+<ol>
+<li>
+<p>Run MIDIMon once:</p>
+<pre><code class="language-bash">cargo run --release 2
+</code></pre>
+</li>
+<li>
+<p>macOS will show a permission dialog: <strong>"midimon would like to receive keystrokes from any application"</strong></p>
+</li>
+<li>
+<p>Click <strong>Open System Settings</strong> or manually navigate:</p>
+<ul>
+<li>Open <strong>System Settings</strong> → <strong>Privacy &amp; Security</strong> → <strong>Input Monitoring</strong></li>
+<li>Find <code>midimon</code> (or <code>Terminal</code> if running via <code>cargo run</code>)</li>
+<li>Toggle the switch to <strong>ON</strong></li>
+</ul>
+</li>
+<li>
+<p>Restart MIDIMon:</p>
+<pre><code class="language-bash">cargo run --release 2
+</code></pre>
+</li>
+</ol>
+<p><strong>Verify HID access</strong>:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+<p>Look for:</p>
+<pre><code>[DEBUG] HID device opened successfully
+[DEBUG] LED controller initialized
+</code></pre>
+<p>If you see "HID device open failed", check:</p>
+<ul>
+<li>Input Monitoring permission is enabled</li>
+<li>USB cable is connected</li>
+<li>Native Instruments drivers are installed</li>
+</ul>
+<h3 id="accessibility-permission-optional-for-advanced-actions"><a class="header" href="#accessibility-permission-optional-for-advanced-actions">Accessibility Permission (Optional, for Advanced Actions)</a></h3>
+<p>Some actions (e.g., controlling other apps programmatically) may require Accessibility permission:</p>
+<ol>
+<li>Go to <strong>System Settings</strong> → <strong>Privacy &amp; Security</strong> → <strong>Accessibility</strong></li>
+<li>Click the <strong>+</strong> button</li>
+<li>Navigate to <code>target/release/midimon</code> (or add <code>Terminal</code>)</li>
+<li>Click <strong>Open</strong></li>
+</ol>
+<p>This is optional and only needed for specific advanced features.</p>
+<h2 id="verifying-usb-connection"><a class="header" href="#verifying-usb-connection">Verifying USB Connection</a></h2>
+<h3 id="check-usb-device-enumeration"><a class="header" href="#check-usb-device-enumeration">Check USB Device Enumeration</a></h3>
+<pre><code class="language-bash">system_profiler SPUSBDataType | grep -i mikro
+</code></pre>
+<p>Expected output:</p>
+<pre><code>Maschine Mikro MK3:
+  Product ID: 0x1600
+  Vendor ID: 0x17cc (Native Instruments)
+  Serial Number: XXXXX
+  Location ID: 0x14200000 / 5
+</code></pre>
+<h3 id="check-midi-connectivity"><a class="header" href="#check-midi-connectivity">Check MIDI Connectivity</a></h3>
+<pre><code class="language-bash"># Open Audio MIDI Setup
+open -a "Audio MIDI Setup"
+</code></pre>
+<p>In the <strong>MIDI Studio</strong> window (Window → Show MIDI Studio):</p>
+<ul>
+<li>You should see "Maschine Mikro MK3" listed</li>
+<li>It should be connected (not grayed out)</li>
+<li>Double-click to view its properties</li>
+</ul>
+<h3 id="test-midi-events"><a class="header" href="#test-midi-events">Test MIDI Events</a></h3>
+<pre><code class="language-bash"># Run diagnostic tool
+cargo run --bin midi_diagnostic 2
+</code></pre>
+<p>Press pads on your controller. You should see:</p>
+<pre><code>[NoteOn] ch:0 note:12 vel:87
+[NoteOff] ch:0 note:12 vel:0
+</code></pre>
+<p>If nothing appears:</p>
+<ul>
+<li>Check USB cable</li>
+<li>Verify correct port number (try 0, 1, 2, etc.)</li>
+<li>Restart the device</li>
+<li>Check Audio MIDI Setup</li>
+</ul>
+<h2 id="running-midimon"><a class="header" href="#running-midimon">Running MIDIMon</a></h2>
+<h3 id="using-the-gui-recommended-1"><a class="header" href="#using-the-gui-recommended-1">Using the GUI (Recommended)</a></h3>
+<p>The simplest way to run MIDIMon v2.0.0:</p>
+<ol>
+<li>
+<p><strong>Launch the GUI</strong>:</p>
+<pre><code class="language-bash">open /Applications/"MIDIMon GUI.app"
+</code></pre>
+</li>
+<li>
+<p><strong>The daemon starts automatically</strong> in the background</p>
+</li>
+<li>
+<p><strong>Control via GUI</strong>:</p>
+<ul>
+<li>View real-time MIDI events in the Event Console</li>
+<li>Edit configuration visually</li>
+<li>Monitor daemon status in the status bar</li>
+<li>Pause/resume/reload from the GUI</li>
+</ul>
+</li>
+<li>
+<p><strong>Control via menu bar</strong> (when daemon is running):</p>
+<ul>
+<li>Click the MIDIMon icon in menu bar</li>
+<li>Quick actions: Pause, Reload Config, Open GUI, Quit</li>
+</ul>
+</li>
+</ol>
+<h3 id="using-the-daemon-cli"><a class="header" href="#using-the-daemon-cli">Using the Daemon CLI</a></h3>
+<p>For headless operation or scripting:</p>
+<p><strong>Start the daemon</strong>:</p>
+<pre><code class="language-bash"># Start daemon in foreground
+midimon
+
+# Start daemon in background
+midimon &amp;
+
+# Or use launchd (see Auto-Start section below)
+</code></pre>
+<p><strong>Control the daemon</strong> with <code>midimonctl</code>:</p>
+<pre><code class="language-bash"># Check status
+midimonctl status
+
+# Reload configuration
+midimonctl reload
+
+# Stop daemon
+midimonctl stop
+
+# Validate config without reloading
+midimonctl validate
+
+# Ping daemon (latency check)
+midimonctl ping
+</code></pre>
+<p><strong>Output formats</strong>:</p>
+<pre><code class="language-bash"># Human-readable output (default)
+midimonctl status
+
+# JSON output (for scripting)
+midimonctl status --json
+</code></pre>
+<h3 id="legacy-cli-options-daemon"><a class="header" href="#legacy-cli-options-daemon">Legacy CLI Options (Daemon)</a></h3>
+<p>The daemon binary still supports v1.0.0 CLI arguments:</p>
+<pre><code class="language-bash"># With LED lighting scheme
+midimon --led reactive
+
+# With device profile
+midimon --profile ~/Downloads/my-profile.ncmm3
+
+# With debug logging
+DEBUG=1 midimon
+</code></pre>
+<h2 id="auto-start-on-login"><a class="header" href="#auto-start-on-login">Auto-Start on Login</a></h2>
+<h3 id="option-1-gui-auto-start-recommended"><a class="header" href="#option-1-gui-auto-start-recommended">Option 1: GUI Auto-Start (Recommended)</a></h3>
+<p>The MIDIMon GUI includes built-in auto-start functionality:</p>
+<ol>
+<li>Open <strong>MIDIMon GUI</strong> → <strong>Settings</strong></li>
+<li>Enable <strong>"Start MIDIMon on login"</strong></li>
+<li>Click <strong>Save</strong></li>
+</ol>
+<p>This creates a LaunchAgent automatically and handles daemon startup.</p>
+<h3 id="option-2-manual-launchagent-setup"><a class="header" href="#option-2-manual-launchagent-setup">Option 2: Manual LaunchAgent Setup</a></h3>
+<p>For daemon-only auto-start (no GUI):</p>
+<h4 id="1-create-launchagent-plist"><a class="header" href="#1-create-launchagent-plist">1. Create LaunchAgent plist</a></h4>
+<pre><code class="language-bash">mkdir -p ~/Library/LaunchAgents
+
+cat &gt; ~/Library/LaunchAgents/com.midimon.daemon.plist &lt;&lt; 'EOF'
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;
+&lt;plist version="1.0"&gt;
+&lt;dict&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;com.midimon.daemon&lt;/string&gt;
+
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/usr/local/bin/midimon&lt;/string&gt;
+    &lt;/array&gt;
+
+    &lt;key&gt;RunAtLoad&lt;/key&gt;
+    &lt;true/&gt;
+
+    &lt;key&gt;KeepAlive&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;Crashed&lt;/key&gt;
+        &lt;true/&gt;
+    &lt;/dict&gt;
+
+    &lt;key&gt;StandardOutPath&lt;/key&gt;
+    &lt;string&gt;/tmp/midimon.log&lt;/string&gt;
+
+    &lt;key&gt;StandardErrorPath&lt;/key&gt;
+    &lt;string&gt;/tmp/midimon.err&lt;/string&gt;
+
+    &lt;key&gt;EnvironmentVariables&lt;/key&gt;
+    &lt;dict&gt;
+        &lt;key&gt;PATH&lt;/key&gt;
+        &lt;string&gt;/usr/local/bin:/usr/bin:/bin&lt;/string&gt;
+    &lt;/dict&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+EOF
+</code></pre>
+<h4 id="2-load-the-launchagent"><a class="header" href="#2-load-the-launchagent">2. Load the LaunchAgent</a></h4>
+<pre><code class="language-bash">launchctl load ~/Library/LaunchAgents/com.midimon.daemon.plist
+</code></pre>
+<h4 id="3-verify-its-running"><a class="header" href="#3-verify-its-running">3. Verify It's Running</a></h4>
+<pre><code class="language-bash"># Check launchd
+launchctl list | grep midimon
+
+# Check daemon status
+midimonctl status
+</code></pre>
+<p>You should see:</p>
+<pre><code>MIDIMon Daemon Status:
+  State: Running
+  Uptime: 2m 15s
+  Config: /Users/you/.config/midimon/config.toml
+  IPC Socket: /tmp/midimon.sock
+</code></pre>
+<h4 id="4-control-the-launchagent"><a class="header" href="#4-control-the-launchagent">4. Control the LaunchAgent</a></h4>
+<pre><code class="language-bash"># Stop
+launchctl unload ~/Library/LaunchAgents/com.midimon.daemon.plist
+
+# Start
+launchctl load ~/Library/LaunchAgents/com.midimon.daemon.plist
+
+# Restart
+launchctl unload ~/Library/LaunchAgents/com.midimon.daemon.plist
+launchctl load ~/Library/LaunchAgents/com.midimon.daemon.plist
+</code></pre>
+<h4 id="5-check-logs"><a class="header" href="#5-check-logs">5. Check Logs</a></h4>
+<pre><code class="language-bash"># Standard output
+tail -f /tmp/midimon.log
+
+# Errors
+tail -f /tmp/midimon.err
+
+# Or use daemon status
+midimonctl status --json | jq
+</code></pre>
+<h2 id="post-installation-steps"><a class="header" href="#post-installation-steps">Post-Installation Steps</a></h2>
+<h3 id="1-test-your-mappings"><a class="header" href="#1-test-your-mappings">1. Test Your Mappings</a></h3>
+<p>Press pads on your controller and verify actions execute correctly.</p>
+<p><strong>Test checklist</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Pad presses trigger actions</li>
+<li><input disabled="" type="checkbox"/>
+LEDs respond to presses (if using Mikro MK3)</li>
+<li><input disabled="" type="checkbox"/>
+Mode switching works (if configured)</li>
+<li><input disabled="" type="checkbox"/>
+Encoder controls work (if mapped)</li>
+<li><input disabled="" type="checkbox"/>
+Long press detection works</li>
+<li><input disabled="" type="checkbox"/>
+Double-tap detection works</li>
+</ul>
+<h3 id="2-customize-configtoml"><a class="header" href="#2-customize-configtoml">2. Customize config.toml</a></h3>
+<p>Edit <code>config.toml</code> to add your own mappings. See:</p>
+<ul>
+<li><a href="../getting-started/first-mapping.html">First Mapping Tutorial</a></li>
+<li><a href="../getting-started/modes.html">Modes Guide</a></li>
+<li><a href="../configuration/overview.html">Configuration Overview</a></li>
+</ul>
+<h3 id="3-create-device-profile-optional"><a class="header" href="#3-create-device-profile-optional">3. Create Device Profile (Optional)</a></h3>
+<p>If you want custom pad layouts:</p>
+<ol>
+<li>Open <strong>Native Instruments Controller Editor</strong></li>
+<li>Select <strong>Maschine Mikro MK3</strong></li>
+<li>Edit pad pages (A-H)</li>
+<li>Save as <code>.ncmm3</code> file</li>
+<li>Use with <code>--profile</code> flag</li>
+</ol>
+<p>See <a href="../DEVICE_PROFILES.html">Device Profiles Documentation</a> for details.</p>
+<h2 id="platform-specific-notes"><a class="header" href="#platform-specific-notes">Platform-Specific Notes</a></h2>
+<h3 id="macos-versions"><a class="header" href="#macos-versions">macOS Versions</a></h3>
+<p><strong>Tested on</strong>:</p>
+<ul>
+<li>macOS Sonoma (14.x) - Full support</li>
+<li>macOS Ventura (13.x) - Full support</li>
+<li>macOS Monterey (12.x) - Full support</li>
+</ul>
+<p><strong>Known issues</strong>:</p>
+<ul>
+<li>macOS Big Sur (11.x) and earlier: HID shared device access may not work</li>
+</ul>
+<h3 id="apple-silicon-m1m2m3"><a class="header" href="#apple-silicon-m1m2m3">Apple Silicon (M1/M2/M3)</a></h3>
+<p>MIDIMon works natively on Apple Silicon:</p>
+<pre><code class="language-bash"># Build for current architecture
+cargo build --release
+
+# Binary will be ARM64 (aarch64) on M1/M2/M3
+file target/release/midimon
+# Output: target/release/midimon: Mach-O 64-bit executable arm64
+</code></pre>
+<p>No special configuration needed - all dependencies support ARM64.</p>
+<h3 id="intel-macs"><a class="header" href="#intel-macs">Intel Macs</a></h3>
+<p>Works identically to Apple Silicon. If you need a universal binary:</p>
+<pre><code class="language-bash"># Build for both architectures
+rustup target add x86_64-apple-darwin
+rustup target add aarch64-apple-darwin
+
+cargo build --release --target x86_64-apple-darwin
+cargo build --release --target aarch64-apple-darwin
+
+# Combine into universal binary
+lipo -create \
+    target/x86_64-apple-darwin/release/midimon \
+    target/aarch64-apple-darwin/release/midimon \
+    -output midimon-universal
+</code></pre>
+<h3 id="shared-device-access"><a class="header" href="#shared-device-access">Shared Device Access</a></h3>
+<p>MIDIMon uses <code>macos-shared-device</code> feature in <code>hidapi</code> to allow concurrent access with NI Controller Editor. This means:</p>
+<ul>
+<li>✅ You can run MIDIMon and Controller Editor simultaneously</li>
+<li>✅ Both can control LEDs without conflicts</li>
+<li>✅ Both receive MIDI input</li>
+</ul>
+<p>This is enabled by default in <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml">[dependencies]
+hidapi = { version = "2.4", features = ["macos-shared-device"] }
+</code></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="build-errors"><a class="header" href="#build-errors">Build Errors</a></h3>
+<p><strong>Error</strong>: <code>error: linker 'cc' not found</code></p>
+<p><strong>Solution</strong>: Install Xcode Command Line Tools:</p>
+<pre><code class="language-bash">xcode-select --install
+</code></pre>
+<hr />
+<p><strong>Error</strong>: <code>error: could not compile 'hidapi'</code></p>
+<p><strong>Solution</strong>: Update Rust and dependencies:</p>
+<pre><code class="language-bash">rustup update
+cargo clean
+cargo build --release
+</code></pre>
+<hr />
+<h3 id="runtime-errors"><a class="header" href="#runtime-errors">Runtime Errors</a></h3>
+<p><strong>Error</strong>: <code>No MIDI input ports available</code></p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Check USB connection</li>
+<li>Open Audio MIDI Setup and verify device appears</li>
+<li>Try different USB port</li>
+<li>Restart device</li>
+</ol>
+<hr />
+<p><strong>Error</strong>: <code>Failed to open HID device</code></p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Grant Input Monitoring permission (see above)</li>
+<li>Install Native Instruments drivers</li>
+<li>Check USB cable and connection</li>
+<li>Try running with sudo (not recommended long-term):
+<pre><code class="language-bash">sudo ./target/release/midimon 2
+</code></pre>
+</li>
+</ol>
+<hr />
+<p><strong>Error</strong>: <code>Permission denied (os error 13)</code></p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Check Input Monitoring permission</li>
+<li>Verify binary has correct permissions:
+<pre><code class="language-bash">ls -l target/release/midimon
+chmod +x target/release/midimon
+</code></pre>
+</li>
+</ol>
+<hr />
+<h3 id="led-issues"><a class="header" href="#led-issues">LED Issues</a></h3>
+<p><strong>LEDs not lighting up</strong>:</p>
+<ol>
+<li>Verify Native Instruments drivers installed</li>
+<li>Check Input Monitoring permission</li>
+<li>Test with different LED scheme:
+<pre><code class="language-bash">cargo run --release 2 --led rainbow
+</code></pre>
+</li>
+<li>Check DEBUG output:
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+</li>
+</ol>
+<p><strong>LEDs lighting wrong pads</strong>:</p>
+<ol>
+<li>Verify you're using a device profile</li>
+<li>Check profile has correct note mappings</li>
+<li>See <a href="../DEVICE_PROFILES.html">Device Profiles</a></li>
+<li>Use pad mapper to verify notes:
+<pre><code class="language-bash">cargo run --bin pad_mapper
+</code></pre>
+</li>
+</ol>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<p>Now that MIDIMon v2.0.0 is installed and running:</p>
+<h3 id="for-gui-users"><a class="header" href="#for-gui-users">For GUI Users</a></h3>
+<ol>
+<li><strong>Learn the GUI</strong>: Read <a href="../getting-started/gui-quick-start.html">GUI Quick Start Guide</a></li>
+<li><strong>MIDI Learn Tutorial</strong>: See <a href="../getting-started/midi-learn.html">MIDI Learn Mode</a></li>
+<li><strong>Device Templates</strong>: Check <a href="../guides/device-templates.html">Using Device Templates</a></li>
+<li><strong>Per-App Profiles</strong>: Set up <a href="../guides/per-app-profiles.html">Application-Specific Profiles</a></li>
+</ol>
+<h3 id="for-cli-users"><a class="header" href="#for-cli-users">For CLI Users</a></h3>
+<ol>
+<li><strong>Daemon Control</strong>: Read <a href="../guides/daemon.html">Daemon &amp; Hot-Reload Guide</a></li>
+<li><strong>CLI Reference</strong>: See <a href="../reference/cli.html">midimonctl Commands</a></li>
+<li><strong>Manual Configuration</strong>: Check <a href="../configuration/overview.html">Configuration Overview</a></li>
+<li><strong>Advanced Actions</strong>: Explore <a href="../reference/actions.html">Actions Reference</a></li>
+</ol>
+<h3 id="for-all-users"><a class="header" href="#for-all-users">For All Users</a></h3>
+<ul>
+<li><strong>Troubleshooting</strong>: <a href="../troubleshooting/common-issues.html">Common Issues</a></li>
+<li><strong>LED Customization</strong>: <a href="../guides/led-system.html">LED System Documentation</a></li>
+<li><strong>Diagnostic Tools</strong>: <a href="../troubleshooting/diagnostics.html">Debugging Guide</a></li>
+</ul>
+<h2 id="getting-help"><a class="header" href="#getting-help">Getting Help</a></h2>
+<p>If you encounter issues:</p>
+<ol>
+<li>Check <a href="../troubleshooting/common-issues.html">Common Issues</a></li>
+<li>Use <a href="../troubleshooting/diagnostics.html">Diagnostic Tools</a></li>
+<li>Enable debug logging: <code>DEBUG=1 cargo run --release 2</code></li>
+<li>File an issue on GitHub with:
+<ul>
+<li>macOS version</li>
+<li>Hardware (Intel/Apple Silicon)</li>
+<li>Device model</li>
+<li>Error messages</li>
+<li>Output of <code>cargo --version</code> and <code>rustc --version</code></li>
+</ul>
+</li>
+</ol>
+<hr />
+<p><strong>Last Updated</strong>: November 14, 2025 (v2.0.0)
+<strong>macOS Support</strong>: 11.0+ (Big Sur and later)
+<strong>Architecture</strong>: Universal Binary (Intel + Apple Silicon)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../installation/linux.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../installation/linux.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

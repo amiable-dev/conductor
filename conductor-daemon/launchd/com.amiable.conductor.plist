@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Service Identification -->
+    <key>Label</key>
+    <string>com.amiable.conductor</string>
+
+    <!-- Program Configuration -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/conductor</string>
+    </array>
+
+    <!-- Working Directory -->
+    <key>WorkingDirectory</key>
+    <string>/usr/local</string>
+
+    <!-- Run Behavior -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <dict>
+        <!-- Restart if crashed -->
+        <key>SuccessfulExit</key>
+        <false/>
+
+        <!-- Don't restart if cleanly stopped -->
+        <key>Crashed</key>
+        <true/>
+    </dict>
+
+    <!-- Restart throttling (wait 5s before restart) -->
+    <key>ThrottleInterval</key>
+    <integer>5</integer>
+
+    <!-- Process Priority -->
+    <key>Nice</key>
+    <integer>-5</integer>
+
+    <!-- Logging -->
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/Library/Logs/conductor.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/Library/Logs/conductor.error.log</string>
+
+    <!-- Environment Variables -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>RUST_LOG</key>
+        <string>conductor=info</string>
+    </dict>
+
+    <!-- Resource Limits -->
+    <key>HardResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>1024</integer>
+    </dict>
+
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>512</integer>
+    </dict>
+
+    <!-- Session Type (run in user session for GUI access) -->
+    <key>LimitLoadToSessionType</key>
+    <string>Aqua</string>
+
+    <!-- Process Type -->
+    <key>ProcessType</key>
+    <string>Interactive</string>
+</dict>
+</plist>

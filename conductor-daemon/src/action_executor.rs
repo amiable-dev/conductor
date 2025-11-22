@@ -1,0 +1,1110 @@
+// Copyright 2025 Amiable
+// SPDX-License-Identifier: MIT
+
+//! Action execution implementation for MIDIMon daemon.
+//!
+//! This module contains the ActionExecutor which is responsible for executing
+//! actions (keyboard, mouse, shell commands, etc.) on the host system.
+//!
+//! This was moved from midimon-core to maintain architectural purity:
+//! - Core: Pure data structures and logic (UI-independent)
+//! - Daemon: System interaction (keyboard, mouse, shell, etc.)
+
+use crate::conditions::{ConditionContext, evaluate_condition};
+use crate::plugin_manager::PluginManager;
+use enigo::{Button, Coordinate, Direction, Enigo, Key, Keyboard, Mouse, Settings};
+use conductor_core::{
+    Action, KeyCode, MidiMessageParams, MidiMessageType, MidiOutputManager, ModifierKey,
+    MouseButton, VolumeOperation,
+};
+use std::process::Command;
+use std::thread;
+use std::time::Duration;
+
+/// Context about the triggering event passed to action execution
+///
+/// This struct carries information from the triggering MIDI event (e.g., velocity)
+/// and current system state (e.g., active mode) that may be needed during action execution,
+/// particularly for SendMIDI actions with velocity mapping and Conditional actions.
+#[derive(Debug, Clone, Default)]
+pub struct TriggerContext {
+    /// Velocity of the triggering MIDI event (0-127)
+    ///
+    /// For NoteOn events, this is the velocity of the note press.
+    /// For NoteOff events, this is typically 64 (MIDI standard release velocity).
+    /// For other events, this may be None or a default value.
+    pub velocity: Option<u8>,
+
+    /// Current active mode name
+    ///
+    /// Used by Conditional actions with ModeIs conditions to check if a condition
+    /// should execute based on the current mode.
+    pub current_mode: Option<String>,
+}
+
+impl TriggerContext {
+    /// Create a new trigger context with velocity
+    pub fn with_velocity(velocity: u8) -> Self {
+        Self {
+            velocity: Some(velocity),
+            current_mode: None,
+        }
+    }
+
+    /// Create a new trigger context with velocity and mode
+    pub fn with_velocity_and_mode(velocity: u8, mode: String) -> Self {
+        Self {
+            velocity: Some(velocity),
+            current_mode: Some(mode),
+        }
+    }
+
+    /// Create a new trigger context with mode only
+    pub fn with_mode(mode: String) -> Self {
+        Self {
+            velocity: None,
+            current_mode: Some(mode),
+        }
+    }
+
+    /// Get velocity or default to 100 (standard MIDI default)
+    pub fn velocity_or_default(&self) -> u8 {
+        self.velocity.unwrap_or(100)
+    }
+}
+
+/// Convert domain KeyCode to enigo Key for execution
+///
+/// This conversion layer enables midimon-core to remain UI-independent while
+/// the daemon can execute actions using platform-specific libraries.
+fn to_enigo_key(key_code: KeyCode) -> Key {
+    match key_code {
+        // Unicode characters (alphanumeric and punctuation)
+        KeyCode::Unicode(c) => Key::Unicode(c),
+
+        // Special keys
+        KeyCode::Space => Key::Unicode(' '),
+        KeyCode::Return => Key::Return,
+        KeyCode::Tab => Key::Tab,
+        KeyCode::Escape => Key::Escape,
+        KeyCode::Backspace => Key::Backspace,
+        KeyCode::Delete => Key::Delete,
+
+        // Arrow keys
+        KeyCode::UpArrow => Key::UpArrow,
+        KeyCode::DownArrow => Key::DownArrow,
+        KeyCode::LeftArrow => Key::LeftArrow,
+        KeyCode::RightArrow => Key::RightArrow,
+
+        // Navigation keys
+        KeyCode::Home => Key::Home,
+        KeyCode::End => Key::End,
+        KeyCode::PageUp => Key::PageUp,
+        KeyCode::PageDown => Key::PageDown,
+
+        // Function keys
+        KeyCode::F1 => Key::F1,
+        KeyCode::F2 => Key::F2,
+        KeyCode::F3 => Key::F3,
+        KeyCode::F4 => Key::F4,
+        KeyCode::F5 => Key::F5,
+        KeyCode::F6 => Key::F6,
+        KeyCode::F7 => Key::F7,
+        KeyCode::F8 => Key::F8,
+        KeyCode::F9 => Key::F9,
+        KeyCode::F10 => Key::F10,
+        KeyCode::F11 => Key::F11,
+        KeyCode::F12 => Key::F12,
+        KeyCode::F13 => Key::F13,
+        KeyCode::F14 => Key::F14,
+        KeyCode::F15 => Key::F15,
+        KeyCode::F16 => Key::F16,
+        KeyCode::F17 => Key::F17,
+        KeyCode::F18 => Key::F18,
+        KeyCode::F19 => Key::F19,
+        KeyCode::F20 => Key::F20,
+
+        // Media keys
+        KeyCode::VolumeUp => Key::VolumeUp,
+        KeyCode::VolumeDown => Key::VolumeDown,
+        KeyCode::Mute => Key::VolumeMute,
+        KeyCode::PlayPause => Key::MediaPlayPause,
+        #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
+        KeyCode::Stop => Key::MediaStop,
+        #[cfg(target_os = "macos")]
+        KeyCode::Stop => Key::Unicode('\0'), // MediaStop not available on macOS
+        KeyCode::NextTrack => Key::MediaNextTrack,
+        KeyCode::PreviousTrack => Key::MediaPrevTrack,
+
+        // Editing keys
+        #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
+        KeyCode::Insert => Key::Insert,
+        #[cfg(target_os = "macos")]
+        KeyCode::Insert => Key::Unicode('\0'), // Insert not available on macOS
+        #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
+        KeyCode::PrintScreen => Key::PrintScr,
+        #[cfg(target_os = "macos")]
+        KeyCode::PrintScreen => Key::Unicode('\0'), // PrintScreen not available on macOS
+        #[cfg(all(unix, not(target_os = "macos")))]
+        KeyCode::ScrollLock => Key::ScrollLock,
+        #[cfg(not(all(unix, not(target_os = "macos"))))]
+        KeyCode::ScrollLock => Key::Unicode('\0'), // ScrollLock not available on macOS/Windows
+        #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
+        KeyCode::Pause => Key::Pause,
+        #[cfg(target_os = "macos")]
+        KeyCode::Pause => Key::Unicode('\0'), // Pause not available on macOS
+        KeyCode::CapsLock => Key::CapsLock,
+        #[cfg(any(target_os = "windows", all(unix, not(target_os = "macos"))))]
+        KeyCode::NumLock => Key::Numlock,
+        #[cfg(target_os = "macos")]
+        KeyCode::NumLock => Key::Unicode('\0'), // NumLock not available on macOS
+    }
+}
+
+/// Convert domain ModifierKey to enigo Key for execution
+fn to_enigo_modifier(modifier: ModifierKey) -> Key {
+    match modifier {
+        ModifierKey::Command => Key::Meta,
+        ModifierKey::Control => Key::Control,
+        ModifierKey::Option => Key::Alt,
+        ModifierKey::Shift => Key::Shift,
+    }
+}
+
+/// Convert domain MouseButton to enigo Button for execution
+fn to_enigo_button(mouse_button: MouseButton) -> Button {
+    match mouse_button {
+        MouseButton::Left => Button::Left,
+        MouseButton::Right => Button::Right,
+        MouseButton::Middle => Button::Middle,
+    }
+}
+
+/// ActionExecutor handles the execution of actions on the host system.
+///
+/// This includes:
+/// - Keyboard simulation via enigo
+/// - Mouse simulation via enigo
+/// - Shell command execution
+/// - Application launching
+/// - Volume control
+/// - MIDI output (v2.1)
+///
+/// # Architecture Note
+/// This executor lives in the daemon layer (not core) because it interacts
+/// with the operating system through UI libraries (enigo) and system commands.
+pub struct ActionExecutor {
+    enigo: Enigo,
+    midi_output: MidiOutputManager,
+    plugin_manager: PluginManager,
+}
+
+impl Default for ActionExecutor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl ActionExecutor {
+    /// Create a new ActionExecutor with default settings
+    pub fn new() -> Self {
+        Self {
+            enigo: Enigo::new(&Settings::default()).unwrap(),
+            midi_output: MidiOutputManager::new(),
+            plugin_manager: PluginManager::default(),
+        }
+    }
+
+    /// Get a reference to the plugin manager
+    ///
+    /// Allows external code to manage plugins (discover, load, configure permissions)
+    pub fn plugin_manager(&self) -> &PluginManager {
+        &self.plugin_manager
+    }
+
+    /// Get a mutable reference to the plugin manager
+    ///
+    /// Allows external code to manage plugins (discover, load, configure permissions)
+    pub fn plugin_manager_mut(&mut self) -> &mut PluginManager {
+        &mut self.plugin_manager
+    }
+
+    /// Execute an action
+    ///
+    /// # Arguments
+    /// * `action` - The action to execute
+    /// * `context` - Optional context about the triggering event (e.g., velocity)
+    ///
+    /// # Examples
+    /// ```no_run
+    /// use conductor_daemon::{ActionExecutor, TriggerContext};
+    /// use conductor_core::Action;
+    ///
+    /// let mut executor = ActionExecutor::new();
+    ///
+    /// // Execute without context
+    /// executor.execute(Action::Text("Hello, World!".to_string()), None);
+    ///
+    /// // Execute with velocity context
+    /// let context = TriggerContext::with_velocity(100);
+    /// let action = Action::Text("Test".to_string());
+    /// executor.execute(action, Some(context));
+    /// ```
+    pub fn execute(&mut self, action: Action, context: Option<TriggerContext>) {
+        match action {
+            Action::Keystroke { keys, modifiers } => {
+                self.execute_keystroke(keys, modifiers);
+            }
+            Action::Text(text) => {
+                self.enigo.text(&text).unwrap();
+            }
+            Action::Launch(app) => {
+                self.launch_app(&app);
+            }
+            Action::Shell(cmd) => {
+                self.execute_shell(&cmd);
+            }
+            Action::Sequence(actions) => {
+                for act in actions {
+                    self.execute(act, context.clone());
+                    thread::sleep(Duration::from_millis(50));
+                }
+            }
+            Action::Delay(ms) => {
+                thread::sleep(Duration::from_millis(ms));
+            }
+            Action::MouseClick { button, x, y } => {
+                if let (Some(x), Some(y)) = (x, y) {
+                    self.enigo.move_mouse(x, y, Coordinate::Abs).unwrap();
+                }
+                let enigo_button = to_enigo_button(button);
+                self.enigo.button(enigo_button, Direction::Click).unwrap();
+            }
+            Action::Repeat {
+                action,
+                count,
+                delay_ms,
+            } => {
+                for i in 0..count {
+                    self.execute((*action).clone(), context.clone());
+
+                    // Add delay between iterations (but not after the last one)
+                    if i < count - 1
+                        && let Some(delay) = delay_ms
+                    {
+                        thread::sleep(Duration::from_millis(delay));
+                    }
+                }
+            }
+            Action::Conditional {
+                condition,
+                then_action,
+                else_action,
+            } => {
+                // Create condition context from trigger context (includes current mode)
+                let cond_ctx = context
+                    .as_ref()
+                    .and_then(|ctx| ctx.current_mode.as_ref())
+                    .map(|mode| ConditionContext::with_mode(mode.clone()));
+
+                if evaluate_condition(&condition, cond_ctx.as_ref()) {
+                    self.execute((*then_action).clone(), context.clone());
+                } else if let Some(else_act) = else_action {
+                    self.execute((*else_act).clone(), context);
+                }
+            }
+            Action::VolumeControl { operation, value } => {
+                execute_volume_control(&operation, &value);
+            }
+            Action::ModeChange { mode } => {
+                // Mode changes are handled by the mapping engine
+                // This action just serves as a marker in the config
+                eprintln!("ModeChange to '{}' (handled by mapping engine)", mode);
+            }
+            Action::SendMidi {
+                port,
+                message_type,
+                channel,
+                params,
+            } => {
+                self.execute_send_midi(&port, &message_type, channel, &params, context.as_ref());
+            }
+            Action::Plugin { plugin, params } => {
+                // Convert TriggerContext from daemon to plugin TriggerContext
+                let plugin_context = context.as_ref().map(|ctx| {
+                    conductor_core::plugin::TriggerContext {
+                        velocity: ctx.velocity,
+                        current_mode: None, // TODO: Convert mode name to index
+                        timestamp: std::time::SystemTime::now()
+                            .duration_since(std::time::UNIX_EPOCH)
+                            .unwrap()
+                            .as_millis() as u64,
+                    }
+                });
+
+                // Execute plugin
+                match self
+                    .plugin_manager
+                    .execute_plugin(&plugin, params, plugin_context)
+                {
+                    Ok(()) => {
+                        // Plugin executed successfully
+                    }
+                    Err(e) => {
+                        eprintln!("Plugin execution error for '{}': {}", plugin, e);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Execute a keystroke with modifiers
+    ///
+    /// Converts domain types (KeyCode, ModifierKey) to platform-specific enigo types.
+    fn execute_keystroke(&mut self, keys: Vec<KeyCode>, modifiers: Vec<ModifierKey>) {
+        // Convert and press modifiers
+        let enigo_modifiers: Vec<Key> = modifiers.iter().map(|&m| to_enigo_modifier(m)).collect();
+        for modifier in &enigo_modifiers {
+            self.enigo.key(*modifier, Direction::Press).unwrap();
+        }
+
+        // Convert and press keys
+        for key_code in &keys {
+            let enigo_key = to_enigo_key(*key_code);
+            self.enigo.key(enigo_key, Direction::Click).unwrap();
+        }
+
+        // Release modifiers
+        for modifier in enigo_modifiers.iter().rev() {
+            self.enigo.key(*modifier, Direction::Release).unwrap();
+        }
+    }
+
+    /// Launch an application
+    fn launch_app(&self, app: &str) {
+        #[cfg(target_os = "macos")]
+        {
+            Command::new("open").arg("-a").arg(app).spawn().ok();
+        }
+
+        #[cfg(target_os = "linux")]
+        {
+            Command::new(app).spawn().ok();
+        }
+
+        #[cfg(target_os = "windows")]
+        {
+            Command::new("cmd").args(&["/C", "start", app]).spawn().ok();
+        }
+    }
+
+    /// Execute a shell command WITHOUT using a shell interpreter
+    ///
+    /// # Security Design
+    /// This function intentionally avoids shell interpreters (sh, bash, cmd, powershell)
+    /// to prevent command injection attacks. Commands are parsed directly into
+    /// program + arguments and executed with `Command::new(program).args(args)`.
+    ///
+    /// This provides defense-in-depth security alongside the validation in
+    /// `validate_shell_command()` (config loader), which blocks shell metacharacters.
+    ///
+    /// # Command Parsing
+    /// Commands are split on whitespace into program + arguments:
+    /// - "git status" → Command::new("git").args(&["status"])
+    /// - "ls -la /tmp" → Command::new("ls").args(&["-la", "/tmp"])
+    /// - "osascript -e 'display notification \"MIDI\"'" → Parsed with proper quote handling
+    ///
+    /// # Limitations
+    /// The following shell features are NOT supported (by design):
+    /// - Piping (|), redirection (>, <), command substitution ($(), ``)
+    /// - Environment variable expansion ($VAR, ${VAR})
+    /// - Globbing (*.txt, [a-z].sh)
+    /// - Command chaining (;, &&, ||)
+    ///
+    /// Users must use the Launch action for apps or break complex operations
+    /// into separate mappings.
+    ///
+    /// # Examples
+    /// Supported:
+    /// - "git status" → Direct execution
+    /// - "open ~/Downloads" → Direct execution
+    /// - "osascript -e 'set volume 50'" → Direct execution
+    ///
+    /// Blocked (by validation layer):
+    /// - "git add . && git commit" → Contains &&
+    /// - "ls | grep txt" → Contains |
+    /// - "cat file.txt > output.txt" → Contains >
+    fn execute_shell(&self, cmd: &str) {
+        let cmd = cmd.trim();
+
+        // Handle empty command
+        if cmd.is_empty() {
+            eprintln!("Warning: Attempted to execute empty shell command");
+            return;
+        }
+
+        // Parse command into program + arguments
+        // This is a simple whitespace-based parser that respects quoted strings
+        let parts = parse_command_line(cmd);
+
+        if parts.is_empty() {
+            eprintln!("Warning: Failed to parse shell command: {}", cmd);
+            return;
+        }
+
+        let program = &parts[0];
+        let args = &parts[1..];
+
+        // Execute command WITHOUT shell interpreter
+        // This is the critical security improvement: no sh -c, no cmd /C
+        match Command::new(program).args(args).spawn() {
+            Ok(_) => {
+                // Command spawned successfully (runs in background)
+            }
+            Err(e) => {
+                eprintln!("Failed to execute command '{}': {}", cmd, e);
+            }
+        }
+    }
+
+    /// Execute SendMIDI action
+    ///
+    /// Converts MIDI message parameters to bytes and sends via MidiOutputManager.
+    ///
+    /// # Arguments
+    /// * `port` - Target MIDI output port name
+    /// * `message_type` - Type of MIDI message to send
+    /// * `channel` - MIDI channel (0-15)
+    /// * `params` - Message-specific parameters
+    /// * `context` - Optional trigger context (contains velocity from triggering event)
+    ///
+    /// # MIDI Message Format
+    /// All MIDI messages follow the format: [status_byte, data_byte1, data_byte2]
+    /// - Status byte: 0x80-0xE0 | channel (0-15)
+    /// - Data bytes: 0-127 (7-bit values)
+    fn execute_send_midi(
+        &mut self,
+        port: &str,
+        message_type: &MidiMessageType,
+        channel: u8,
+        params: &MidiMessageParams,
+        context: Option<&TriggerContext>,
+    ) {
+        // Build MIDI message bytes based on message type
+        let message_bytes = match (message_type, params) {
+            (
+                MidiMessageType::NoteOn,
+                MidiMessageParams::Note {
+                    note,
+                    velocity_mapping,
+                },
+            ) => {
+                // v2.2: Calculate velocity from mapping using actual trigger velocity
+                // Default to 100 if no context provided (for backward compatibility)
+                let trigger_velocity = context.and_then(|ctx| ctx.velocity).unwrap_or(100);
+                let calculated_velocity =
+                    conductor_core::velocity::calculate_velocity(trigger_velocity, velocity_mapping);
+                vec![
+                    0x90 | (channel & 0x0F),
+                    *note & 0x7F,
+                    calculated_velocity & 0x7F,
+                ]
+            }
+            (
+                MidiMessageType::NoteOff,
+                MidiMessageParams::Note {
+                    note,
+                    velocity_mapping,
+                },
+            ) => {
+                // NoteOff typically uses velocity 64 (MIDI standard release velocity)
+                // Use actual trigger velocity if provided, otherwise default to 64
+                let trigger_velocity = context.and_then(|ctx| ctx.velocity).unwrap_or(64);
+                let calculated_velocity =
+                    conductor_core::velocity::calculate_velocity(trigger_velocity, velocity_mapping);
+                vec![
+                    0x80 | (channel & 0x0F),
+                    *note & 0x7F,
+                    calculated_velocity & 0x7F,
+                ]
+            }
+            (MidiMessageType::ControlChange, MidiMessageParams::CC { controller, value }) => {
+                vec![0xB0 | (channel & 0x0F), *controller & 0x7F, *value & 0x7F]
+            }
+            (MidiMessageType::ProgramChange, MidiMessageParams::ProgramChange { program }) => {
+                vec![0xC0 | (channel & 0x0F), *program & 0x7F]
+            }
+            (MidiMessageType::PitchBend, MidiMessageParams::PitchBend { value }) => {
+                // Pitch bend is 14-bit: -8192 to +8191, encoded as 0-16383
+                let pitch_value = (*value + 8192).clamp(0, 16383) as u16;
+                let lsb = (pitch_value & 0x7F) as u8;
+                let msb = ((pitch_value >> 7) & 0x7F) as u8;
+                vec![0xE0 | (channel & 0x0F), lsb, msb]
+            }
+            (MidiMessageType::Aftertouch, MidiMessageParams::Aftertouch { pressure }) => {
+                vec![0xD0 | (channel & 0x0F), *pressure & 0x7F]
+            }
+            _ => {
+                eprintln!(
+                    "Warning: Mismatched MIDI message type {:?} and params {:?}",
+                    message_type, params
+                );
+                return;
+            }
+        };
+
+        // Send message via MidiOutputManager
+        match self.midi_output.send_message(port, &message_bytes) {
+            Ok(_) => {
+                // Success - message sent
+            }
+            Err(e) => {
+                eprintln!("Failed to send MIDI message to '{}': {}", port, e);
+            }
+        }
+    }
+}
+
+/// Parse a command line into program + arguments, respecting quoted strings
+///
+/// This is a simple whitespace-based parser that handles:
+/// - Single quotes: 'text with spaces'
+/// - Double quotes: "text with spaces"
+/// - Escaped quotes: \"text\" within quotes
+/// - Unquoted arguments: split on whitespace
+///
+/// # Examples
+/// ```
+/// # use conductor_daemon::parse_command_line;
+/// assert_eq!(parse_command_line("git status"), vec!["git", "status"]);
+/// assert_eq!(parse_command_line("ls -la /tmp"), vec!["ls", "-la", "/tmp"]);
+/// assert_eq!(parse_command_line("echo 'hello world'"), vec!["echo", "hello world"]);
+/// assert_eq!(parse_command_line("osascript -e 'code'"), vec!["osascript", "-e", "code"]);
+/// ```
+///
+/// # Security Note
+/// This parser does NOT perform shell expansion (variables, globs, etc.).
+/// This is intentional for security - we want literal arguments only.
+pub fn parse_command_line(cmd: &str) -> Vec<String> {
+    let mut parts = Vec::new();
+    let mut current = String::new();
+    let mut chars = cmd.chars().peekable();
+    let mut in_single_quote = false;
+    let mut in_double_quote = false;
+
+    while let Some(ch) = chars.next() {
+        match ch {
+            '\'' if !in_double_quote => {
+                // Toggle single quote mode (unless inside double quotes)
+                in_single_quote = !in_single_quote;
+            }
+            '"' if !in_single_quote => {
+                // Toggle double quote mode (unless inside single quotes)
+                in_double_quote = !in_double_quote;
+            }
+            '\\' if in_double_quote => {
+                // Handle escape sequences in double quotes
+                if let Some(&next_ch) = chars.peek() {
+                    if next_ch == '"' || next_ch == '\\' {
+                        current.push(chars.next().unwrap());
+                    } else {
+                        current.push(ch);
+                    }
+                } else {
+                    current.push(ch);
+                }
+            }
+            ' ' | '\t' | '\n' | '\r' if !in_single_quote && !in_double_quote => {
+                // Whitespace outside quotes: end of argument
+                if !current.is_empty() {
+                    parts.push(current.clone());
+                    current.clear();
+                }
+            }
+            _ => {
+                // Regular character: add to current argument
+                current.push(ch);
+            }
+        }
+    }
+
+    // Add final argument if any
+    if !current.is_empty() {
+        parts.push(current);
+    }
+
+    parts
+}
+
+/// Execute volume control operations
+///
+/// # Platform Support
+/// - macOS: Uses AppleScript
+/// - Linux: Uses amixer (ALSA) or pactl (PulseAudio)
+/// - Windows: Not implemented
+fn execute_volume_control(operation: &VolumeOperation, value: &Option<u8>) {
+    #[cfg(target_os = "macos")]
+    {
+        let script = match operation {
+            VolumeOperation::Up => {
+                "set volume output volume ((output volume of (get volume settings)) + 10)"
+            }
+            VolumeOperation::Down => {
+                "set volume output volume ((output volume of (get volume settings)) - 10)"
+            }
+            VolumeOperation::Mute => "set volume output muted true",
+            VolumeOperation::Unmute => "set volume output muted false",
+            VolumeOperation::Set => {
+                if let Some(vol) = value {
+                    &format!("set volume output volume {}", vol)
+                } else {
+                    "set volume output volume 50"
+                }
+            }
+        };
+
+        Command::new("osascript").arg("-e").arg(script).spawn().ok();
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        // Try PulseAudio first, fall back to ALSA
+        match operation {
+            VolumeOperation::Up => {
+                Command::new("pactl")
+                    .args(["set-sink-volume", "@DEFAULT_SINK@", "+10%"])
+                    .spawn()
+                    .ok();
+            }
+            VolumeOperation::Down => {
+                Command::new("pactl")
+                    .args(["set-sink-volume", "@DEFAULT_SINK@", "-10%"])
+                    .spawn()
+                    .ok();
+            }
+            VolumeOperation::Mute => {
+                Command::new("pactl")
+                    .args(["set-sink-mute", "@DEFAULT_SINK@", "1"])
+                    .spawn()
+                    .ok();
+            }
+            VolumeOperation::Unmute => {
+                Command::new("pactl")
+                    .args(["set-sink-mute", "@DEFAULT_SINK@", "0"])
+                    .spawn()
+                    .ok();
+            }
+            VolumeOperation::Set => {
+                let volume_str = if let Some(vol) = value {
+                    format!("{}%", vol)
+                } else {
+                    "50%".to_string()
+                };
+                Command::new("pactl")
+                    .args(["set-sink-volume", "@DEFAULT_SINK@", &volume_str])
+                    .spawn()
+                    .ok();
+            }
+        }
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        eprintln!("Volume control not implemented for Windows");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ========== Command Line Parser Tests ==========
+
+    #[test]
+    fn test_parse_simple_command() {
+        assert_eq!(parse_command_line("git status"), vec!["git", "status"]);
+    }
+
+    #[test]
+    fn test_parse_command_with_args() {
+        assert_eq!(parse_command_line("ls -la /tmp"), vec!["ls", "-la", "/tmp"]);
+    }
+
+    #[test]
+    fn test_parse_single_quoted_string() {
+        assert_eq!(
+            parse_command_line("echo 'hello world'"),
+            vec!["echo", "hello world"]
+        );
+    }
+
+    #[test]
+    fn test_parse_double_quoted_string() {
+        assert_eq!(
+            parse_command_line("echo \"hello world\""),
+            vec!["echo", "hello world"]
+        );
+    }
+
+    #[test]
+    fn test_parse_osascript_command() {
+        assert_eq!(
+            parse_command_line("osascript -e 'set volume 50'"),
+            vec!["osascript", "-e", "set volume 50"]
+        );
+    }
+
+    #[test]
+    fn test_parse_escaped_quotes_in_double_quotes() {
+        assert_eq!(
+            parse_command_line("echo \"hello \\\"world\\\"\""),
+            vec!["echo", "hello \"world\""]
+        );
+    }
+
+    #[test]
+    fn test_parse_mixed_quotes() {
+        assert_eq!(
+            parse_command_line("cmd 'single quoted' \"double quoted\" unquoted"),
+            vec!["cmd", "single quoted", "double quoted", "unquoted"]
+        );
+    }
+
+    #[test]
+    fn test_parse_empty_command() {
+        assert_eq!(parse_command_line(""), Vec::<String>::new());
+    }
+
+    #[test]
+    fn test_parse_whitespace_only() {
+        assert_eq!(parse_command_line("   \t\n  "), Vec::<String>::new());
+    }
+
+    #[test]
+    fn test_parse_multiple_spaces() {
+        assert_eq!(
+            parse_command_line("git    status    --short"),
+            vec!["git", "status", "--short"]
+        );
+    }
+
+    #[test]
+    fn test_parse_trailing_spaces() {
+        assert_eq!(parse_command_line("git status  "), vec!["git", "status"]);
+    }
+
+    #[test]
+    fn test_parse_leading_spaces() {
+        assert_eq!(parse_command_line("  git status"), vec!["git", "status"]);
+    }
+
+    #[test]
+    fn test_parse_notification_command() {
+        assert_eq!(
+            parse_command_line("osascript -e 'display notification \"MIDI triggered!\"'"),
+            vec![
+                "osascript",
+                "-e",
+                "display notification \"MIDI triggered!\""
+            ]
+        );
+    }
+
+    #[test]
+    fn test_parse_file_path_with_tilde() {
+        assert_eq!(
+            parse_command_line("open ~/Downloads"),
+            vec!["open", "~/Downloads"]
+        );
+    }
+
+    #[test]
+    fn test_parse_complex_apfs_command() {
+        assert_eq!(
+            parse_command_line("system_profiler SPUSBDataType"),
+            vec!["system_profiler", "SPUSBDataType"]
+        );
+    }
+
+    // ========== Security: No Shell Expansion ==========
+
+    #[test]
+    fn test_parse_does_not_expand_variables() {
+        // Variables should be passed as literals, not expanded
+        assert_eq!(parse_command_line("echo $HOME"), vec!["echo", "$HOME"]);
+    }
+
+    #[test]
+    fn test_parse_does_not_expand_globs() {
+        // Globs should be passed as literals, not expanded
+        assert_eq!(parse_command_line("ls *.txt"), vec!["ls", "*.txt"]);
+    }
+
+    // ========== SendMidi Action Tests ==========
+
+    #[test]
+    fn test_send_midi_note_on_encoding() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        // Test Note On encoding: [0x90 | channel, note, velocity]
+        // We can't directly test execute_send_midi since it's private,
+        // but we can test the Action variant
+        let action = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::NoteOn,
+            channel: 0,
+            params: MidiMessageParams::Note {
+                note: 60,
+                velocity_mapping: conductor_core::VelocityMapping::Fixed { velocity: 100 },
+            },
+        };
+
+        // Execute shouldn't panic (though send will fail without a port)
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_note_off_encoding() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        let action = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::NoteOff,
+            channel: 1,
+            params: MidiMessageParams::Note {
+                note: 64,
+                velocity_mapping: conductor_core::VelocityMapping::Fixed { velocity: 0 },
+            },
+        };
+
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_control_change_encoding() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        let action = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::ControlChange,
+            channel: 2,
+            params: MidiMessageParams::CC {
+                controller: 7,
+                value: 127,
+            },
+        };
+
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_program_change_encoding() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        let action = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::ProgramChange,
+            channel: 3,
+            params: MidiMessageParams::ProgramChange { program: 42 },
+        };
+
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_pitch_bend_encoding() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        // Test pitch bend with center value (0)
+        let action = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::PitchBend,
+            channel: 4,
+            params: MidiMessageParams::PitchBend { value: 0 },
+        };
+
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_pitch_bend_min_max() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        // Test pitch bend minimum (-8192)
+        let action_min = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::PitchBend,
+            channel: 5,
+            params: MidiMessageParams::PitchBend { value: -8192 },
+        };
+        executor.execute(action_min, None);
+
+        // Test pitch bend maximum (+8191)
+        let action_max = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::PitchBend,
+            channel: 5,
+            params: MidiMessageParams::PitchBend { value: 8191 },
+        };
+        executor.execute(action_max, None);
+    }
+
+    #[test]
+    fn test_send_midi_aftertouch_encoding() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        let action = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::Aftertouch,
+            channel: 6,
+            params: MidiMessageParams::Aftertouch { pressure: 80 },
+        };
+
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_channel_masking() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        // Test all 16 MIDI channels (0-15)
+        for channel in 0..16 {
+            let action = conductor_core::Action::SendMidi {
+                port: "Virtual Test Port".to_string(),
+                message_type: MidiMessageType::NoteOn,
+                channel,
+                params: MidiMessageParams::Note {
+                    note: 60,
+                    velocity_mapping: conductor_core::VelocityMapping::Fixed { velocity: 100 },
+                },
+            };
+
+            executor.execute(action, None);
+        }
+    }
+
+    #[test]
+    fn test_send_midi_data_byte_masking() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        // Test boundary values for 7-bit data
+        let test_values = [0, 1, 63, 64, 127];
+
+        for &note in &test_values {
+            for &velocity in &test_values {
+                let action = conductor_core::Action::SendMidi {
+                    port: "Virtual Test Port".to_string(),
+                    message_type: MidiMessageType::NoteOn,
+                    channel: 0,
+                    params: MidiMessageParams::Note {
+                        note,
+                        velocity_mapping: conductor_core::VelocityMapping::Fixed { velocity },
+                    },
+                };
+
+                executor.execute(action, None);
+            }
+        }
+    }
+
+    #[test]
+    fn test_send_midi_mismatched_type_params() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        // This should trigger the warning path in execute_send_midi
+        // (mismatched NoteOn with CC params - though this shouldn't happen
+        // in practice due to From<ActionConfig> conversion logic)
+
+        // The actual mismatch would only occur if we manually construct
+        // an Action with wrong params, which the type system prevents.
+        // This test just ensures the executor doesn't panic.
+
+        let action = conductor_core::Action::SendMidi {
+            port: "Virtual Test Port".to_string(),
+            message_type: MidiMessageType::NoteOn,
+            channel: 0,
+            params: MidiMessageParams::Note {
+                note: 60,
+                velocity_mapping: conductor_core::VelocityMapping::Fixed { velocity: 100 },
+            },
+        };
+
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_in_sequence() {
+        use conductor_core::{MidiMessageParams, MidiMessageType, VelocityMapping};
+
+        let mut executor = ActionExecutor::new();
+
+        // Test SendMidi as part of a sequence
+        let action = conductor_core::Action::Sequence(vec![
+            conductor_core::Action::SendMidi {
+                port: "Virtual Test Port".to_string(),
+                message_type: MidiMessageType::NoteOn,
+                channel: 0,
+                params: MidiMessageParams::Note {
+                    note: 60,
+                    velocity_mapping: VelocityMapping::Fixed { velocity: 100 },
+                },
+            },
+            conductor_core::Action::Delay(10),
+            conductor_core::Action::SendMidi {
+                port: "Virtual Test Port".to_string(),
+                message_type: MidiMessageType::NoteOff,
+                channel: 0,
+                params: MidiMessageParams::Note {
+                    note: 60,
+                    velocity_mapping: VelocityMapping::Fixed { velocity: 0 },
+                },
+            },
+        ]);
+
+        executor.execute(action, None);
+    }
+
+    #[test]
+    fn test_send_midi_with_repeat() {
+        use conductor_core::{MidiMessageParams, MidiMessageType};
+
+        let mut executor = ActionExecutor::new();
+
+        // Test SendMidi in a Repeat action
+        let action = conductor_core::Action::Repeat {
+            action: Box::new(conductor_core::Action::SendMidi {
+                port: "Virtual Test Port".to_string(),
+                message_type: MidiMessageType::ControlChange,
+                channel: 0,
+                params: MidiMessageParams::CC {
+                    controller: 1,
+                    value: 64,
+                },
+            }),
+            count: 3,
+            delay_ms: Some(50),
+        };
+
+        executor.execute(action, None);
+    }
+}

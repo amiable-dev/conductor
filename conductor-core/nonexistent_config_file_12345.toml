@@ -1,0 +1,37 @@
+global_mappings = []
+
+[device]
+name = "Mikro"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+description = "Spotlight Search"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 60
+velocity_min = 1
+
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = ["cmd"]
+
+[[modes]]
+name = "Development"
+color = "green"
+
+[[modes.mappings]]
+description = "Git status"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 60
+
+[modes.mappings.action]
+type = "Shell"
+command = "git status"

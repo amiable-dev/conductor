@@ -1,0 +1,13 @@
+# Configuration for cargo-llvm-cov
+# https://github.com/taiki-e/cargo-llvm-cov
+
+[report]
+# Fail if coverage is below this percentage
+fail-under-lines = 0.35
+
+[filter]
+# Exclude test files and binaries from coverage
+exclude-filename-regex = [
+    ".*/tests/.*",
+    ".*/bin/.*"
+]

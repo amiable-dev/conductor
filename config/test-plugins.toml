@@ -1,0 +1,86 @@
+# MIDIMon Test Configuration - Plugin Actions
+# This config demonstrates plugin action integration
+
+[device]
+name = "Test Controller"
+auto_connect = false
+
+[advanced_settings]
+chord_timeout_ms = 100
+double_tap_timeout_ms = 300
+hold_threshold_ms = 2000
+
+# Default mode with plugin actions
+[[modes]]
+name = "Plugin Test Mode"
+color = "blue"
+
+# Spotify Plugin Actions
+[[modes.mappings]]
+note = 36
+action = { type = "plugin", plugin = "spotify", data = { type = "play_pause" } }
+
+[[modes.mappings]]
+note = 37
+action = { type = "plugin", plugin = "spotify", data = { type = "next_track" } }
+
+[[modes.mappings]]
+note = 38
+action = { type = "plugin", plugin = "spotify", data = { type = "previous_track" } }
+
+[[modes.mappings]]
+note = 39
+action = { type = "plugin", plugin = "spotify", data = { type = "set_volume", volume = 50 } }
+
+[[modes.mappings]]
+note = 40
+action = { type = "plugin", plugin = "spotify", data = { type = "toggle_shuffle" } }
+
+# OBS Plugin Actions
+[[modes.mappings]]
+note = 48
+action = { type = "plugin", plugin = "obs", data = { type = "switch_scene", scene_name = "Main" } }
+
+[[modes.mappings]]
+note = 49
+action = { type = "plugin", plugin = "obs", data = { type = "toggle_recording" } }
+
+[[modes.mappings]]
+note = 50
+action = { type = "plugin", plugin = "obs", data = { type = "start_recording" } }
+
+[[modes.mappings]]
+note = 51
+action = { type = "plugin", plugin = "obs", data = { type = "stop_recording" } }
+
+[[modes.mappings]]
+note = 52
+action = { type = "plugin", plugin = "obs", data = { type = "toggle_streaming" } }
+
+# Chained action - Start recording and switch scene
+[[modes.mappings]]
+note = 60
+action = {
+  type = "sequence",
+  actions = [
+    { type = "plugin", plugin = "obs", data = { type = "start_recording" } },
+    { type = "delay", ms = 100 },
+    { type = "plugin", plugin = "obs", data = { type = "switch_scene", scene_name = "Recording" } }
+  ]
+}
+
+# Velocity-sensitive Spotify volume control
+[[modes.mappings]]
+note = 44
+velocity = { range = [1, 40] }
+action = { type = "plugin", plugin = "spotify", data = { type = "set_volume", volume = 30 } }
+
+[[modes.mappings]]
+note = 44
+velocity = { range = [41, 80] }
+action = { type = "plugin", plugin = "spotify", data = { type = "set_volume", volume = 60 } }
+
+[[modes.mappings]]
+note = 44
+velocity = { range = [81, 127] }
+action = { type = "plugin", plugin = "spotify", data = { type = "set_volume", volume = 100 } }

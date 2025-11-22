@@ -1,0 +1,1013 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Action Types - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/reference/action-types.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="action-types"><a class="header" href="#action-types">Action Types</a></h1>
+<p>Actions are what MIDIMon executes when a trigger is detected. This page documents all available action types and their configuration.</p>
+<h2 id="core-actions"><a class="header" href="#core-actions">Core Actions</a></h2>
+<h3 id="keystroke"><a class="header" href="#keystroke">Keystroke</a></h3>
+<p>Simulates keyboard input with optional modifiers.</p>
+<pre><code class="language-toml">[action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>keys</code> (string): Key(s) to press (e.g., "space", "return", "f1")</li>
+<li><code>modifiers</code> (array): Optional modifiers: "cmd", "ctrl", "alt", "shift"</li>
+</ul>
+<p><strong>Supported Keys:</strong></p>
+<ul>
+<li>Letters: <code>a-z</code></li>
+<li>Numbers: <code>0-9</code></li>
+<li>Special: <code>space</code>, <code>return</code>, <code>tab</code>, <code>escape</code>, <code>backspace</code>, <code>delete</code></li>
+<li>Arrows: <code>up</code>, <code>down</code>, <code>left</code>, <code>right</code></li>
+<li>Function: <code>f1</code> through <code>f12</code></li>
+<li>Navigation: <code>home</code>, <code>end</code>, <code>pageup</code>, <code>pagedown</code></li>
+</ul>
+<h3 id="text"><a class="header" href="#text">Text</a></h3>
+<p>Types arbitrary text strings with full Unicode support. Uses keyboard simulation to type character-by-character.</p>
+<pre><code class="language-toml">[action]
+type = "Text"
+text = "Hello, World!"
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>text</code> (string): Text to type (supports Unicode, emoji, multi-line)</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Text snippets and templates</li>
+<li>Email signatures and contact information</li>
+<li>Code boilerplate and common patterns</li>
+<li>Form auto-fill</li>
+<li>Multi-language text input</li>
+</ul>
+<p><strong>Configuration Examples:</strong></p>
+<p><strong>Simple Text:</strong></p>
+<pre><code class="language-toml">[action]
+type = "Text"
+text = "user@example.com"
+</code></pre>
+<p><strong>Multi-line Code Snippet:</strong></p>
+<pre><code class="language-toml">[action]
+type = "Text"
+text = """
+fn main() {
+    println!(\"Hello, World!\");
+}
+"""
+</code></pre>
+<p><strong>Unicode and Emoji:</strong></p>
+<pre><code class="language-toml">[action]
+type = "Text"
+text = "✅ Task completed! 🎉"
+</code></pre>
+<p><strong>Special Characters:</strong></p>
+<pre><code class="language-toml">[action]
+type = "Text"
+text = "!@#$%^&amp;*()_+-=[]{}|;':\",./&lt;&gt;?"
+</code></pre>
+<p><strong>Text with Delay (using Sequence):</strong></p>
+<pre><code class="language-toml">[action]
+type = "Sequence"
+actions = [
+    { type = "Text", text = "username" },
+    { type = "Delay", ms = 100 },
+    { type = "Text", text = "@company.com" }
+]
+</code></pre>
+<p><strong>TOML String Escaping:</strong></p>
+<pre><code class="language-toml"># Escape quotes in basic strings
+text = "He said \"hello\""
+
+# Use multiline strings for complex text
+text = """
+Line 1
+Line 2 with "quotes"
+"""
+
+# Use literal strings to avoid escaping backslashes
+text = 'C:\Users\Documents\file.txt'
+</code></pre>
+<p><strong>Platform Support:</strong></p>
+<ul>
+<li>macOS: Accessibility APIs</li>
+<li>Linux: X11/Wayland</li>
+<li>Windows: Windows API</li>
+</ul>
+<p><strong>Behavior:</strong></p>
+<ul>
+<li>Types character-by-character (no clipboard)</li>
+<li>Respects active keyboard layout</li>
+<li>Typing speed controlled by OS</li>
+<li>Requires text input focus</li>
+</ul>
+<p><strong>Troubleshooting:</strong></p>
+<ul>
+<li>Ensure target app has input focus</li>
+<li>Check Input Monitoring permissions (macOS)</li>
+<li>For slow UIs, use Sequence with Delay actions</li>
+<li>For special keys (Enter, Tab, Ctrl), use Keystroke action instead</li>
+</ul>
+<h3 id="launch"><a class="header" href="#launch">Launch</a></h3>
+<p>Opens an application by name or path using platform-specific system commands.</p>
+<pre><code class="language-toml">[action]
+type = "Launch"
+app = "Safari"
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>app</code> (string): Application name or full path to executable/bundle</li>
+</ul>
+<p><strong>Platform Behavior:</strong></p>
+<p><strong>macOS:</strong></p>
+<ul>
+<li>Uses <code>open -a</code> command</li>
+<li>Accepts app names: "Safari", "Visual Studio Code", "Logic Pro"</li>
+<li>Accepts full paths: "/Applications/Safari.app"</li>
+<li>If app already running, brings to front</li>
+<li>Searches standard paths: /Applications, ~/Applications, /System/Applications</li>
+</ul>
+<p><strong>Linux:</strong></p>
+<ul>
+<li>Direct executable launch via <code>Command::spawn()</code></li>
+<li>Requires full path or executable in $PATH</li>
+<li>No automatic .desktop file resolution</li>
+<li>Typically launches new instance even if already running</li>
+</ul>
+<p><strong>Windows:</strong></p>
+<ul>
+<li>Uses <code>cmd /C start</code> command</li>
+<li>Accepts app names or paths</li>
+<li>Uses Windows file associations</li>
+<li>Behavior varies by app's single-instance implementation</li>
+</ul>
+<p><strong>Examples:</strong></p>
+<pre><code class="language-toml"># Launch by app name (macOS)
+[action]
+type = "Launch"
+app = "Terminal"
+
+# Launch by full path
+[action]
+type = "Launch"
+app = "/Applications/Utilities/Terminal.app"
+
+# Launch script with full path
+[action]
+type = "Launch"
+app = "/Users/username/scripts/backup.sh"
+
+# Launch multiple apps in sequence
+[action]
+type = "Sequence"
+actions = [
+    { type = "Launch", app = "VS Code" },
+    { type = "Delay", ms = 1000 },
+    { type = "Launch", app = "Terminal" }
+]
+</code></pre>
+<p><strong>Troubleshooting:</strong></p>
+<ul>
+<li><strong>App not found</strong>: Use full path instead of app name</li>
+<li><strong>macOS test</strong>: Run <code>open -a "App Name"</code> in Terminal</li>
+<li><strong>Linux test</strong>: Run <code>which app-name</code> or use full path</li>
+<li><strong>Silent failures</strong>: Enable debug mode with <code>DEBUG=1</code></li>
+<li><strong>Permissions</strong>: Ensure execute permissions on scripts (<code>chmod +x</code>)</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Launch is non-blocking (returns immediately)</li>
+<li>No validation that app exists before launch attempt</li>
+<li>Errors fail silently (check debug logs)</li>
+<li>App names with spaces are automatically handled</li>
+<li>Launch time varies: 100ms (small apps) to 10s (large IDEs/DAWs)</li>
+</ul>
+<h3 id="shell"><a class="header" href="#shell">Shell</a></h3>
+<p>Executes a shell command.</p>
+<pre><code class="language-toml">[action]
+type = "Shell"
+command = "npm test"
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>command</code> (string): Shell command to execute</li>
+</ul>
+<p><strong>Platform Notes:</strong></p>
+<ul>
+<li>Unix/macOS: Uses <code>sh -c</code></li>
+<li>Windows: Uses <code>cmd /C</code></li>
+</ul>
+<p><strong>Security Warning:</strong> Be cautious with user input in shell commands.</p>
+<h2 id="system-actions"><a class="header" href="#system-actions">System Actions</a></h2>
+<h3 id="volumecontrol"><a class="header" href="#volumecontrol">VolumeControl</a></h3>
+<p>Controls system volume with cross-platform support for increase, decrease, mute/unmute, and absolute level setting.</p>
+<pre><code class="language-toml">[action]
+type = "VolumeControl"
+operation = "Up"
+amount = 5  # Optional: volume increment (default 5)
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>operation</code> (string): Volume operation to perform</li>
+<li><code>amount</code> (integer, optional):
+<ul>
+<li>For <code>Up</code>/<code>Down</code>: Increment amount 0-100 (default 5)</li>
+<li>For <code>Set</code>: Absolute level 0-100</li>
+</ul>
+</li>
+</ul>
+<p><strong>Operations:</strong></p>
+<ul>
+<li><code>Up</code>: Increase volume by amount</li>
+<li><code>Down</code>: Decrease volume by amount</li>
+<li><code>Mute</code>: Mute audio output</li>
+<li><code>Unmute</code>: Unmute audio output</li>
+<li><code>Toggle</code>: Toggle mute state</li>
+<li><code>Set</code>: Set to specific level (requires <code>amount</code> parameter)</li>
+</ul>
+<p><strong>Platform Support:</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Platform</th><th>Method</th><th>Latency</th><th>Dependencies</th></tr></thead><tbody>
+<tr><td>macOS</td><td>AppleScript</td><td>50-100ms</td><td>None (built-in)</td></tr>
+<tr><td>Linux (PulseAudio)</td><td>pactl</td><td>10-30ms</td><td>pulseaudio-utils</td></tr>
+<tr><td>Linux (Pipewire)</td><td>wpctl</td><td>5-15ms</td><td>wireplumber</td></tr>
+<tr><td>Linux (ALSA)</td><td>amixer</td><td>15-40ms</td><td>alsa-utils</td></tr>
+<tr><td>Windows</td><td>nircmd</td><td>20-50ms</td><td>nircmd.exe</td></tr>
+<tr><td>Windows</td><td>COM API</td><td>5-10ms</td><td>None (built-in)</td></tr>
+</tbody></table>
+</div>
+<p><strong>Configuration Examples:</strong></p>
+<pre><code class="language-toml"># Encoder volume control
+[[global_mappings]]
+description = "Volume Up"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 2
+direction = "Clockwise"
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Up"
+amount = 2  # Small increments for smooth control
+
+[[global_mappings]]
+description = "Volume Down"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 2
+direction = "CounterClockwise"
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Down"
+amount = 2
+
+# Mute toggle
+[[global_mappings]]
+description = "Mute/Unmute"
+[global_mappings.trigger]
+type = "Note"
+note = 16
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Toggle"
+
+# Set to specific level
+[[modes.mappings]]
+description = "Set volume to 50%"
+[modes.mappings.trigger]
+type = "Note"
+note = 8
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Set"
+amount = 50
+
+# Velocity-based volume (multiple mappings)
+[[modes.mappings]]
+description = "Soft press = 25%"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 9
+min_velocity = 0
+max_velocity = 40
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Set"
+amount = 25
+
+[[modes.mappings]]
+description = "Medium press = 50%"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 9
+min_velocity = 41
+max_velocity = 80
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Set"
+amount = 50
+
+[[modes.mappings]]
+description = "Hard press = 75%"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 9
+min_velocity = 81
+max_velocity = 127
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Set"
+amount = 75
+</code></pre>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li><strong>Producer</strong>: Encoder for smooth volume adjustment while mixing</li>
+<li><strong>Developer</strong>: Quick mute during video calls, volume presets for different activities</li>
+<li><strong>Streamer</strong>: Real-time volume balancing during streams, emergency mute</li>
+<li><strong>Presenter</strong>: Volume control without touching laptop during presentations</li>
+</ul>
+<p><strong>Troubleshooting:</strong></p>
+<p><em><strong>macOS:</strong></em></p>
+<ul>
+<li>No dependencies required</li>
+<li>AppleScript latency ~50-100ms is normal</li>
+<li>Requires no special permissions</li>
+</ul>
+<p><em><strong>Linux:</strong></em></p>
+<ul>
+<li>Install dependencies:
+<pre><code class="language-bash"># PulseAudio (most common)
+sudo apt install pulseaudio-utils
+
+# Pipewire (modern, fastest)
+sudo apt install pipewire wireplumber
+
+# ALSA (minimal systems)
+sudo apt install alsa-utils
+</code></pre>
+</li>
+<li>MIDIMon auto-detects available backend</li>
+<li>User must be in <code>audio</code> group</li>
+</ul>
+<p><em><strong>Windows:</strong></em></p>
+<ul>
+<li>Download nircmd.exe from https://www.nirsoft.net/utils/nircmd.html</li>
+<li>Add to PATH or place in MIDIMon directory</li>
+<li>COM API fallback requires no dependencies</li>
+</ul>
+<p><strong>Performance Notes:</strong></p>
+<ul>
+<li>Volume commands are non-blocking</li>
+<li>State changes typically take 5-100ms depending on platform</li>
+<li>Multiple rapid commands may queue on slower platforms (macOS AppleScript)</li>
+</ul>
+<h3 id="modechange"><a class="header" href="#modechange">ModeChange</a></h3>
+<p>Switches between different mapping modes with optional LED transition effects and relative navigation.</p>
+<pre><code class="language-toml">[action]
+type = "ModeChange"
+mode = 1  # Switch to mode index 1
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>mode</code> (integer): Zero-based mode index or offset (if <code>relative = true</code>)</li>
+<li><code>relative</code> (boolean, optional): If true, <code>mode</code> is offset from current mode (default false)</li>
+<li><code>transition_effect</code> (string, optional): Visual transition effect: "Flash", "Sweep", "FadeOut", "Spiral", "None"</li>
+</ul>
+<p><strong>Mode Indexing:</strong></p>
+<ul>
+<li>Modes are zero-based: Mode 0, Mode 1, Mode 2, etc.</li>
+<li>Mode 0 is typically the default mode on startup</li>
+<li>Invalid mode indices are clamped to valid range</li>
+</ul>
+<p><strong>Absolute vs Relative Mode Changes:</strong></p>
+<p><em><strong>Absolute (direct jump):</strong></em></p>
+<pre><code class="language-toml">[action]
+type = "ModeChange"
+mode = 2  # Jump directly to Mode 2
+transition_effect = "Flash"
+</code></pre>
+<p><em><strong>Relative (navigation):</strong></em></p>
+<pre><code class="language-toml"># Next mode (with wrapping)
+[action]
+type = "ModeChange"
+mode = 1  # +1 offset
+relative = true
+transition_effect = "Sweep"
+
+# Previous mode (with wrapping)
+[action]
+type = "ModeChange"
+mode = -1  # -1 offset
+relative = true
+</code></pre>
+<p><strong>Transition Effects:</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Effect</th><th>Duration</th><th>Description</th></tr></thead><tbody>
+<tr><td>Flash</td><td>150ms</td><td>Quick white flash</td></tr>
+<tr><td>Sweep</td><td>120ms</td><td>Left-to-right wave</td></tr>
+<tr><td>FadeOut</td><td>200ms</td><td>Fade out old, fade in new</td></tr>
+<tr><td>Spiral</td><td>240ms</td><td>Center-outward spiral</td></tr>
+<tr><td>None</td><td>0ms</td><td>Instant switch</td></tr>
+</tbody></table>
+</div>
+<p><strong>Configuration Examples:</strong></p>
+<pre><code class="language-toml"># Encoder for mode cycling
+[[global_mappings]]
+description = "Next Mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "Clockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = 1  # +1 offset
+relative = true
+transition_effect = "Sweep"
+
+[[global_mappings]]
+description = "Previous Mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "CounterClockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = -1  # -1 offset (wraps backward)
+relative = true
+transition_effect = "Sweep"
+
+# Direct mode selection with chords
+[[global_mappings]]
+description = "Jump to Default Mode"
+[global_mappings.trigger]
+type = "NoteChord"
+notes = [1, 9]  # Top-left corners
+[global_mappings.action]
+type = "ModeChange"
+mode = 0
+transition_effect = "Flash"
+
+[[global_mappings]]
+description = "Jump to Development Mode"
+[global_mappings.trigger]
+type = "NoteChord"
+notes = [2, 10]
+[global_mappings.action]
+type = "ModeChange"
+mode = 1
+transition_effect = "Flash"
+
+[[global_mappings]]
+description = "Jump to Media Mode"
+[global_mappings.trigger]
+type = "NoteChord"
+notes = [3, 11]
+[global_mappings.action]
+type = "ModeChange"
+mode = 2
+transition_effect = "FadeOut"
+
+# Conditional mode change
+[[modes.mappings]]
+description = "Switch to Media mode if Spotify running"
+[modes.mappings.trigger]
+type = "Note"
+note = 8
+[modes.mappings.action]
+type = "Conditional"
+conditions = [{ type = "AppRunning", bundle_id = "com.spotify.client" }]
+then_action = { type = "ModeChange", mode = 2, transition_effect = "FadeOut" }
+else_action = { type = "Launch", app = "Spotify" }
+</code></pre>
+<p><strong>Mode Configuration:</strong></p>
+<p>Modes are defined in your config.toml with names and LED colors:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Default"
+color = "blue"             # LED color for this mode
+led_idle_brightness = 20   # Brightness when pad not pressed
+led_active_brightness = 255 # Brightness when pad pressed
+mappings = [...]
+
+[[modes]]
+name = "Development"
+color = "green"
+led_idle_brightness = 30
+led_active_brightness = 255
+mappings = [...]
+
+[[modes]]
+name = "Media"
+color = "purple"
+led_idle_brightness = 15
+led_active_brightness = 200
+mappings = [...]
+</code></pre>
+<p><strong>LED Feedback Integration:</strong></p>
+<ul>
+<li>Mode colors automatically update LEDs on mode change</li>
+<li>Transition effects provide visual feedback</li>
+<li>Optional mode indicator pads (e.g., bottom row shows active mode)</li>
+<li>Idle/active brightness levels per mode</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<p><em><strong>Developer (Sam) - Context Switching:</strong></em></p>
+<ul>
+<li><strong>Mode 0</strong>: General productivity shortcuts</li>
+<li><strong>Mode 1</strong>: IDE shortcuts (build, test, debug)</li>
+<li><strong>Mode 2</strong>: Media controls</li>
+<li>Encoder rotation for quick mode cycling</li>
+</ul>
+<p><em><strong>Producer (Alex) - Production Workflow:</strong></em></p>
+<ul>
+<li><strong>Mode 0</strong>: Recording (transport, record arm)</li>
+<li><strong>Mode 1</strong>: Mixing (volume, mute/solo, effects)</li>
+<li><strong>Mode 2</strong>: Mastering (compressor, EQ, limiter)</li>
+<li>Chord combinations for instant mode jumps</li>
+</ul>
+<p><em><strong>Streamer (Jordan) - Live Streaming:</strong></em></p>
+<ul>
+<li><strong>Mode 0</strong>: Pre-Stream (setup checks, app launching)</li>
+<li><strong>Mode 1</strong>: Live (scene switching, alerts)</li>
+<li><strong>Mode 2</strong>: BRB (limited controls, auto-mute)</li>
+<li><strong>Mode 3</strong>: Post-Stream (save, shutdown sequence)</li>
+</ul>
+<p><em><strong>Designer (Taylor) - Creative Workflows:</strong></em></p>
+<ul>
+<li><strong>Mode 0</strong>: Sketch (drawing tools, layers)</li>
+<li><strong>Mode 1</strong>: Edit (selection, transform, filters)</li>
+<li><strong>Mode 2</strong>: Export (save presets, formats)</li>
+<li>Visual LED feedback shows current mode</li>
+</ul>
+<p><strong>Circular Mode Navigation:</strong></p>
+<p>With <code>relative = true</code>, modes wrap around:</p>
+<ul>
+<li>Mode 0 → +1 → Mode 1</li>
+<li>Mode 1 → +1 → Mode 2</li>
+<li>Mode 2 → +1 → Mode 0 (wraps to beginning)</li>
+<li>Mode 0 → -1 → Mode 2 (wraps to end)</li>
+</ul>
+<p><strong>Troubleshooting:</strong></p>
+<p><em><strong>Mode Not Switching:</strong></em></p>
+<ul>
+<li>Verify mode index is within range (0 to num_modes-1)</li>
+<li>Check that modes are defined in config.toml</li>
+<li>Enable debug logging: <code>DEBUG=1 cargo run</code></li>
+<li>Ensure mode change mapping is in <code>global_mappings</code> to work from all modes</li>
+</ul>
+<p><em><strong>LEDs Not Updating:</strong></em></p>
+<ul>
+<li>Verify <code>color</code> is set for each mode</li>
+<li>Check device supports RGB LED feedback</li>
+<li>Ensure LED feedback is enabled</li>
+<li>Test with different transition effects</li>
+</ul>
+<p><em><strong>Transition Effects Not Working:</strong></em></p>
+<ul>
+<li>Only works with devices supporting RGB LEDs (Maschine Mikro MK3, etc.)</li>
+<li>MIDI-only devices show instant switches</li>
+<li>Check transition timing isn't too fast to notice</li>
+</ul>
+<p><strong>Performance Notes:</strong></p>
+<ul>
+<li>Mode switches are near-instant (&lt;1ms)</li>
+<li>Transition effects add 0-240ms visual delay</li>
+<li>LED updates are non-blocking</li>
+<li>Rapid mode changes are queued and handled gracefully</li>
+</ul>
+<h2 id="advanced-actions"><a class="header" href="#advanced-actions">Advanced Actions</a></h2>
+<h3 id="sequence"><a class="header" href="#sequence">Sequence</a></h3>
+<p>Executes multiple actions in order.</p>
+<pre><code class="language-toml">[action]
+type = "Sequence"
+actions = [
+    { type = "Keystroke", keys = "n", modifiers = ["cmd"] },
+    { type = "Delay", ms = 500 },
+    { type = "Text", text = "New Document" }
+]
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>actions</code> (array): Array of action configurations</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Actions execute sequentially</li>
+<li>Default 50ms delay between actions</li>
+<li>Use <code>Delay</code> action for longer pauses</li>
+</ul>
+<h3 id="delay"><a class="header" href="#delay">Delay</a></h3>
+<p>Pauses execution.</p>
+<pre><code class="language-toml">[action]
+type = "Delay"
+ms = 1000  # Wait 1 second
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>ms</code> (integer): Milliseconds to wait</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Wait for app to launch</li>
+<li>Timing between keystrokes</li>
+<li>Synchronization in sequences</li>
+</ul>
+<h3 id="repeat"><a class="header" href="#repeat">Repeat</a></h3>
+<p>Repeats an action multiple times.</p>
+<pre><code class="language-toml">[action]
+type = "Repeat"
+count = 10
+delay_between_ms = 100
+action = { type = "Keystroke", keys = "right" }
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>action</code> (object): Action to repeat</li>
+<li><code>count</code> (integer): Number of repetitions</li>
+<li><code>delay_between_ms</code> (integer, optional): Delay between repetitions in milliseconds</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Navigate through items</li>
+<li>Rapid-fire actions</li>
+<li>Automation tasks</li>
+</ul>
+<h3 id="mouseclick"><a class="header" href="#mouseclick">MouseClick</a></h3>
+<p>Simulates mouse clicks.</p>
+<pre><code class="language-toml">[action]
+type = "MouseClick"
+button = "left"
+x = 100
+y = 200
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>button</code> (string): "left", "right", or "middle"</li>
+<li><code>x</code> (integer, optional): X coordinate (absolute)</li>
+<li><code>y</code> (integer, optional): Y coordinate (absolute)</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>If <code>x</code> and <code>y</code> are omitted, clicks at current cursor position</li>
+<li>Coordinates are screen-absolute</li>
+</ul>
+<h3 id="conditional"><a class="header" href="#conditional">Conditional</a></h3>
+<p>Executes actions based on conditions.</p>
+<pre><code class="language-toml">[action]
+type = "Conditional"
+conditions = [
+    { type = "AppRunning", bundle_id = "com.apple.Logic" }
+]
+operator = "And"
+then_action = { type = "Keystroke", keys = "space" }
+else_action = { type = "Launch", app = "Logic Pro" }
+</code></pre>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>conditions</code> (array): Array of condition objects</li>
+<li><code>operator</code> (string, optional): "And" or "Or" (default: "And")</li>
+<li><code>then_action</code> (object): Action when conditions are true</li>
+<li><code>else_action</code> (object, optional): Action when conditions are false</li>
+</ul>
+<p><strong>Condition Types:</strong></p>
+<h4 id="apprunning"><a class="header" href="#apprunning">AppRunning</a></h4>
+<p>Check if an application is running.</p>
+<pre><code class="language-toml">{ type = "AppRunning", bundle_id = "com.spotify.client" }
+</code></pre>
+<h4 id="appnotrunning"><a class="header" href="#appnotrunning">AppNotRunning</a></h4>
+<p>Check if an application is not running.</p>
+<pre><code class="language-toml">{ type = "AppNotRunning", bundle_id = "com.spotify.client" }
+</code></pre>
+<h4 id="timerange"><a class="header" href="#timerange">TimeRange</a></h4>
+<p>Check if current time is within a range.</p>
+<pre><code class="language-toml">{ type = "TimeRange", start = "09:00", end = "17:00" }
+</code></pre>
+<p><strong>Format:</strong> HH:MM in 24-hour format
+<strong>Note:</strong> Uses local system time</p>
+<h4 id="dayofweek"><a class="header" href="#dayofweek">DayOfWeek</a></h4>
+<p>Check if today matches specified days.</p>
+<pre><code class="language-toml">{ type = "DayOfWeek", days = ["Mon", "Tue", "Wed", "Thu", "Fri"] }
+</code></pre>
+<p><strong>Valid Days:</strong> "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"</p>
+<h4 id="modifierpressed"><a class="header" href="#modifierpressed">ModifierPressed</a></h4>
+<p>Check if a modifier key is held.</p>
+<pre><code class="language-toml">{ type = "ModifierPressed", modifier = "Shift" }
+</code></pre>
+<p><strong>Valid Modifiers:</strong> "Shift", "Ctrl", "Cmd", "Alt", "Option"</p>
+<h4 id="modeactive"><a class="header" href="#modeactive">ModeActive</a></h4>
+<p>Check if a specific mode is active.</p>
+<pre><code class="language-toml">{ type = "ModeActive", mode = 1 }
+</code></pre>
+<p><strong>Parameter:</strong> <code>mode</code> (integer): Zero-based mode index</p>
+<p><strong>Operators:</strong></p>
+<ul>
+<li><code>And</code>: All conditions must be true</li>
+<li><code>Or</code>: At least one condition must be true</li>
+</ul>
+<p><strong>Nested Conditionals:</strong>
+You can nest conditionals for complex decision trees:</p>
+<pre><code class="language-toml">[action]
+type = "Conditional"
+conditions = [{ type = "TimeRange", start = "09:00", end = "17:00" }]
+then_action = {
+    type = "Conditional",
+    conditions = [{ type = "AppRunning", bundle_id = "com.microsoft.VSCode" }],
+    then_action = { type = "Keystroke", keys = "b", modifiers = ["cmd", "shift"] },
+    else_action = { type = "Launch", app = "Visual Studio Code" }
+}
+else_action = { type = "Launch", app = "Spotify" }
+</code></pre>
+<h2 id="action-composition"><a class="header" href="#action-composition">Action Composition</a></h2>
+<p>Actions can be combined in powerful ways:</p>
+<p><strong>Example: Complex Workflow</strong></p>
+<pre><code class="language-toml">[action]
+type = "Sequence"
+actions = [
+    { type = "Launch", app = "Terminal" },
+    { type = "Delay", ms = 1000 },
+    { type = "Text", text = "cd ~/projects &amp;&amp; npm test" },
+    { type = "Keystroke", keys = "return" }
+]
+</code></pre>
+<p><strong>Example: Conditional with Repeat</strong></p>
+<pre><code class="language-toml">[action]
+type = "Conditional"
+conditions = [{ type = "ModifierPressed", modifier = "Shift" }]
+then_action = {
+    type = "Repeat",
+    count = 5,
+    delay_between_ms = 200,
+    action = { type = "Keystroke", keys = "right" }
+}
+else_action = { type = "Keystroke", keys = "right" }
+</code></pre>
+<h2 id="performance-notes"><a class="header" href="#performance-notes">Performance Notes</a></h2>
+<ul>
+<li><strong>Keystroke</strong>: &lt;1ms execution time</li>
+<li><strong>Shell</strong>: Asynchronous, non-blocking</li>
+<li><strong>Launch</strong>: Platform-dependent, typically 100-500ms</li>
+<li><strong>Conditional</strong>: 10-50ms per condition evaluation</li>
+<li><strong>Sequence</strong>: Sum of individual action times + delays</li>
+</ul>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="keystroke-not-working"><a class="header" href="#keystroke-not-working">Keystroke Not Working</a></h3>
+<ul>
+<li>Verify key name spelling</li>
+<li>Check modifier syntax</li>
+<li>Ensure app has input focus</li>
+</ul>
+<h3 id="shell-command-fails-silently"><a class="header" href="#shell-command-fails-silently">Shell Command Fails Silently</a></h3>
+<ul>
+<li>Test command in terminal first</li>
+<li>Check environment variables</li>
+<li>Enable debug logging: <code>DEBUG=1 cargo run</code></li>
+</ul>
+<h3 id="conditional-not-triggering"><a class="header" href="#conditional-not-triggering">Conditional Not Triggering</a></h3>
+<ul>
+<li>Verify bundle ID format (macOS): <code>osascript -e 'id of app "AppName"'</code></li>
+<li>Check time format (24-hour: "09:00", not "9:00 AM")</li>
+<li>Verify day names match exactly</li>
+</ul>
+<h3 id="launch-app-not-found"><a class="header" href="#launch-app-not-found">Launch App Not Found</a></h3>
+<ul>
+<li>Use exact app name as it appears in Applications folder</li>
+<li>On Linux, use full executable path if not in PATH</li>
+<li>Check permissions for app execution</li>
+</ul>
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="../configuration/examples.html">Configuration Examples</a></li>
+<li><a href="trigger-types.html">Trigger Types</a></li>
+<li><a href="../configuration/modes.html">Modes and Mappings</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../reference/trigger-types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../reference/led-system.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../reference/trigger-types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../reference/led-system.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

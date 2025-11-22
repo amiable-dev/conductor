@@ -1,0 +1,310 @@
+# MIDIMon Configuration Template
+# Device: Sony PlayStation Controller (DualShock 4, DualSense)
+# Template Version: 1.0.0
+# Gamepad Support: v3.0
+
+[device]
+name = "PlayStation Controller"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50
+double_tap_timeout_ms = 300
+hold_threshold_ms = 1000
+
+# ========== Mode 1: Desktop Navigation ==========
+[[modes]]
+name = "Desktop"
+color = "blue"
+
+# Face buttons (Cross/Circle/Square/Triangle)
+[[modes.mappings]]
+description = "Cross button: Enter/Confirm"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # Cross (South)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Return"
+
+[[modes.mappings]]
+description = "Circle button: Escape/Cancel"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129  # Circle (East)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Escape"
+
+[[modes.mappings]]
+description = "Square button: Copy"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130  # Square (West)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Triangle button: Paste"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131  # Triangle (North)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd"]
+
+# D-Pad for arrow keys
+[[modes.mappings]]
+description = "D-Pad Up: Arrow Up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+[[modes.mappings]]
+description = "D-Pad Down: Arrow Down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+
+[[modes.mappings]]
+description = "D-Pad Left: Arrow Left"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+
+[[modes.mappings]]
+description = "D-Pad Right: Arrow Right"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+
+# Shoulder buttons (L1/R1)
+[[modes.mappings]]
+description = "L1: Previous tab"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136  # L1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["cmd", "shift"]
+
+[[modes.mappings]]
+description = "R1: Next tab"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137  # R1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["cmd"]
+
+# Stick clicks for scrolling
+[[modes.mappings]]
+description = "L3: Page Up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 138  # L3 (left stick click)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "PageUp"
+
+[[modes.mappings]]
+description = "R3: Page Down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 139  # R3 (right stick click)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "PageDown"
+
+# ========== Mode 2: Media Control ==========
+[[modes]]
+name = "Media"
+color = "purple"
+
+# Face buttons for media playback
+[[modes.mappings]]
+description = "Cross button: Play/Pause"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Keystroke"
+keys = "PlayPause"
+
+[[modes.mappings]]
+description = "Square button: Previous Track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Previous"
+
+[[modes.mappings]]
+description = "Triangle button: Next Track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Next"
+
+# D-Pad for volume
+[[modes.mappings]]
+description = "D-Pad Up: Volume Up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "D-Pad Down: Volume Down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+[[modes.mappings]]
+description = "Circle button: Mute"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Mute"
+
+# Analog triggers for fine volume control (L2/R2)
+[[modes.mappings]]
+description = "R2 Trigger: Volume Up (analog)"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 133  # R2
+threshold = 64
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "L2 Trigger: Volume Down (analog)"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 132  # L2
+threshold = 64
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+# ========== Mode 3: Gaming Macros ==========
+[[modes]]
+name = "Gaming"
+color = "red"
+
+# Quick action combos
+[[modes.mappings]]
+description = "Cross+Circle: Quick Save"
+[modes.mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [128, 129]  # Cross + Circle
+timeout_ms = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "s"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Square+Triangle: Quick Load"
+[modes.mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [130, 131]  # Square + Triangle
+timeout_ms = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "o"
+modifiers = ["cmd"]
+
+# Right stick for browser navigation
+[[modes.mappings]]
+description = "Right Stick Right: Forward"
+[modes.mappings.trigger]
+type = "GamepadAnalogStick"
+axis = 130  # Right stick X
+direction = "Clockwise"
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Right Stick Left: Back"
+[modes.mappings.trigger]
+type = "GamepadAnalogStick"
+axis = 130  # Right stick X
+direction = "CounterClockwise"
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+modifiers = ["cmd"]
+
+# ========== Global Mappings ==========
+[[global_mappings]]
+description = "PS button: Spotlight Search"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 142  # Guide/Home button
+[global_mappings.action]
+type = "Keystroke"
+keys = "Space"
+modifiers = ["cmd"]
+
+[[global_mappings]]
+description = "Share button: Screenshot"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 141  # Select/Back button
+[global_mappings.action]
+type = "Keystroke"
+keys = "3"
+modifiers = ["cmd", "shift"]
+
+# Options button for Mission Control
+[[global_mappings]]
+description = "Options button: Mission Control"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 140  # Start button
+[global_mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+modifiers = ["ctrl"]
+
+# Mode switching with L1+R1
+[[global_mappings]]
+description = "L1+R1: Switch to Media mode"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 137]  # L1 + R1
+timeout_ms = 50
+[global_mappings.action]
+type = "ModeChange"
+mode = "Media"

@@ -1,0 +1,574 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Music Production - Conductor Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Multi-protocol input automation for MIDI controllers, game controllers, and custom hardware">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Conductor Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor/edit/main/docs-site/src/src/examples/music-production.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="music-production-workflows"><a class="header" href="#music-production-workflows">Music Production Workflows</a></h1>
+<p>Complete Conductor configurations for music producers using DAWs, sample libraries, and production software.</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Conductor transforms MIDI controllers into intelligent, context-aware control surfaces for music production. Use velocity sensitivity, per-app profiles, and LED feedback to create efficient recording and mixing workflows.</p>
+<p><strong>What You'll Learn</strong>:</p>
+<ul>
+<li>Velocity-sensitive recording workflows</li>
+<li>Per-app profile switching for different DAWs</li>
+<li>LED feedback for visual mode indicators</li>
+<li>Hybrid MIDI+gamepad setups for hands-free control</li>
+</ul>
+<hr />
+<h2 id="quick-start-velocity-sensitive-recording"><a class="header" href="#quick-start-velocity-sensitive-recording">Quick Start: Velocity-Sensitive Recording</a></h2>
+<p>The killer feature for producers: map different recording modes to velocity ranges on a single pad.</p>
+<h3 id="configuration"><a class="header" href="#configuration">Configuration</a></h3>
+<pre><code class="language-toml">[device]
+name = "Music Production Setup"
+auto_connect = true
+
+[[modes]]
+name = "Recording"
+color = "red"
+
+# Soft press = Loop Record
+[[modes.mappings]]
+description = "Pad 1 Soft: Loop Record"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 36
+min_velocity = 0
+max_velocity = 40
+[modes.mappings.action]
+type = "Keystroke"
+keys = "r"
+modifiers = ["cmd"]
+
+# Medium press = Punch Record
+[[modes.mappings]]
+description = "Pad 1 Medium: Punch Record"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 36
+min_velocity = 41
+max_velocity = 80
+[modes.mappings.action]
+type = "Keystroke"
+keys = "p"
+modifiers = ["cmd", "shift"]
+
+# Hard press = Toggle Record Enable
+[[modes.mappings]]
+description = "Pad 1 Hard: Record Enable"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 36
+min_velocity = 81
+max_velocity = 127
+[modes.mappings.action]
+type = "Keystroke"
+keys = "r"
+modifiers = ["opt", "cmd"]
+</code></pre>
+<p><strong>Result</strong>: One pad, three recording modes based on velocity. No more mode switching!</p>
+<hr />
+<h2 id="ableton-live-integration"><a class="header" href="#ableton-live-integration">Ableton Live Integration</a></h2>
+<p>Full control surface setup for Ableton Live with transport, clip launching, and mixer control.</p>
+<h3 id="hardware-recommendations"><a class="header" href="#hardware-recommendations">Hardware Recommendations</a></h3>
+<ul>
+<li><strong>MIDI Controller</strong>: Maschine Mikro MK3, Launchpad Mini, APC Mini</li>
+<li><strong>Optional Gamepad</strong>: Xbox/PlayStation controller for navigation</li>
+</ul>
+<h3 id="complete-configuration"><a class="header" href="#complete-configuration">Complete Configuration</a></h3>
+<pre><code class="language-toml">[device]
+name = "Ableton Live Control"
+auto_connect = true
+
+[advanced_settings]
+hold_threshold_ms = 1000
+double_tap_timeout_ms = 300
+
+# ========== Mode 1: Recording ==========
+[[modes]]
+name = "Recording"
+color = "red"
+
+# Transport Controls (Pads 1-4)
+[[modes.mappings]]
+description = "Pad 1: Play/Pause"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+
+[[modes.mappings]]
+description = "Pad 2: Stop"
+[modes.mappings.trigger]
+type = "Note"
+note = 37
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+modifiers = ["shift"]
+
+[[modes.mappings]]
+description = "Pad 3: Record (Velocity-Sensitive)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 38
+min_velocity = 0
+max_velocity = 80
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F9"
+
+[[modes.mappings]]
+description = "Pad 3 Hard: Overdub Record"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 38
+min_velocity = 81
+max_velocity = 127
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F9"
+modifiers = ["shift"]
+
+# Clip Launch (Pads 5-12)
+[[modes.mappings]]
+description = "Pad 5-12: Launch Clips in Scene"
+[modes.mappings.trigger]
+type = "Note"
+note = 40
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Return"
+
+# ========== Mode 2: Mixing ==========
+[[modes]]
+name = "Mixing"
+color = "green"
+
+# Volume (Encoders or Velocity-Mapped Pads)
+[[modes.mappings]]
+description = "Encoder 1: Master Volume"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+encoder = 1
+direction = "Clockwise"
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+# Send Effects
+[[modes.mappings]]
+description = "Pad 1-4: Toggle Send A/B/C/D"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+keys = "1"
+modifiers = ["opt", "cmd"]
+
+# ========== Global: Mode Switching ==========
+[[global_mappings]]
+description = "Encoder Turn: Cycle Modes"
+[global_mappings.trigger]
+type = "EncoderTurn"
+encoder = 0
+direction = "Clockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = "Mixing"
+</code></pre>
+<h3 id="workflow-tips"><a class="header" href="#workflow-tips">Workflow Tips</a></h3>
+<ul>
+<li><strong>Use velocity for recording modes</strong>: Soft = loop, hard = punch</li>
+<li><strong>LED feedback</strong>: Configure LED schemes to show current mode (red = recording, green = mixing)</li>
+<li><strong>Per-track control</strong>: Map pads to track-specific record enable buttons</li>
+</ul>
+<hr />
+<h2 id="logic-pro-x-integration"><a class="header" href="#logic-pro-x-integration">Logic Pro X Integration</a></h2>
+<p>Optimized for Logic Pro's workflow with Smart Controls, Drummer, and arrangement features.</p>
+<p>[See detailed Logic Pro examples in the Logic Pro Integration guide]</p>
+<hr />
+<h2 id="fl-studio-integration"><a class="header" href="#fl-studio-integration">FL Studio Integration</a></h2>
+<h3 id="quick-setup"><a class="header" href="#quick-setup">Quick Setup</a></h3>
+<pre><code class="language-toml">[[modes]]
+name = "FL Studio"
+color = "orange"
+
+# Piano Roll
+[[modes.mappings]]
+description = "Pad 1: Open Piano Roll"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F7"
+
+# Mixer
+[[modes.mappings]]
+description = "Pad 2: Open Mixer"
+[modes.mappings.trigger]
+type = "Note"
+note = 37
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F9"
+
+# Pattern/Song Mode Toggle
+[[modes.mappings]]
+description = "Pad 3: Toggle Pattern/Song"
+[modes.mappings.trigger]
+type = "Note"
+note = 38
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F8"
+</code></pre>
+<hr />
+<h2 id="hybrid-midi--gamepad-workflow"><a class="header" href="#hybrid-midi--gamepad-workflow">Hybrid MIDI + Gamepad Workflow</a></h2>
+<p>Combine MIDI controller for recording with gamepad for DAW navigation.</p>
+<h3 id="setup"><a class="header" href="#setup">Setup</a></h3>
+<ul>
+<li><strong>MIDI</strong>: Maschine, Launchpad, or APC for pads and encoders</li>
+<li><strong>Gamepad</strong>: Xbox/PlayStation controller for transport and navigation</li>
+</ul>
+<pre><code class="language-toml">[device]
+name = "Hybrid Production Setup"
+
+# MIDI Mappings (Note range 0-127)
+[[modes.mappings]]
+description = "MIDI Pad 1: Record"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+keys = "r"
+modifiers = ["cmd"]
+
+# Gamepad Mappings (Button range 128-255)
+[[modes.mappings]]
+description = "Xbox A: Play/Pause"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+
+[[modes.mappings]]
+description = "Xbox D-Pad: Track Navigation"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132  # D-Pad Up
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+</code></pre>
+<p><strong>Why This Works</strong>: Keep hands on MIDI pads for recording, use thumbs on gamepad for transport.</p>
+<hr />
+<h2 id="sample-libraries--virtual-instruments"><a class="header" href="#sample-libraries--virtual-instruments">Sample Libraries &amp; Virtual Instruments</a></h2>
+<h3 id="kontakt--native-instruments"><a class="header" href="#kontakt--native-instruments">Kontakt / Native Instruments</a></h3>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Pad Hold: Articulation Switching"
+[modes.mappings.trigger]
+type = "LongPress"
+note = 36
+duration_ms = 1000
+[modes.mappings.action]
+type = "Keystroke"
+keys = "1"
+modifiers = ["ctrl"]
+</code></pre>
+<h3 id="splice-integration"><a class="header" href="#splice-integration">Splice Integration</a></h3>
+<p>Quick sample browser navigation:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Encoder: Browse Samples"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+encoder = 1
+direction = "Clockwise"
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+</code></pre>
+<hr />
+<h2 id="hardware-recommendations-1"><a class="header" href="#hardware-recommendations-1">Hardware Recommendations</a></h2>
+<h3 id="budget-setup-0-50"><a class="header" href="#budget-setup-0-50">Budget Setup ($0-50)</a></h3>
+<ul>
+<li><strong>Reuse existing</strong>: Maschine, Launchpad, Xbox controller</li>
+<li><strong>Software</strong>: Any DAW (Ableton, Logic, FL Studio)</li>
+<li><strong>Cost</strong>: $0 (repurpose hardware)</li>
+</ul>
+<h3 id="mid-range-setup-50-200"><a class="header" href="#mid-range-setup-50-200">Mid-Range Setup ($50-200)</a></h3>
+<ul>
+<li><strong>MIDI Controller</strong>: Arturia BeatStep ($99)</li>
+<li><strong>Gamepad</strong>: Xbox Elite Controller ($180) or Standard ($60)</li>
+<li><strong>Hybrid</strong>: Best of both worlds</li>
+</ul>
+<h3 id="pro-setup-200"><a class="header" href="#pro-setup-200">Pro Setup ($200+)</a></h3>
+<ul>
+<li><strong>MIDI</strong>: Maschine MK3 ($599)</li>
+<li><strong>Optional</strong>: Stream Deck for visual feedback ($150)</li>
+<li><strong>Result</strong>: Professional control surface</li>
+</ul>
+<hr />
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="midi-latency-issues"><a class="header" href="#midi-latency-issues">MIDI Latency Issues</a></h3>
+<ul>
+<li><strong>Problem</strong>: Delayed response from MIDI pads</li>
+<li><strong>Solution</strong>: Reduce buffer size in DAW preferences (128 samples or lower)</li>
+<li><strong>Conductor Impact</strong>: &lt;1ms latency on Conductor side, latency is DAW-side</li>
+</ul>
+<h3 id="velocity-not-working"><a class="header" href="#velocity-not-working">Velocity Not Working</a></h3>
+<ul>
+<li><strong>Problem</strong>: All presses trigger same action regardless of velocity</li>
+<li><strong>Solution</strong>: Check MIDI controller supports velocity sensitivity</li>
+<li><strong>Test</strong>: Use <code>cargo run --bin midi_diagnostic</code> to verify velocity values</li>
+</ul>
+<h3 id="per-app-profiles-not-switching"><a class="header" href="#per-app-profiles-not-switching">Per-App Profiles Not Switching</a></h3>
+<ul>
+<li><strong>Problem</strong>: Same mappings work in all apps</li>
+<li><strong>Solution</strong>: Enable per-app profiles in Conductor config</li>
+<li><strong>Check</strong>: Ensure app names match exactly (case-sensitive)</li>
+</ul>
+<hr />
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li><strong><a href="../guides/velocity-curves.html">Explore Velocity Curves</a></strong> - Fine-tune velocity response</li>
+<li><strong><a href="../guides/led-system.html">Set Up LED Feedback</a></strong> - Visual mode indicators</li>
+<li><strong><a href="../resources/community.html">Join Community</a></strong> - Share your setup and get help</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../inspiration/success-stories.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../examples/developer-workflows.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../inspiration/success-stories.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../examples/developer-workflows.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

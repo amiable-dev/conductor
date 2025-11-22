@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+target/
+
+# Strategic planning documents (private)
+docs/strategic-assessment-*.md
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md
+
+# Internal documentation archive (project management files)
+internal-docs-archive-*.zip
+.git-backup-*/

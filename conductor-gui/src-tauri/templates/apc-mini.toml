@@ -1,0 +1,32 @@
+# MIDIMon Configuration Template
+# Device: Akai APC Mini
+# Template Version: 1.0.0
+
+[device]
+name = "APC MINI"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+# Grid pad example
+[[modes.mappings]]
+description = "Pad 1 - Trigger Action"
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+[modes.mappings.action]
+type = "Keystroke"
+keys = "1"
+modifiers = ["cmd"]
+
+# Fader example
+[[modes.mappings]]
+description = "Fader 1 - Volume"
+[modes.mappings.trigger]
+type = "CC"
+cc = 48
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Set"

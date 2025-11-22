@@ -1,0 +1,879 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Common Issues - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/troubleshooting/common-issues.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="common-issues-and-solutions"><a class="header" href="#common-issues-and-solutions">Common Issues and Solutions</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>This guide covers the most frequently encountered issues when using MIDIMon, along with step-by-step solutions. For detailed diagnostic procedures, see <a href="diagnostics.html">Diagnostics Guide</a>.</p>
+<h2 id="midi-device-not-found"><a class="header" href="#midi-device-not-found">MIDI Device Not Found</a></h2>
+<h3 id="symptoms"><a class="header" href="#symptoms">Symptoms</a></h3>
+<pre><code>Error: No MIDI input ports available
+</code></pre>
+<p>Or:</p>
+<pre><code>Available MIDI input ports:
+0: IAC Driver Bus 1
+# Your device is missing from the list
+</code></pre>
+<h3 id="causes"><a class="header" href="#causes">Causes</a></h3>
+<ul>
+<li>USB cable not connected</li>
+<li>Device not powered on</li>
+<li>MIDI driver not installed (macOS/Windows)</li>
+<li>Device in wrong mode (some controllers have multiple modes)</li>
+<li>MIDI port disabled in system settings</li>
+</ul>
+<h3 id="solutions"><a class="header" href="#solutions">Solutions</a></h3>
+<h4 id="1-check-physical-connection"><a class="header" href="#1-check-physical-connection">1. Check Physical Connection</a></h4>
+<pre><code class="language-bash"># macOS: Check USB device enumeration
+system_profiler SPUSBDataType | grep -i mikro
+# or
+system_profiler SPUSBDataType | grep -i midi
+
+# Expected output:
+# Maschine Mikro MK3:
+#   Product ID: 0x1600
+#   Vendor ID: 0x17cc (Native Instruments)
+</code></pre>
+<p><strong>If device not found</strong>:</p>
+<ul>
+<li>Try a different USB port</li>
+<li>Try a different USB cable</li>
+<li>Power cycle the device (unplug, wait 10 seconds, replug)</li>
+<li>Check device is powered on (some controllers have power switches)</li>
+</ul>
+<h4 id="2-verify-midi-setup-macos"><a class="header" href="#2-verify-midi-setup-macos">2. Verify MIDI Setup (macOS)</a></h4>
+<pre><code class="language-bash"># Open Audio MIDI Setup
+open -a "Audio MIDI Setup"
+</code></pre>
+<p>In the <strong>MIDI Studio</strong> window (Window → Show MIDI Studio):</p>
+<ul>
+<li>Verify your device appears</li>
+<li>Check it's not grayed out (indicates active connection)</li>
+<li>If grayed out, right-click and select "Enable"</li>
+</ul>
+<p><strong>Reset MIDI configuration</strong> (if corrupted):</p>
+<pre><code class="language-bash"># Quit Audio MIDI Setup first
+rm ~/Library/Preferences/com.apple.audio.AudioMIDISetup.plist
+rm ~/Library/Preferences/ByHost/com.apple.audio.AudioMIDISetup.*
+# Reopen Audio MIDI Setup
+</code></pre>
+<h4 id="3-installreinstall-drivers"><a class="header" href="#3-installreinstall-drivers">3. Install/Reinstall Drivers</a></h4>
+<p><strong>macOS/Windows</strong>:</p>
+<ol>
+<li>Download <a href="https://www.native-instruments.com/en/support/downloads/">Native Access</a></li>
+<li>Sign in (free account)</li>
+<li>Install drivers for your device</li>
+<li>Restart computer after installation</li>
+<li>Reconnect device</li>
+</ol>
+<p><strong>Linux</strong>:</p>
+<ul>
+<li>Most MIDI controllers work with built-in ALSA drivers</li>
+<li>Install <code>alsa-utils</code>: <code>sudo apt install alsa-utils</code></li>
+<li>List devices: <code>aconnect -l</code></li>
+</ul>
+<h4 id="4-test-with-system-tools"><a class="header" href="#4-test-with-system-tools">4. Test with System Tools</a></h4>
+<p><strong>macOS</strong>:</p>
+<pre><code class="language-bash"># List MIDI devices using system_profiler
+system_profiler SPUSBDataType | grep -B 10 -A 10 MIDI
+
+# Test with midimon diagnostic
+cargo run --bin test_midi
+</code></pre>
+<p><strong>Linux</strong>:</p>
+<pre><code class="language-bash"># List ALSA MIDI devices
+aconnect -l
+
+# Test with amidi
+amidi -l
+</code></pre>
+<h4 id="5-check-port-numbers"><a class="header" href="#5-check-port-numbers">5. Check Port Numbers</a></h4>
+<pre><code class="language-bash"># List all available ports
+cargo run --release
+
+# Try each port number
+cargo run --bin midi_diagnostic 0
+cargo run --bin midi_diagnostic 1
+cargo run --bin midi_diagnostic 2
+# ... press a pad/key on your controller to verify connection
+</code></pre>
+<h3 id="still-not-working"><a class="header" href="#still-not-working">Still Not Working?</a></h3>
+<ol>
+<li>Try a different computer (to rule out hardware failure)</li>
+<li>Test with manufacturer's software (e.g., NI Controller Editor)</li>
+<li>Check for firmware updates</li>
+<li>Contact manufacturer support</li>
+</ol>
+<h2 id="leds-not-working"><a class="header" href="#leds-not-working">LEDs Not Working</a></h2>
+<h3 id="symptoms-1"><a class="header" href="#symptoms-1">Symptoms</a></h3>
+<ul>
+<li>Pads press correctly but LEDs don't light up</li>
+<li>LEDs flash once then go dark</li>
+<li>Wrong pads lighting up</li>
+<li>LEDs stuck on or flickering</li>
+</ul>
+<h3 id="causes-1"><a class="header" href="#causes-1">Causes</a></h3>
+<ul>
+<li>Input Monitoring permission not granted (macOS)</li>
+<li>HID driver not installed</li>
+<li>Profile/coordinate mapping issues</li>
+<li>HID device already in use by another application</li>
+<li>Incorrect LED scheme selected</li>
+</ul>
+<h3 id="solutions-1"><a class="header" href="#solutions-1">Solutions</a></h3>
+<h4 id="1-grant-input-monitoring-permission-macos"><a class="header" href="#1-grant-input-monitoring-permission-macos">1. Grant Input Monitoring Permission (macOS)</a></h4>
+<p><strong>Step-by-step</strong>:</p>
+<ol>
+<li>
+<p>Run MIDIMon:</p>
+<pre><code class="language-bash">cargo run --release 2
+</code></pre>
+</li>
+<li>
+<p>macOS will show a permission dialog</p>
+</li>
+<li>
+<p>Click <strong>Open System Settings</strong></p>
+</li>
+<li>
+<p>In <strong>Privacy &amp; Security</strong> → <strong>Input Monitoring</strong>:</p>
+<ul>
+<li>Find <code>midimon</code> or <code>Terminal</code> (if running via cargo)</li>
+<li>Toggle switch to <strong>ON</strong></li>
+<li>If switch is already ON, toggle OFF then ON again</li>
+</ul>
+</li>
+<li>
+<p>Restart MIDIMon:</p>
+<pre><code class="language-bash">cargo run --release 2
+</code></pre>
+</li>
+</ol>
+<p><strong>Verify permission granted</strong>:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+<p>Look for:</p>
+<pre><code>[DEBUG] HID device opened successfully
+[DEBUG] LED controller initialized
+</code></pre>
+<p>If you see "Failed to open HID device", permission is not granted.</p>
+<h4 id="2-test-led-hardware"><a class="header" href="#2-test-led-hardware">2. Test LED Hardware</a></h4>
+<pre><code class="language-bash"># Run LED diagnostic tool
+cargo run --bin led_diagnostic
+</code></pre>
+<p><strong>Expected output</strong>:</p>
+<pre><code>✓ Device found: Maschine Mikro MK3
+✓ HID device opened successfully
+✓ Testing LED control...
+✓ LED diagnostic complete
+</code></pre>
+<p><strong>Error output</strong>:</p>
+<pre><code>✗ Failed to open HID device
+</code></pre>
+<p>If this fails, see <a href="diagnostics.html">Diagnostics Guide</a> for HID troubleshooting.</p>
+<h4 id="3-installverify-native-instruments-drivers"><a class="header" href="#3-installverify-native-instruments-drivers">3. Install/Verify Native Instruments Drivers</a></h4>
+<p><strong>macOS/Windows</strong>:</p>
+<ol>
+<li>Open Native Access</li>
+<li>Verify "Maschine" or controller-specific software is installed</li>
+<li>Check for updates</li>
+<li>Reinstall if necessary</li>
+<li>Restart computer</li>
+</ol>
+<p><strong>Test after driver installation</strong>:</p>
+<pre><code class="language-bash">cargo run --bin led_diagnostic
+</code></pre>
+<h4 id="4-try-different-led-schemes"><a class="header" href="#4-try-different-led-schemes">4. Try Different LED Schemes</a></h4>
+<p>Some schemes might not work due to profile issues:</p>
+<pre><code class="language-bash"># Try rainbow (doesn't require note mapping)
+cargo run --release 2 --led rainbow
+
+# Try static
+cargo run --release 2 --led static
+
+# Try reactive (default)
+cargo run --release 2 --led reactive
+</code></pre>
+<p>If rainbow/static work but reactive doesn't, it's a profile/mapping issue.</p>
+<h4 id="5-fix-coordinate-mapping-issues"><a class="header" href="#5-fix-coordinate-mapping-issues">5. Fix Coordinate Mapping Issues</a></h4>
+<p><strong>Wrong pads lighting up</strong> indicates coordinate mapping problems.</p>
+<p><strong>Solution</strong>: Use a device profile:</p>
+<pre><code class="language-bash"># Auto-detect page
+cargo run --release 2 --profile path/to/profile.ncmm3
+
+# Force specific page
+cargo run --release 2 --profile profile.ncmm3 --pad-page A
+</code></pre>
+<p>Create a profile using Native Instruments Controller Editor if you don't have one.</p>
+<p>See <a href="../DEVICE_PROFILES.html">Device Profiles Documentation</a> for complete guide.</p>
+<h4 id="6-check-shared-device-access"><a class="header" href="#6-check-shared-device-access">6. Check Shared Device Access</a></h4>
+<p>If Controller Editor is running simultaneously:</p>
+<p><strong>macOS</strong>: MIDIMon uses shared device access (should work)</p>
+<p><strong>Verify</strong>:</p>
+<pre><code class="language-bash"># Check Cargo.toml includes:
+hidapi = { version = "2.4", features = ["macos-shared-device"] }
+</code></pre>
+<p>If LEDs work when Controller Editor is closed but not when it's running:</p>
+<ul>
+<li>Update to latest MIDIMon version</li>
+<li>Rebuild from source: <code>cargo build --release</code></li>
+</ul>
+<h3 id="advanced-debugging"><a class="header" href="#advanced-debugging">Advanced Debugging</a></h3>
+<p>Enable debug logging and watch for LED updates:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2 --led reactive
+</code></pre>
+<p>Press pads and look for:</p>
+<pre><code>[DEBUG] LED update: pad 0 -&gt; color 7 (Green) brightness 2
+[DEBUG] HID write: 81 bytes
+</code></pre>
+<p>If you see LED updates logged but LEDs don't light:</p>
+<ul>
+<li>Hardware issue (try different USB port)</li>
+<li>Firmware issue (update device firmware)</li>
+<li>Driver issue (reinstall NI drivers)</li>
+</ul>
+<h2 id="events-not-triggering"><a class="header" href="#events-not-triggering">Events Not Triggering</a></h2>
+<h3 id="symptoms-2"><a class="header" href="#symptoms-2">Symptoms</a></h3>
+<ul>
+<li>Pads press but no actions execute</li>
+<li>Some pads work, others don't</li>
+<li>LEDs work but actions don't fire</li>
+<li>Actions trigger randomly or inconsistently</li>
+</ul>
+<h3 id="causes-2"><a class="header" href="#causes-2">Causes</a></h3>
+<ul>
+<li>Note numbers don't match config.toml</li>
+<li>Wrong mode active</li>
+<li>Trigger conditions not met (velocity, timing)</li>
+<li>Config syntax errors</li>
+<li>Event processing disabled</li>
+</ul>
+<h3 id="solutions-2"><a class="header" href="#solutions-2">Solutions</a></h3>
+<h4 id="1-verify-note-numbers"><a class="header" href="#1-verify-note-numbers">1. Verify Note Numbers</a></h4>
+<pre><code class="language-bash"># Find actual note numbers
+cargo run --bin pad_mapper 2
+</code></pre>
+<p>Press each pad and write down the note numbers.</p>
+<p><strong>Compare with config.toml</strong>:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 12  # Must match the actual note number from pad_mapper
+</code></pre>
+<p>If they don't match, update config.toml with correct note numbers.</p>
+<h4 id="2-check-active-mode"><a class="header" href="#2-check-active-mode">2. Check Active Mode</a></h4>
+<p>MIDIMon prints the current mode to console:</p>
+<pre><code>Mode changed: Default -&gt; Developer
+Currently in mode: Developer
+</code></pre>
+<p><strong>Verify you're in the expected mode</strong>:</p>
+<ul>
+<li>Check encoder hasn't switched modes accidentally</li>
+<li>Verify mode-specific mappings are in the correct mode section</li>
+<li>Try using global mappings for testing</li>
+</ul>
+<p><strong>Force to Default mode</strong>:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Reset to default mode"
+[global_mappings.trigger]
+type = "Note"
+note = 0
+[global_mappings.action]
+type = "ModeChange"
+mode = "Default"
+</code></pre>
+<h4 id="3-test-with-simple-mapping"><a class="header" href="#3-test-with-simple-mapping">3. Test with Simple Mapping</a></h4>
+<p>Add a simple test mapping to verify basic functionality:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Test mapping - Should print to console"
+[global_mappings.trigger]
+type = "Note"
+note = 0  # Bottom-left pad
+[global_mappings.action]
+type = "Shell"
+command = "echo 'Mapping works!' &amp;&amp; say 'Mapping works'"
+</code></pre>
+<p>If this works, the issue is with specific trigger/action configuration.</p>
+<h4 id="4-enable-debug-logging"><a class="header" href="#4-enable-debug-logging">4. Enable Debug Logging</a></h4>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+<p>Press pads and watch for:</p>
+<p><strong>Good output</strong> (mapping working):</p>
+<pre><code>[MIDI] NoteOn ch:0 note:12 vel:87
+[DEBUG] Processed: Note(12) with velocity Medium
+[DEBUG] Matched mapping: "Copy text" (mode: Default)
+[DEBUG] Executing action: Keystroke(keys: "c", modifiers: ["cmd"])
+✓ Action executed successfully
+</code></pre>
+<p><strong>Bad output</strong> (no match):</p>
+<pre><code>[MIDI] NoteOn ch:0 note:12 vel:87
+[DEBUG] Processed: Note(12) with velocity Medium
+[DEBUG] No mapping matched for event
+</code></pre>
+<p>If no mapping matched:</p>
+<ul>
+<li>Note number mismatch</li>
+<li>Wrong mode</li>
+<li>Trigger conditions not met</li>
+</ul>
+<h4 id="5-check-velocitytiming-requirements"><a class="header" href="#5-check-velocitytiming-requirements">5. Check Velocity/Timing Requirements</a></h4>
+<p><strong>VelocityRange</strong> triggers require specific velocity:</p>
+<pre><code class="language-toml">[trigger]
+type = "VelocityRange"
+note = 12
+min_velocity = 81  # Only triggers on HARD press (81-127)
+max_velocity = 127
+</code></pre>
+<p><strong>Solution</strong>: Press harder or adjust velocity range:</p>
+<pre><code class="language-toml">min_velocity = 0   # Accept any velocity
+max_velocity = 127
+</code></pre>
+<p><strong>LongPress</strong> triggers require holding:</p>
+<pre><code class="language-toml">[trigger]
+type = "LongPress"
+note = 12
+hold_duration_ms = 2000  # Must hold for 2 seconds
+</code></pre>
+<p><strong>Solution</strong>: Hold longer or reduce threshold:</p>
+<pre><code class="language-toml">hold_duration_ms = 500  # Only 0.5 seconds
+</code></pre>
+<p><strong>DoubleTap</strong> requires two quick taps:</p>
+<pre><code class="language-toml">[trigger]
+type = "DoubleTap"
+note = 12
+double_tap_timeout_ms = 300  # Must tap twice within 300ms
+</code></pre>
+<p><strong>Solution</strong>: Tap faster or increase timeout:</p>
+<pre><code class="language-toml">double_tap_timeout_ms = 500  # 0.5 seconds between taps
+</code></pre>
+<h4 id="6-validate-config-syntax"><a class="header" href="#6-validate-config-syntax">6. Validate Config Syntax</a></h4>
+<pre><code class="language-bash"># Check for TOML syntax errors
+cargo check
+
+# Or use online validator
+# https://www.toml-lint.com/
+</code></pre>
+<p>Common syntax errors:</p>
+<ul>
+<li>Missing quotes around strings</li>
+<li>Wrong bracket type (<code>[]</code> vs <code>[[]]</code>)</li>
+<li>Typos in field names</li>
+<li>Missing required fields</li>
+</ul>
+<h4 id="7-test-midi-events"><a class="header" href="#7-test-midi-events">7. Test MIDI Events</a></h4>
+<p>Verify your device is sending events:</p>
+<pre><code class="language-bash">cargo run --bin midi_diagnostic 2
+</code></pre>
+<p>Press pads - you should see:</p>
+<pre><code>[NoteOn]  ch:0 note:12 vel:87
+[NoteOff] ch:0 note:12 vel:0
+</code></pre>
+<p><strong>If no events appear</strong>:</p>
+<ul>
+<li>MIDI connection issue (see "MIDI Device Not Found" above)</li>
+<li>Device in wrong mode</li>
+<li>Device needs reset (power cycle)</li>
+</ul>
+<h3 id="still-not-working-1"><a class="header" href="#still-not-working-1">Still Not Working?</a></h3>
+<p>Create a minimal test config:</p>
+<pre><code class="language-bash">cat &gt; test-config.toml &lt;&lt; 'EOF'
+[[modes]]
+name = "Test"
+
+[[modes.mappings]]
+description = "Test"
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+[modes.mappings.action]
+type = "Shell"
+command = "say 'test works'"
+EOF
+
+cargo run --release 2 --config test-config.toml
+</code></pre>
+<p>Press pad 0. If you hear "test works", the system is functioning.</p>
+<h2 id="profile-detection-issues"><a class="header" href="#profile-detection-issues">Profile Detection Issues</a></h2>
+<h3 id="symptoms-3"><a class="header" href="#symptoms-3">Symptoms</a></h3>
+<ul>
+<li>"Failed to load profile" error</li>
+<li>Wrong pads lighting up</li>
+<li>LEDs work without profile but not with profile</li>
+<li>Auto-page detection not working</li>
+</ul>
+<h3 id="causes-3"><a class="header" href="#causes-3">Causes</a></h3>
+<ul>
+<li>Profile file not found</li>
+<li>Invalid XML format</li>
+<li>Wrong pad page active</li>
+<li>Note numbers not in profile</li>
+<li>Profile path has spaces or special characters</li>
+</ul>
+<h3 id="solutions-3"><a class="header" href="#solutions-3">Solutions</a></h3>
+<h4 id="1-verify-profile-file-exists"><a class="header" href="#1-verify-profile-file-exists">1. Verify Profile File Exists</a></h4>
+<pre><code class="language-bash"># Check file exists
+ls -la path/to/profile.ncmm3
+
+# Try absolute path
+cargo run --release 2 --profile "$HOME/Downloads/profile.ncmm3"
+
+# Escape spaces in path
+cargo run --release 2 --profile "My\ Profile.ncmm3"
+</code></pre>
+<h4 id="2-validate-profile-xml"><a class="header" href="#2-validate-profile-xml">2. Validate Profile XML</a></h4>
+<p>Open the .ncmm3 file in a text editor and verify it's valid XML:</p>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;DeviceProfile&gt;
+  &lt;DeviceProperties&gt;
+    &lt;Name&gt;My Profile&lt;/Name&gt;
+    &lt;Type&gt;MASCHINE_MIKRO_MK3&lt;/Type&gt;
+  &lt;/DeviceProperties&gt;
+
+  &lt;Mapping&gt;
+    &lt;PageList&gt;
+      &lt;Page name="Pad Page A"&gt;
+        &lt;!-- ... --&gt;
+      &lt;/Page&gt;
+    &lt;/PageList&gt;
+  &lt;/Mapping&gt;
+&lt;/DeviceProfile&gt;
+</code></pre>
+<p><strong>Common issues</strong>:</p>
+<ul>
+<li>Missing <code>&lt;?xml</code> declaration</li>
+<li>Unclosed tags</li>
+<li>Invalid characters</li>
+<li>Corrupted file</li>
+</ul>
+<p><strong>Fix</strong>: Re-export from Controller Editor or use a backup.</p>
+<h4 id="3-force-specific-pad-page"><a class="header" href="#3-force-specific-pad-page">3. Force Specific Pad Page</a></h4>
+<p>Auto-detection might fail if notes overlap between pages:</p>
+<pre><code class="language-bash"># Instead of auto-detect
+cargo run --release 2 --profile profile.ncmm3
+
+# Force page A
+cargo run --release 2 --profile profile.ncmm3 --pad-page A
+
+# Try each page
+for page in A B C D E F G H; do
+    echo "Testing page $page"
+    cargo run --release 2 --profile profile.ncmm3 --pad-page $page
+    sleep 5
+    killall midimon
+done
+</code></pre>
+<h4 id="4-create-new-profile"><a class="header" href="#4-create-new-profile">4. Create New Profile</a></h4>
+<p>If profile is corrupted:</p>
+<ol>
+<li>Open <strong>Native Instruments Controller Editor</strong></li>
+<li>Select <strong>Maschine Mikro MK3</strong></li>
+<li>Create a simple profile:
+<ul>
+<li>Page A: Notes 12-27 (chromatic)</li>
+<li>Page B: Notes 36-51 (drums)</li>
+</ul>
+</li>
+<li>Save as <code>test-profile.ncmm3</code></li>
+<li>Test: <code>cargo run --release 2 --profile test-profile.ncmm3</code></li>
+</ol>
+<h4 id="5-debug-profile-loading"><a class="header" href="#5-debug-profile-loading">5. Debug Profile Loading</a></h4>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2 --profile profile.ncmm3
+</code></pre>
+<p>Look for:</p>
+<pre><code>[DEBUG] Loading profile: profile.ncmm3
+[DEBUG] Profile loaded: My Profile (MASCHINE_MIKRO_MK3)
+[DEBUG] Found 8 pad pages
+[DEBUG] Page A: 16 pads mapped (notes 12-27)
+</code></pre>
+<p><strong>If you see errors</strong>:</p>
+<pre><code>[ERROR] Failed to parse profile: XML error at line 42
+[ERROR] Profile validation failed: Missing required element
+</code></pre>
+<p>Fix the profile XML or create a new one.</p>
+<h4 id="6-verify-note-numbers-match-profile"><a class="header" href="#6-verify-note-numbers-match-profile">6. Verify Note Numbers Match Profile</a></h4>
+<pre><code class="language-bash"># Run pad mapper
+cargo run --bin pad_mapper 2
+</code></pre>
+<p>Press pads and verify the notes are in your profile.</p>
+<p>If note 50 is pressed but your profile only has notes 12-27, no LED will light.</p>
+<p><strong>Solution</strong>: Either:</p>
+<ul>
+<li>Update profile to include note 50</li>
+<li>Change hardware to send notes 12-27 (in Controller Editor)</li>
+</ul>
+<h2 id="platform-specific-issues"><a class="header" href="#platform-specific-issues">Platform-Specific Issues</a></h2>
+<h3 id="macos-permission-dialogs-keep-appearing"><a class="header" href="#macos-permission-dialogs-keep-appearing">macOS: Permission Dialogs Keep Appearing</a></h3>
+<p><strong>Cause</strong>: Binary changes (recompiling) invalidates permissions</p>
+<p><strong>Solution</strong>: Grant permission to Terminal.app instead:</p>
+<ol>
+<li>System Settings → Privacy &amp; Security → Input Monitoring</li>
+<li>Add <code>Terminal</code> (or your terminal emulator)</li>
+<li>Run via <code>cargo run</code> - permission persists across rebuilds</li>
+</ol>
+<p><strong>Alternative</strong>: Code-sign the binary:</p>
+<pre><code class="language-bash">codesign --force --deep --sign - target/release/midimon
+</code></pre>
+<h3 id="macos-cannot-be-opened-because-the-developer-cannot-be-verified"><a class="header" href="#macos-cannot-be-opened-because-the-developer-cannot-be-verified">macOS: "Cannot be opened because the developer cannot be verified"</a></h3>
+<p><strong>Solution</strong>:</p>
+<pre><code class="language-bash"># Remove quarantine attribute
+xattr -d com.apple.quarantine target/release/midimon
+
+# Or allow in System Settings
+# Right-click binary → Open → Allow
+</code></pre>
+<h3 id="linux-permission-denied-usbhid-access"><a class="header" href="#linux-permission-denied-usbhid-access">Linux: Permission Denied (USB/HID Access)</a></h3>
+<p><strong>Cause</strong>: User not in <code>plugdev</code> group or missing udev rules</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Add udev rules:</li>
+</ol>
+<pre><code class="language-bash">sudo tee /etc/udev/rules.d/50-midimon.rules &lt;&lt; 'EOF'
+# Native Instruments Maschine Mikro MK3
+SUBSYSTEM=="usb", ATTRS{idVendor}=="17cc", ATTRS{idProduct}=="1600", MODE="0666", GROUP="plugdev"
+SUBSYSTEM=="usb", ATTRS{bInterfaceClass}=="01", ATTRS{bInterfaceSubClass}=="03", MODE="0666", GROUP="plugdev"
+EOF
+
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+</code></pre>
+<ol start="2">
+<li>Add user to plugdev:</li>
+</ol>
+<pre><code class="language-bash">sudo usermod -a -G plugdev $USER
+</code></pre>
+<ol start="3">
+<li>
+<p>Log out and back in</p>
+</li>
+<li>
+<p>Test:</p>
+</li>
+</ol>
+<pre><code class="language-bash">cargo run --release 2
+</code></pre>
+<h3 id="windows-midi-device-not-recognized"><a class="header" href="#windows-midi-device-not-recognized">Windows: MIDI Device Not Recognized</a></h3>
+<p><strong>Cause</strong>: Driver not installed or generic USB driver used</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Open Device Manager</li>
+<li>Look for "MIDI Device" or your controller under "Sound, video and game controllers"</li>
+<li>Right-click → Update Driver</li>
+<li>Choose manufacturer driver (not generic USB)</li>
+<li>Or install via Native Access</li>
+</ol>
+<h2 id="performance-issues"><a class="header" href="#performance-issues">Performance Issues</a></h2>
+<h3 id="high-cpu-usage"><a class="header" href="#high-cpu-usage">High CPU Usage</a></h3>
+<p><strong>Symptom</strong>: MIDIMon using &gt;10% CPU</p>
+<p><strong>Causes</strong>:</p>
+<ul>
+<li>Debug logging enabled</li>
+<li>Animated LED scheme with high update rate</li>
+<li>Shell actions running slowly</li>
+<li>Event processing loop not optimizing</li>
+</ul>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>
+<p>Disable debug logging:</p>
+<pre><code class="language-bash"># Don't use DEBUG=1 in production
+cargo run --release 2
+</code></pre>
+</li>
+<li>
+<p>Use simpler LED scheme:</p>
+<pre><code class="language-bash"># Instead of animated schemes
+cargo run --release 2 --led reactive  # or off
+</code></pre>
+</li>
+<li>
+<p>Optimize shell actions:</p>
+<pre><code class="language-bash"># Avoid long-running commands in mappings
+# Bad:
+command = "sleep 10 &amp;&amp; echo done"
+
+# Good:
+command = "echo done &amp;"  # Background process
+</code></pre>
+</li>
+<li>
+<p>Build release mode:</p>
+<pre><code class="language-bash"># Debug builds are 20-30% slower
+cargo build --release
+./target/release/midimon 2
+</code></pre>
+</li>
+</ol>
+<h3 id="high-latency-delayed-response"><a class="header" href="#high-latency-delayed-response">High Latency (Delayed Response)</a></h3>
+<p><strong>Symptom</strong>: Actions trigger 50-100ms+ after pad press</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>Use release build (not debug)</li>
+<li>Check system load (Activity Monitor/Task Manager)</li>
+<li>Close unnecessary applications</li>
+<li>Check MIDI buffer settings in Audio MIDI Setup (macOS)</li>
+</ol>
+<p><strong>Verify latency</strong>:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+<p>Watch timestamps:</p>
+<pre><code>[16:32:45.123] NoteOn received
+[16:32:45.124] Action executed  # Should be &lt;2ms
+</code></pre>
+<p>If &gt;10ms, investigate system performance.</p>
+<h2 id="getting-additional-help"><a class="header" href="#getting-additional-help">Getting Additional Help</a></h2>
+<p>If your issue isn't covered here:</p>
+<ol>
+<li>Check <a href="diagnostics.html">Diagnostics Guide</a> for detailed troubleshooting</li>
+<li>Enable debug logging: <code>DEBUG=1 cargo run --release 2</code></li>
+<li>Run diagnostic tools:
+<pre><code class="language-bash">cargo run --bin midi_diagnostic 2
+cargo run --bin led_diagnostic
+cargo run --bin test_midi
+</code></pre>
+</li>
+<li>Collect information:
+<ul>
+<li>macOS/Linux/Windows version</li>
+<li>MIDIMon version: <code>cargo --version</code></li>
+<li>Device model</li>
+<li>Error messages (full output)</li>
+<li>Debug log output</li>
+</ul>
+</li>
+<li>File an issue on GitHub with collected information</li>
+</ol>
+<hr />
+<p><strong>Last Updated</strong>: November 11, 2025
+<strong>Status</strong>: Actively maintained</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../development/release-process.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../troubleshooting/midi-output.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../development/release-process.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../troubleshooting/midi-output.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

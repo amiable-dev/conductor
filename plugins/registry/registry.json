@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-01-18T00:00:00Z",
+  "plugins": [
+    {
+      "id": "spotify",
+      "name": "Spotify Control",
+      "description": "Control Spotify playback through the Spotify Web API. Play, pause, skip tracks, adjust volume, manage playlists, and more.",
+      "author": "Amiable Dev",
+      "version": "0.1.0",
+      "homepage": "https://github.com/amiable-dev/midimon-spotify-plugin",
+      "repository": "https://github.com/amiable-dev/midimon-spotify-plugin",
+      "license": "MIT",
+      "categories": ["media", "streaming", "music"],
+      "tags": ["spotify", "music", "playback", "streaming"],
+      "capabilities": ["network", "storage"],
+      "platforms": ["macos", "linux", "windows"],
+      "min_midimon_version": "2.3.0",
+      "downloads": {
+        "macos-x86_64": "https://github.com/amiable-dev/midimon-spotify-plugin/releases/download/v0.1.0/libmidimon_spotify_plugin-x86_64-apple-darwin.dylib",
+        "macos-aarch64": "https://github.com/amiable-dev/midimon-spotify-plugin/releases/download/v0.1.0/libmidimon_spotify_plugin-aarch64-apple-darwin.dylib",
+        "linux-x86_64": "https://github.com/amiable-dev/midimon-spotify-plugin/releases/download/v0.1.0/libmidimon_spotify_plugin-x86_64-unknown-linux-gnu.so",
+        "windows-x86_64": "https://github.com/amiable-dev/midimon-spotify-plugin/releases/download/v0.1.0/midimon_spotify_plugin-x86_64-pc-windows-msvc.dll"
+      },
+      "checksums": {
+        "macos-x86_64": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "macos-aarch64": "sha256:d9c84a75ac0193669ac114cd00b1428088b96f3ebad757e3f8728c6c5078f488",
+        "linux-x86_64": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "windows-x86_64": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "file_size": {
+        "macos-x86_64": 2457600,
+        "macos-aarch64": 4823728,
+        "linux-x86_64": 2621440,
+        "windows-x86_64": 2494464
+      },
+      "setup_instructions": "https://github.com/amiable-dev/midimon-spotify-plugin/blob/main/README.md#setup",
+      "example_config": "https://github.com/amiable-dev/midimon-spotify-plugin/blob/main/examples/config.toml",
+      "screenshots": [
+        "https://github.com/amiable-dev/midimon-spotify-plugin/raw/main/docs/screenshot1.png"
+      ],
+      "video_demo": null,
+      "install_count": 0,
+      "rating": 0.0,
+      "reviews_count": 0
+    },
+    {
+      "id": "obs",
+      "name": "OBS Studio Control",
+      "description": "Control OBS Studio through WebSocket protocol. Switch scenes, manage sources, control recording and streaming, adjust audio levels, and more.",
+      "author": "Amiable Dev",
+      "version": "0.1.0",
+      "homepage": "https://github.com/amiable-dev/midimon-obs-plugin",
+      "repository": "https://github.com/amiable-dev/midimon-obs-plugin",
+      "license": "MIT",
+      "categories": ["media", "streaming", "recording"],
+      "tags": ["obs", "streaming", "recording", "scenes", "broadcast"],
+      "capabilities": ["network"],
+      "platforms": ["macos", "linux", "windows"],
+      "min_midimon_version": "2.3.0",
+      "downloads": {
+        "macos-x86_64": "https://github.com/amiable-dev/midimon-obs-plugin/releases/download/v0.1.0/libmidimon_obs_plugin-x86_64-apple-darwin.dylib",
+        "macos-aarch64": "https://github.com/amiable-dev/midimon-obs-plugin/releases/download/v0.1.0/libmidimon_obs_plugin-aarch64-apple-darwin.dylib",
+        "linux-x86_64": "https://github.com/amiable-dev/midimon-obs-plugin/releases/download/v0.1.0/libmidimon_obs_plugin-x86_64-unknown-linux-gnu.so",
+        "windows-x86_64": "https://github.com/amiable-dev/midimon-obs-plugin/releases/download/v0.1.0/midimon_obs_plugin-x86_64-pc-windows-msvc.dll"
+      },
+      "checksums": {
+        "macos-x86_64": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "macos-aarch64": "sha256:6ba95374b5af8f71b3b3634a55cd21c37c9644493299555ab5aac50b0a56c45b",
+        "linux-x86_64": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "windows-x86_64": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "file_size": {
+        "macos-x86_64": 1965056,
+        "macos-aarch64": 1968608,
+        "linux-x86_64": 2097152,
+        "windows-x86_64": 1998848
+      },
+      "setup_instructions": "https://github.com/amiable-dev/midimon-obs-plugin/blob/main/README.md#setup",
+      "example_config": "https://github.com/amiable-dev/midimon-obs-plugin/blob/main/examples/config.toml",
+      "screenshots": [
+        "https://github.com/amiable-dev/midimon-obs-plugin/raw/main/docs/screenshot1.png"
+      ],
+      "video_demo": null,
+      "install_count": 0,
+      "rating": 0.0,
+      "reviews_count": 0
+    }
+  ],
+  "featured_plugins": ["spotify", "obs"],
+  "categories": [
+    {
+      "id": "media",
+      "name": "Media Control",
+      "description": "Control media playback and streaming applications"
+    },
+    {
+      "id": "streaming",
+      "name": "Live Streaming",
+      "description": "Tools for live streaming and broadcasting"
+    },
+    {
+      "id": "music",
+      "name": "Music Production",
+      "description": "DAW integration and music production tools"
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "description": "Chat, messaging, and communication platforms"
+    },
+    {
+      "id": "home-automation",
+      "name": "Home Automation",
+      "description": "Smart home and IoT device control"
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity",
+      "description": "Task management and productivity tools"
+    },
+    {
+      "id": "recording",
+      "name": "Recording",
+      "description": "Audio and video recording tools"
+    }
+  ]
+}

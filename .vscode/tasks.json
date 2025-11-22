@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Release",
+      "type": "shell",
+      "command": "cargo build --release",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$rustc"]
+    },
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "cargo test --all",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": ["$rustc"]
+    },
+    {
+      "label": "Run Clippy",
+      "type": "shell",
+      "command": "cargo clippy -- -D warnings",
+      "problemMatcher": ["$rustc"]
+    },
+    {
+      "label": "Format Code",
+      "type": "shell",
+      "command": "cargo fmt",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean Build",
+      "type": "shell",
+      "command": "cargo clean",
+      "problemMatcher": []
+    }
+  ]
+}

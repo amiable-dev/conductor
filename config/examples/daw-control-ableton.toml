@@ -1,0 +1,372 @@
+# MIDIMon Configuration: Ableton Live Control
+# Virtual MIDI Output Demo
+#
+# This configuration demonstrates how to use MIDIMon as a MIDI controller
+# for Ableton Live using virtual MIDI ports.
+#
+# Setup:
+# 1. macOS: Enable IAC Driver in Audio MIDI Setup
+# 2. Ableton: Preferences → Link/Tempo/MIDI → Enable "IAC Driver Bus 1" as Input
+# 3. Add a MIDI track with a software instrument
+# 4. Set track input to "IAC Driver Bus 1" and enable monitoring
+
+[device]
+name = "Mikro"
+auto_connect = true
+
+[logging]
+level = "info"
+
+# ========== Mode 1: Instrument Trigger ==========
+[[modes]]
+name = "Ableton Instruments"
+color = "blue"
+
+# Trigger drum samples (Ableton Drum Rack)
+[[modes.mappings]]
+description = "Kick drum"
+[modes.mappings.trigger]
+type = "Note"
+note = 36  # Pad 1
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 9  # MIDI channel 10 (drums)
+note = 36    # GM Kick
+velocity = 127
+
+[[modes.mappings]]
+description = "Snare drum"
+[modes.mappings.trigger]
+type = "Note"
+note = 37  # Pad 2
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 9
+note = 38    # GM Snare
+velocity = 127
+
+[[modes.mappings]]
+description = "Closed hi-hat"
+[modes.mappings.trigger]
+type = "Note"
+note = 38  # Pad 3
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 9
+note = 42    # GM Closed Hi-Hat
+velocity = 127
+
+[[modes.mappings]]
+description = "Open hi-hat"
+[modes.mappings.trigger]
+type = "Note"
+note = 39  # Pad 4
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 9
+note = 46    # GM Open Hi-Hat
+velocity = 127
+
+# Melodic pads (software synth)
+[[modes.mappings]]
+description = "Play C note"
+[modes.mappings.trigger]
+type = "Note"
+note = 40  # Pad 5
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 0  # MIDI channel 1
+note = 60    # Middle C
+velocity = 100
+
+[[modes.mappings]]
+description = "Play D note"
+[modes.mappings.trigger]
+type = "Note"
+note = 41  # Pad 6
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 0
+note = 62    # D
+velocity = 100
+
+[[modes.mappings]]
+description = "Play E note"
+[modes.mappings.trigger]
+type = "Note"
+note = 42  # Pad 7
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 0
+note = 64    # E
+velocity = 100
+
+[[modes.mappings]]
+description = "Play F note"
+[modes.mappings.trigger]
+type = "Note"
+note = 43  # Pad 8
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 0
+note = 65    # F
+velocity = 100
+
+# Chord stacking
+[[modes.mappings]]
+description = "Play C major chord"
+[modes.mappings.trigger]
+type = "Note"
+note = 44  # Pad 9
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 60, velocity = 100 },  # C
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 64, velocity = 100 },  # E
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 67, velocity = 100 },  # G
+]
+
+[[modes.mappings]]
+description = "Play F major chord"
+[modes.mappings.trigger]
+type = "Note"
+note = 45  # Pad 10
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 65, velocity = 100 },  # F
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 69, velocity = 100 },  # A
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 72, velocity = 100 },  # C
+]
+
+# ========== Mode 2: Mixer Control ==========
+[[modes]]
+name = "Ableton Mixer"
+color = "green"
+
+# Volume control with encoder
+[[modes.mappings]]
+description = "Volume up on encoder turn right"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "Clockwise"
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "CC"
+channel = 0
+controller = 7   # CC 7 = Volume
+value = 127
+
+[[modes.mappings]]
+description = "Volume down on encoder turn left"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "CounterClockwise"
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "CC"
+channel = 0
+controller = 7   # CC 7 = Volume
+value = 0
+
+# Pan control
+[[modes.mappings]]
+description = "Pan left"
+[modes.mappings.trigger]
+type = "Note"
+note = 48  # Pad 1
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "CC"
+channel = 0
+controller = 10  # CC 10 = Pan
+value = 0        # Hard left
+
+[[modes.mappings]]
+description = "Pan center"
+[modes.mappings.trigger]
+type = "Note"
+note = 49  # Pad 2
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "CC"
+channel = 0
+controller = 10
+value = 64      # Center
+
+[[modes.mappings]]
+description = "Pan right"
+[modes.mappings.trigger]
+type = "Note"
+note = 50  # Pad 3
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "CC"
+channel = 0
+controller = 10
+value = 127     # Hard right
+
+# Send effects
+[[modes.mappings]]
+description = "Increase reverb send"
+[modes.mappings.trigger]
+type = "Note"
+note = 51  # Pad 4
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "CC"
+channel = 0
+controller = 91  # CC 91 = Reverb
+value = 127
+
+[[modes.mappings]]
+description = "Increase delay send"
+[modes.mappings.trigger]
+type = "Note"
+note = 52  # Pad 5
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "CC"
+channel = 0
+controller = 92  # CC 92 = Tremolo/Delay (can be mapped in Ableton)
+value = 127
+
+# ========== Mode 3: Creative Effects ==========
+[[modes]]
+name = "Ableton Effects"
+color = "purple"
+
+# Filter sweep
+[[modes.mappings]]
+description = "Open filter cutoff"
+[modes.mappings.trigger]
+type = "Note"
+note = 54  # Pad 1
+[modes.mappings.action]
+type = "Repeat"
+count = 20
+delay_ms = 25
+action = { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "CC", channel = 0, controller = 74, value = 127 }
+
+[[modes.mappings]]
+description = "Close filter cutoff"
+[modes.mappings.trigger]
+type = "Note"
+note = 55  # Pad 2
+[modes.mappings.action]
+type = "Repeat"
+count = 20
+delay_ms = 25
+action = { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "CC", channel = 0, controller = 74, value = 0 }
+
+# Pitch bend
+[[modes.mappings]]
+description = "Pitch bend up"
+[modes.mappings.trigger]
+type = "Note"
+note = 56  # Pad 3
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "PitchBend"
+channel = 0
+pitch = 8191  # Maximum up
+
+[[modes.mappings]]
+description = "Pitch bend down"
+[modes.mappings.trigger]
+type = "Note"
+note = 57  # Pad 4
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "PitchBend"
+channel = 0
+pitch = -8192  # Maximum down
+
+[[modes.mappings]]
+description = "Pitch bend center"
+[modes.mappings.trigger]
+type = "Note"
+note = 58  # Pad 5
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "PitchBend"
+channel = 0
+pitch = 0  # Center
+
+# Arpeggiator simulation
+[[modes.mappings]]
+description = "C major arpeggio"
+[modes.mappings.trigger]
+type = "Note"
+note = 59  # Pad 6
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 60, velocity = 100 },
+    { type = "Delay", ms = 120 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOff", channel = 0, note = 60, velocity = 0 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 64, velocity = 100 },
+    { type = "Delay", ms = 120 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOff", channel = 0, note = 64, velocity = 0 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 67, velocity = 100 },
+    { type = "Delay", ms = 120 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOff", channel = 0, note = 67, velocity = 0 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOn", channel = 0, note = 72, velocity = 100 },
+    { type = "Delay", ms = 120 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "NoteOff", channel = 0, note = 72, velocity = 0 },
+]
+
+# ========== Global Mappings ==========
+
+# Emergency stop all notes (MIDI panic)
+[[global_mappings]]
+description = "MIDI panic (stop all notes)"
+[global_mappings.trigger]
+type = "NoteChord"
+notes = [36, 37, 38]  # Press pads 1+2+3 simultaneously
+[global_mappings.action]
+type = "Sequence"
+actions = [
+    # Send All Notes Off (CC 123) on all channels
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "CC", channel = 0, controller = 123, value = 0 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "CC", channel = 1, controller = 123, value = 0 },
+    { type = "SendMidi", port = "IAC Driver Bus 1", message_type = "CC", channel = 9, controller = 123, value = 0 },
+]
+
+# Mode switching with encoder
+[[global_mappings]]
+description = "Switch modes with encoder press"
+[global_mappings.trigger]
+type = "Note"
+note = 3  # Encoder button
+[global_mappings.action]
+type = "ModeChange"
+mode = "Ableton Mixer"

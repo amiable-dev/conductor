@@ -1,0 +1,616 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Daemon &amp; Hot-Reload - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/guides/daemon.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="daemon--hot-reload-guide"><a class="header" href="#daemon--hot-reload-guide">Daemon &amp; Hot-Reload Guide</a></h1>
+<p>MIDIMon v2.0.0 introduces a production-ready background daemon service with lightning-fast configuration hot-reloading.</p>
+<h2 id="architecture-overview"><a class="header" href="#architecture-overview">Architecture Overview</a></h2>
+<p>The MIDIMon daemon runs as a background service, providing:</p>
+<ul>
+<li><strong>Hot-Reload</strong>: Configuration changes applied in 0-10ms without restart</li>
+<li><strong>IPC Control</strong>: Control via CLI (<code>midimonctl</code>) or GUI</li>
+<li><strong>State Persistence</strong>: Automatic state saving with atomic writes</li>
+<li><strong>Crash Recovery</strong>: Auto-restart with KeepAlive (when using LaunchAgent)</li>
+<li><strong>Menu Bar Integration</strong>: macOS menu bar for quick actions</li>
+</ul>
+<h2 id="starting-the-daemon"><a class="header" href="#starting-the-daemon">Starting the Daemon</a></h2>
+<h3 id="via-gui-recommended"><a class="header" href="#via-gui-recommended">Via GUI (Recommended)</a></h3>
+<p>Open the MIDIMon GUI app - the daemon starts automatically in the background.</p>
+<h3 id="via-cli"><a class="header" href="#via-cli">Via CLI</a></h3>
+<pre><code class="language-bash"># Start daemon in foreground
+midimon
+
+# Start daemon in background
+midimon &amp;
+
+# Check if daemon is running
+ps aux | grep midimon | grep -v grep
+
+# Check daemon status via IPC
+midimonctl status
+</code></pre>
+<h3 id="via-launchagent-auto-start"><a class="header" href="#via-launchagent-auto-start">Via LaunchAgent (Auto-Start)</a></h3>
+<p>See <a href="../installation/macos.html#auto-start-on-login">macOS Installation Guide</a> for LaunchAgent setup.</p>
+<h2 id="controlling-the-daemon"><a class="header" href="#controlling-the-daemon">Controlling the Daemon</a></h2>
+<h3 id="midimonctl-cli"><a class="header" href="#midimonctl-cli">midimonctl CLI</a></h3>
+<p>The <code>midimonctl</code> command provides full control over the daemon:</p>
+<h4 id="status"><a class="header" href="#status">Status</a></h4>
+<pre><code class="language-bash"># Human-readable status
+midimonctl status
+
+# Example output:
+# MIDIMon Daemon Status:
+#   State: Running
+#   Uptime: 1h 23m 45s
+#   Config: /Users/you/.config/midimon/config.toml
+#   Last Reload: 2m 15s ago
+#   IPC Socket: /tmp/midimon.sock
+#   PID: 12345
+</code></pre>
+<p><strong>JSON output</strong> (for scripting):</p>
+<pre><code class="language-bash">midimonctl status --json
+
+# Example output:
+# {
+#   "state": "Running",
+#   "uptime_seconds": 5025,
+#   "config_path": "/Users/you/.config/midimon/config.toml",
+#   "last_reload_seconds": 135,
+#   "ipc_socket": "/tmp/midimon.sock",
+#   "pid": 12345
+# }
+</code></pre>
+<h4 id="reload-configuration"><a class="header" href="#reload-configuration">Reload Configuration</a></h4>
+<pre><code class="language-bash"># Reload config (hot-reload in 0-10ms)
+midimonctl reload
+
+# Example output:
+# Config reloaded successfully in 3ms
+# Loaded 15 mappings across 3 modes
+</code></pre>
+<p>This applies configuration changes <strong>without restarting</strong> the daemon or interrupting active MIDI connections.</p>
+<p><strong>Performance</strong>: Config reload completes in <strong>0-10ms</strong> on average (vs. ~500ms for full restart).</p>
+<h4 id="validate-configuration"><a class="header" href="#validate-configuration">Validate Configuration</a></h4>
+<pre><code class="language-bash"># Validate config without reloading
+midimonctl validate
+
+# Example output (success):
+# ✓ Config is valid
+# Found 3 modes with 15 total mappings
+# Found 2 global mappings
+# No errors detected
+
+# Example output (error):
+# ✗ Config validation failed:
+# Error in mode 'Default', mapping 3:
+#   Invalid note number: 128 (must be 0-127)
+</code></pre>
+<p>This is useful for:</p>
+<ul>
+<li>Testing config changes before applying</li>
+<li>CI/CD validation</li>
+<li>Pre-commit hooks</li>
+</ul>
+<h4 id="stop-daemon"><a class="header" href="#stop-daemon">Stop Daemon</a></h4>
+<pre><code class="language-bash"># Graceful shutdown
+midimonctl stop
+
+# Example output:
+# Daemon stopped gracefully
+</code></pre>
+<p>The daemon saves its state before shutting down.</p>
+<h4 id="ping-latency-check"><a class="header" href="#ping-latency-check">Ping (Latency Check)</a></h4>
+<pre><code class="language-bash"># Check IPC round-trip latency
+midimonctl ping
+
+# Example output:
+# Pong! Round-trip: 0.43ms
+</code></pre>
+<p>This verifies the daemon is responsive and measures IPC performance.</p>
+<h2 id="configuration-hot-reload"><a class="header" href="#configuration-hot-reload">Configuration Hot-Reload</a></h2>
+<h3 id="how-it-works"><a class="header" href="#how-it-works">How It Works</a></h3>
+<ol>
+<li><strong>File Watcher</strong>: Monitors <code>~/.config/midimon/config.toml</code> for changes</li>
+<li><strong>Debouncing</strong>: 500ms debounce window to avoid redundant reloads</li>
+<li><strong>Parsing</strong>: Validates TOML syntax and config structure</li>
+<li><strong>Atomic Swap</strong>: Replaces active config with new one in a single operation</li>
+<li><strong>Reload Time</strong>: <strong>0-10ms</strong> typical (measured)</li>
+</ol>
+<h3 id="workflow"><a class="header" href="#workflow">Workflow</a></h3>
+<p>Edit your config file:</p>
+<pre><code class="language-bash"># Open in your editor
+code ~/.config/midimon/config.toml
+
+# Make changes and save
+</code></pre>
+<p><strong>Automatic reload</strong> happens within 500-510ms of saving:</p>
+<pre><code>[2025-11-14 10:30:15] Config file changed
+[2025-11-14 10:30:15] Waiting 500ms for debounce...
+[2025-11-14 10:30:15] Reloading config...
+[2025-11-14 10:30:15] Config reloaded successfully in 3ms
+</code></pre>
+<p>Or <strong>manually trigger</strong> reload:</p>
+<pre><code class="language-bash">midimonctl reload
+</code></pre>
+<h3 id="what-gets-reloaded"><a class="header" href="#what-gets-reloaded">What Gets Reloaded</a></h3>
+<ul>
+<li>✅ All mappings (modes + global)</li>
+<li>✅ Device settings</li>
+<li>✅ LED schemes</li>
+<li>✅ Advanced settings (timeouts, thresholds)</li>
+<li>❌ IPC socket path (requires daemon restart)</li>
+<li>❌ Auto-start settings (requires LaunchAgent reload)</li>
+</ul>
+<h3 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h3>
+<p>If config reload fails:</p>
+<pre><code class="language-bash"># Example: Invalid TOML syntax
+midimonctl reload
+
+# Output:
+# ✗ Config reload failed: TOML parse error
+# Error at line 42: expected '=' after key 'trigger'
+# Previous config still active (no changes applied)
+</code></pre>
+<p>The daemon <strong>keeps the previous valid config</strong> and continues running.</p>
+<h2 id="state-persistence"><a class="header" href="#state-persistence">State Persistence</a></h2>
+<p>The daemon automatically saves state to <code>~/.config/midimon/state.json</code>:</p>
+<h3 id="what-gets-saved"><a class="header" href="#what-gets-saved">What Gets Saved</a></h3>
+<ul>
+<li>Current mode</li>
+<li>Active LED scheme</li>
+<li>Per-app profile assignments</li>
+<li>Last known device connection</li>
+</ul>
+<h3 id="atomic-writes"><a class="header" href="#atomic-writes">Atomic Writes</a></h3>
+<p>State is saved using atomic writes to prevent corruption:</p>
+<ol>
+<li>Write to temporary file: <code>state.json.tmp</code></li>
+<li>Verify write succeeded</li>
+<li>Rename to <code>state.json</code> (atomic operation)</li>
+<li>SHA256 checksum for integrity</li>
+</ol>
+<h3 id="emergency-save"><a class="header" href="#emergency-save">Emergency Save</a></h3>
+<p>The daemon registers signal handlers to save state on:</p>
+<ul>
+<li><code>SIGTERM</code> (graceful shutdown)</li>
+<li><code>SIGINT</code> (Ctrl+C)</li>
+<li><code>SIGHUP</code> (hangup)</li>
+</ul>
+<h2 id="ipc-protocol"><a class="header" href="#ipc-protocol">IPC Protocol</a></h2>
+<p>The daemon uses <strong>Unix domain sockets</strong> for inter-process communication.</p>
+<h3 id="socket-location"><a class="header" href="#socket-location">Socket Location</a></h3>
+<p>Default: <code>/tmp/midimon.sock</code></p>
+<h3 id="protocol"><a class="header" href="#protocol">Protocol</a></h3>
+<p><strong>Format</strong>: JSON messages over Unix socket</p>
+<p><strong>Request</strong>:</p>
+<pre><code class="language-json">{
+  "command": "reload",
+  "args": {}
+}
+</code></pre>
+<p><strong>Response</strong>:</p>
+<pre><code class="language-json">{
+  "status": "success",
+  "message": "Config reloaded successfully",
+  "duration_ms": 3
+}
+</code></pre>
+<h3 id="available-commands"><a class="header" href="#available-commands">Available Commands</a></h3>
+<ul>
+<li><code>status</code> - Get daemon status</li>
+<li><code>reload</code> - Reload configuration</li>
+<li><code>validate</code> - Validate config without reloading</li>
+<li><code>stop</code> - Graceful shutdown</li>
+<li><code>ping</code> - Latency check</li>
+</ul>
+<h3 id="security-limits"><a class="header" href="#security-limits">Security Limits</a></h3>
+<p>The IPC protocol enforces security limits to prevent abuse:</p>
+<p><strong>Request Size Limit</strong>: 1MB (1,048,576 bytes)</p>
+<p>Requests exceeding this limit will be rejected with error code <code>1004</code> (InvalidRequest):</p>
+<pre><code class="language-json">{
+  "status": "error",
+  "error": {
+    "code": 1004,
+    "message": "Request too large: 1500000 bytes exceeds maximum of 1048576 bytes (1MB)",
+    "details": {
+      "request_size": 1500000,
+      "max_size": 1048576,
+      "security": "Request rejected to prevent memory exhaustion"
+    }
+  }
+}
+</code></pre>
+<p><strong>Why this limit exists</strong>: Prevents memory exhaustion denial-of-service attacks where an attacker sends arbitrarily large requests to consume daemon memory.</p>
+<p><strong>Is 1MB enough?</strong>: Yes. Typical IPC requests are:</p>
+<ul>
+<li><code>status</code>: ~200 bytes</li>
+<li><code>reload</code>: ~100 bytes</li>
+<li><code>validate</code>: ~150 bytes</li>
+<li><code>ping</code>: ~50 bytes</li>
+</ul>
+<p>Even large configuration payloads are well under 100KB. The 1MB limit provides 10x safety margin.</p>
+<h2 id="performance-metrics"><a class="header" href="#performance-metrics">Performance Metrics</a></h2>
+<p>The daemon tracks and reports performance metrics:</p>
+<h3 id="config-reload-latency"><a class="header" href="#config-reload-latency">Config Reload Latency</a></h3>
+<pre><code class="language-bash">midimonctl status --json | jq '.metrics.reload_latency_ms'
+# Output: 3.2
+</code></pre>
+<p><strong>Targets</strong>:</p>
+<ul>
+<li>✅ &lt;10ms: Excellent (target met in v2.0.0)</li>
+<li>⚠️ 10-50ms: Acceptable</li>
+<li>❌ &gt;50ms: Investigate</li>
+</ul>
+<h3 id="ipc-round-trip"><a class="header" href="#ipc-round-trip">IPC Round-Trip</a></h3>
+<pre><code class="language-bash">midimonctl ping
+# Output: Pong! Round-trip: 0.43ms
+</code></pre>
+<p><strong>Targets</strong>:</p>
+<ul>
+<li>✅ &lt;1ms: Excellent (target met in v2.0.0)</li>
+<li>⚠️ 1-5ms: Acceptable</li>
+<li>❌ &gt;5ms: Investigate</li>
+</ul>
+<h3 id="memory-usage"><a class="header" href="#memory-usage">Memory Usage</a></h3>
+<pre><code class="language-bash">ps aux | grep midimon | awk '{print $6/1024 " MB"}'
+# Output: 8.2 MB
+</code></pre>
+<p><strong>Targets</strong>:</p>
+<ul>
+<li>✅ 5-10MB: Normal (daemon only)</li>
+<li>⚠️ 10-20MB: Acceptable</li>
+<li>❌ &gt;20MB: Investigate memory leak</li>
+</ul>
+<h3 id="cpu-usage"><a class="header" href="#cpu-usage">CPU Usage</a></h3>
+<pre><code class="language-bash">top -pid $(pgrep midimon) -stats cpu -l 1 | tail -1
+# Output: 0.3%
+</code></pre>
+<p><strong>Targets</strong>:</p>
+<ul>
+<li>✅ &lt;1%: Idle (no MIDI activity)</li>
+<li>✅ &lt;5%: Active (processing MIDI events)</li>
+<li>⚠️ 5-10%: Heavy load</li>
+<li>❌ &gt;10%: Investigate</li>
+</ul>
+<h2 id="menu-bar-integration-macos"><a class="header" href="#menu-bar-integration-macos">Menu Bar Integration (macOS)</a></h2>
+<p>The daemon includes an optional menu bar icon:</p>
+<h3 id="features"><a class="header" href="#features">Features</a></h3>
+<ul>
+<li><strong>Status indicator</strong>: Running (green), Stopped (gray), Error (red)</li>
+<li><strong>Quick actions</strong>:
+<ul>
+<li>Pause/Resume</li>
+<li>Reload Config</li>
+<li>Open GUI</li>
+<li>Quit</li>
+</ul>
+</li>
+</ul>
+<h3 id="enable-menu-bar"><a class="header" href="#enable-menu-bar">Enable Menu Bar</a></h3>
+<p>In GUI Settings:</p>
+<ol>
+<li>Go to <strong>Settings</strong> → <strong>General</strong></li>
+<li>Enable <strong>"Show menu bar icon"</strong></li>
+<li>Click <strong>Save</strong></li>
+</ol>
+<p>Or edit config:</p>
+<pre><code class="language-toml">[settings]
+show_menu_bar = true
+</code></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="daemon-wont-start"><a class="header" href="#daemon-wont-start">Daemon Won't Start</a></h3>
+<p><strong>Check if already running</strong>:</p>
+<pre><code class="language-bash">ps aux | grep midimon
+</code></pre>
+<p>If already running, stop it first:</p>
+<pre><code class="language-bash">midimonctl stop
+</code></pre>
+<p><strong>Check logs</strong>:</p>
+<pre><code class="language-bash"># If using LaunchAgent
+tail -f /tmp/midimon.err
+
+# If running manually
+midimon  # Run in foreground to see errors
+</code></pre>
+<h3 id="config-wont-reload"><a class="header" href="#config-wont-reload">Config Won't Reload</a></h3>
+<p><strong>Validate config syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl validate
+</code></pre>
+<p><strong>Check file watcher</strong>:</p>
+<pre><code class="language-bash"># Manually trigger reload
+midimonctl reload
+</code></pre>
+<p><strong>Check file permissions</strong>:</p>
+<pre><code class="language-bash">ls -l ~/.config/midimon/config.toml
+# Should be readable by your user
+</code></pre>
+<h3 id="high-latency"><a class="header" href="#high-latency">High Latency</a></h3>
+<p><strong>Check IPC performance</strong>:</p>
+<pre><code class="language-bash">midimonctl ping
+</code></pre>
+<p><strong>Check system load</strong>:</p>
+<pre><code class="language-bash">top -l 1 | head -10
+</code></pre>
+<p><strong>Restart daemon</strong>:</p>
+<pre><code class="language-bash">midimonctl stop
+midimon &amp;
+</code></pre>
+<h3 id="state-not-persisting"><a class="header" href="#state-not-persisting">State Not Persisting</a></h3>
+<p><strong>Check state file</strong>:</p>
+<pre><code class="language-bash">ls -l ~/.config/midimon/state.json
+cat ~/.config/midimon/state.json | jq
+</code></pre>
+<p><strong>Check file permissions</strong>:</p>
+<pre><code class="language-bash"># State directory should be writable
+ls -ld ~/.config/midimon
+</code></pre>
+<h2 id="advanced-configuration"><a class="header" href="#advanced-configuration">Advanced Configuration</a></h2>
+<h3 id="custom-ipc-socket-path"><a class="header" href="#custom-ipc-socket-path">Custom IPC Socket Path</a></h3>
+<p>Edit daemon config (future feature):</p>
+<pre><code class="language-toml">[daemon]
+ipc_socket = "/tmp/my-custom-midimon.sock"
+</code></pre>
+<p>Then tell <code>midimonctl</code> to use it:</p>
+<pre><code class="language-bash">export MIDIMON_SOCKET=/tmp/my-custom-midimon.sock
+midimonctl status
+</code></pre>
+<h3 id="custom-config-path"><a class="header" href="#custom-config-path">Custom Config Path</a></h3>
+<p>Run daemon with custom config:</p>
+<pre><code class="language-bash">midimon --config /path/to/config.toml
+</code></pre>
+<p>Or set environment variable:</p>
+<pre><code class="language-bash">export MIDIMON_CONFIG=/path/to/config.toml
+midimon
+</code></pre>
+<h3 id="logging"><a class="header" href="#logging">Logging</a></h3>
+<p>Enable debug logging:</p>
+<pre><code class="language-bash">DEBUG=1 midimon
+</code></pre>
+<p>Output includes:</p>
+<ul>
+<li>Config reload events</li>
+<li>IPC requests/responses</li>
+<li>State persistence operations</li>
+<li>MIDI event processing (verbose)</li>
+</ul>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li><a href="./per-app-profiles.html">Per-App Profiles</a> - Automatic profile switching</li>
+<li><a href="../reference/cli.html">CLI Reference</a> - Complete CLI documentation</li>
+<li><a href="../configuration/overview.html">Configuration Overview</a> - Config file reference</li>
+<li><a href="../advanced/performance.html">Performance Tuning</a> - Optimization guide</li>
+</ul>
+<hr />
+<p><strong>Last Updated</strong>: November 14, 2025 (v2.0.0)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../getting-started/modes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../guides/gui.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../getting-started/modes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../guides/gui.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,210 @@
+name: Device Support Request
+description: Request support for a new MIDI controller device
+title: "[Device]: "
+labels: ["device-support", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for requesting support for a new device! This information will help us understand the device capabilities and prioritize implementation.
+
+  - type: input
+    id: manufacturer
+    attributes:
+      label: Device Manufacturer
+      description: Who makes this device?
+      placeholder: "e.g., Native Instruments, Novation, Akai, etc."
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Device Model
+      description: Full model name and version
+      placeholder: "e.g., Maschine Mikro MK3, Launchpad Mini MK3, APC40 MK2"
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Product URL
+      description: Link to manufacturer's product page
+      placeholder: "https://..."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection Type
+      description: How does the device connect?
+      options:
+        - USB MIDI (class-compliant)
+        - USB HID (Human Interface Device)
+        - Both USB MIDI and HID
+        - Bluetooth MIDI
+        - 5-pin DIN MIDI
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: capabilities
+    attributes:
+      label: Device Capabilities
+      description: What features does this device have?
+      options:
+        - label: Velocity-sensitive pads/keys
+        - label: Encoder knobs (infinite rotation)
+        - label: Faders (linear potentiometers)
+        - label: Touch strip / ribbon controller
+        - label: Aftertouch / pressure sensitivity
+        - label: RGB LEDs (full color)
+        - label: Single-color LEDs
+        - label: LED brightness control
+        - label: Display screen (LCD/OLED)
+        - label: Multiple banks/pages
+
+  - type: textarea
+    id: layout
+    attributes:
+      label: Physical Layout
+      description: Describe the layout (number of pads, knobs, faders, buttons)
+      placeholder: |
+        - 16 velocity-sensitive pads (4x4 grid)
+        - 8 encoder knobs
+        - 4 faders
+        - 12 buttons
+        - Touch strip
+        - etc.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: led-support
+    attributes:
+      label: LED Feedback Support
+      description: What type of LED control does the device support?
+      options:
+        - RGB (full color via HID)
+        - RGB (full color via MIDI)
+        - Single color via MIDI (on/off)
+        - Multiple colors via MIDI (limited palette)
+        - No LEDs
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: midi-implementation
+    attributes:
+      label: MIDI Implementation
+      description: |
+        MIDI note numbers, CC numbers, and channels (if known)
+        Check the device manual or use Conductor's midi_diagnostic tool
+      placeholder: |
+        Pads send MIDI notes 36-51 on channel 1
+        Knobs send CC 20-27 on channel 1
+        LED control via MIDI notes 36-51 with velocity for brightness
+      render: text
+
+  - type: dropdown
+    id: ownership
+    attributes:
+      label: Device Ownership
+      description: Do you own this device?
+      options:
+        - "Yes - I own this device and can test"
+        - "No - But I'm interested in buying one"
+        - "No - Just requesting for the community"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: testing
+    attributes:
+      label: Testing Availability
+      description: If you own the device, can you help test Conductor with it?
+      options:
+        - "Yes - Available for regular testing"
+        - "Yes - Limited availability"
+        - "Maybe - Depends on timeline"
+        - "No - Not available for testing"
+        - "N/A - Don't own device"
+    validations:
+      required: true
+
+  - type: textarea
+    id: editor-software
+    attributes:
+      label: Editor Software
+      description: Does the manufacturer provide configuration software? (e.g., Native Instruments Controller Editor)
+      placeholder: |
+        - Software name: ...
+        - Export format: .ncmm3, .json, etc.
+        - Link: ...
+
+  - type: textarea
+    id: drivers
+    attributes:
+      label: Driver Requirements
+      description: Does the device require special drivers or is it class-compliant?
+      placeholder: |
+        - Class-compliant USB MIDI (no drivers needed)
+        - Requires manufacturer drivers for LED control
+        - Links to drivers: ...
+
+  - type: textarea
+    id: existing-tools
+    attributes:
+      label: Existing Mapping Tools
+      description: Are there other tools that support this device?
+      placeholder: |
+        - Tool X supports this via...
+        - Similar to device Y which Conductor already supports
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Your Use Case
+      description: How would you use this device with Conductor?
+      placeholder: |
+        I want to use this device for...
+        My workflow requires...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Willing to Contribute?
+      description: Can you help with implementation or testing?
+      options:
+        - "Yes - I can implement device support"
+        - "Yes - I can provide testing feedback"
+        - "Yes - I can write documentation"
+        - "No - Just requesting"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other details, photos, videos, or links
+      placeholder: Additional information...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm before submitting
+      options:
+        - label: I have searched existing issues to ensure this device hasn't been requested
+          required: true
+        - label: I have checked the device compatibility matrix in the documentation
+          required: true
+        - label: I have provided as much technical detail as possible
+          required: true

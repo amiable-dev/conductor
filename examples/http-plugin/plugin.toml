@@ -1,0 +1,22 @@
+# HTTP Request Plugin Manifest
+#
+# This manifest file describes the plugin to MIDIMon's plugin discovery system.
+
+[plugin]
+name = "http_request"
+version = "1.0.0"
+description = "Make HTTP requests (GET, POST, PUT, DELETE) with custom headers and JSON body"
+author = "MIDIMon Team"
+homepage = "https://github.com/amiable-dev/midimon"
+license = "MIT"
+type = "action"
+binary = "libmidimon_http_plugin.dylib"  # macOS
+
+# Capabilities required by this plugin
+[plugin.capabilities]
+network = true      # Required for making HTTP requests
+filesystem = false
+audio = false
+midi = false
+subprocess = false
+system_control = false

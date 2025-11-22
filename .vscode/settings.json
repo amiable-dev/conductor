@@ -1,0 +1,21 @@
+{
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.checkOnSave.allTargets": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "rust-lang.rust-analyzer",
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml",
+    "editor.formatOnSave": true
+  },
+  "files.associations": {
+    "*.toml": "toml"
+  },
+  "rust-analyzer.cargo.features": "all",
+  "debug.javascript.defaultRuntimeExecutable": {
+    "pwa-node": "/Users/christopherjoseph/.local/share/mise/shims/node"
+  }
+}

@@ -1,0 +1,927 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Configuration Overview - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/configuration/overview.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="configuration-overview"><a class="header" href="#configuration-overview">Configuration Overview</a></h1>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>MIDIMon uses a single <code>config.toml</code> file to define all device settings, modes, mappings, and advanced behavior. This file uses TOML (Tom's Obvious, Minimal Language) - a human-friendly configuration format that's easy to read and edit.</p>
+<p>This guide provides a comprehensive overview of the configuration structure, required sections, validation, and best practices.</p>
+<h2 id="configuration-file-location"><a class="header" href="#configuration-file-location">Configuration File Location</a></h2>
+<p>By default, MIDIMon looks for <code>config.toml</code> in the current working directory:</p>
+<pre><code class="language-bash"># Current directory
+./config.toml
+
+# Or specify a custom location
+midimon --config /path/to/my-config.toml
+</code></pre>
+<p><strong>Tip</strong>: Keep your <code>config.toml</code> in the project root directory for simplicity.</p>
+<h2 id="toml-syntax-basics"><a class="header" href="#toml-syntax-basics">TOML Syntax Basics</a></h2>
+<p>If you're new to TOML, here are the essentials:</p>
+<pre><code class="language-toml"># Comments start with #
+
+# Simple key-value pairs
+name = "My Device"
+port = 2
+
+# Booleans
+auto_connect = true
+debug = false
+
+# Numbers
+velocity = 127
+timeout_ms = 300
+
+# Strings (use quotes)
+description = "This is a description"
+
+# Arrays
+notes = [12, 13, 14, 15]
+modifiers = ["cmd", "shift"]
+
+# Tables (sections)
+[section_name]
+key = "value"
+
+# Array of tables (repeated sections)
+[[modes]]
+name = "Mode 1"
+
+[[modes]]
+name = "Mode 2"
+</code></pre>
+<p><strong>Key Points</strong>:</p>
+<ul>
+<li>Use <code>=</code> for assignment</li>
+<li>Use <code>[]</code> for sections (tables)</li>
+<li>Use <code>[[]]</code> for repeating sections (arrays of tables)</li>
+<li>Strings must be in quotes</li>
+<li>Comments use <code>#</code></li>
+</ul>
+<h2 id="configuration-structure-diagram"><a class="header" href="#configuration-structure-diagram">Configuration Structure Diagram</a></h2>
+<pre><code>config.toml
+├── [device]                    # Device identification (optional)
+│   ├── name
+│   └── auto_connect
+│
+├── [advanced_settings]         # Timing thresholds (optional)
+│   ├── chord_timeout_ms
+│   ├── double_tap_timeout_ms
+│   └── hold_threshold_ms
+│
+├── [[modes]]                   # Mode definitions (required, 1+)
+│   ├── name
+│   ├── color
+│   └── [[modes.mappings]]      # Mode-specific mappings
+│       ├── description
+│       ├── [trigger]
+│       └── [action]
+│
+└── [[global_mappings]]         # Global mappings (optional)
+    ├── description
+    ├── [trigger]
+    └── [action]
+</code></pre>
+<h2 id="required-vs-optional-sections"><a class="header" href="#required-vs-optional-sections">Required vs Optional Sections</a></h2>
+<h3 id="required-sections"><a class="header" href="#required-sections">Required Sections</a></h3>
+<p><strong>Minimum viable config</strong>:</p>
+<pre><code class="language-toml"># At least one mode is REQUIRED
+[[modes]]
+name = "Default"
+
+# At least one mapping (either in modes or global) is REQUIRED
+[[modes.mappings]]
+description = "Example mapping"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "a"
+modifiers = []
+</code></pre>
+<p>Without these, MIDIMon will start but won't do anything useful.</p>
+<h3 id="optional-sections"><a class="header" href="#optional-sections">Optional Sections</a></h3>
+<p>These enhance functionality but aren't required:</p>
+<pre><code class="language-toml"># Optional: Device identification
+[device]
+name = "Mikro"
+auto_connect = true
+
+# Optional: Timing customization
+[advanced_settings]
+chord_timeout_ms = 100
+double_tap_timeout_ms = 300
+hold_threshold_ms = 2000
+
+# Optional: Global mappings (work in all modes)
+[[global_mappings]]
+description = "Volume control"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "Clockwise"
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Up"
+</code></pre>
+<h2 id="section-breakdown"><a class="header" href="#section-breakdown">Section Breakdown</a></h2>
+<h3 id="device-section"><a class="header" href="#device-section">[device] Section</a></h3>
+<p>Optional section for device identification:</p>
+<pre><code class="language-toml">[device]
+name = "Mikro"           # Friendly name (used in logs)
+auto_connect = true      # Automatically connect to device on startup
+</code></pre>
+<p><strong>Parameters</strong>:</p>
+<ul>
+<li><code>name</code> (string): Device name for logging/display</li>
+<li><code>auto_connect</code> (boolean): If true, auto-connect to first available MIDI device</li>
+</ul>
+<p><strong>Default behavior</strong> (if omitted): No auto-connect, manual port selection required.</p>
+<h3 id="advanced_settings-section"><a class="header" href="#advanced_settings-section">[advanced_settings] Section</a></h3>
+<p>Optional timing customization:</p>
+<pre><code class="language-toml">[advanced_settings]
+chord_timeout_ms = 100          # Max time between notes in a chord
+double_tap_timeout_ms = 300     # Max time between taps for double-tap
+hold_threshold_ms = 2000        # Min hold time for long press
+</code></pre>
+<p><strong>Parameters</strong>:</p>
+<ul>
+<li><code>chord_timeout_ms</code> (u64): Milliseconds to wait for additional notes in a chord (default: 100)</li>
+<li><code>double_tap_timeout_ms</code> (u64): Maximum time between two taps to count as double-tap (default: 300)</li>
+<li><code>hold_threshold_ms</code> (u64): Minimum hold duration for long press trigger (default: 2000)</li>
+</ul>
+<p><strong>Defaults</strong> (if omitted):</p>
+<pre><code class="language-toml">chord_timeout_ms = 100
+double_tap_timeout_ms = 300
+hold_threshold_ms = 2000
+</code></pre>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Increase <code>chord_timeout_ms</code> for slower chord playing (e.g., 200-300ms)</li>
+<li>Decrease <code>double_tap_timeout_ms</code> for faster double-tap detection (e.g., 200ms)</li>
+<li>Adjust <code>hold_threshold_ms</code> for longer/shorter long-press (e.g., 1000-3000ms)</li>
+</ul>
+<h3 id="modes-section"><a class="header" href="#modes-section">[[modes]] Section</a></h3>
+<p>Defines a mode with its mappings. <strong>At least one mode is required.</strong></p>
+<pre><code class="language-toml">[[modes]]
+name = "Default"              # Mode name (required, unique)
+color = "blue"                # LED color theme (optional)
+
+[[modes.mappings]]            # Mode-specific mappings (array)
+description = "Copy"          # Human-readable description (optional)
+[modes.mappings.trigger]      # Trigger definition (required)
+type = "Note"
+note = 12
+[modes.mappings.action]       # Action definition (required)
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+</code></pre>
+<p><strong>Mode Parameters</strong>:</p>
+<ul>
+<li><code>name</code> (string, required): Unique mode identifier</li>
+<li><code>color</code> (string, optional): LED theme color (blue, green, purple, red, yellow, white)</li>
+</ul>
+<p><strong>Mapping Parameters</strong>:</p>
+<ul>
+<li><code>description</code> (string, optional): Human-readable description (useful for documentation)</li>
+<li><code>trigger</code> (table, required): Defines what event triggers this mapping</li>
+<li><code>action</code> (table, required): Defines what happens when triggered</li>
+</ul>
+<p><strong>Multiple modes</strong>:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Default"
+# ... mappings ...
+
+[[modes]]
+name = "Developer"
+# ... mappings ...
+
+[[modes]]
+name = "Media"
+# ... mappings ...
+</code></pre>
+<h3 id="global_mappings-section"><a class="header" href="#global_mappings-section">[[global_mappings]] Section</a></h3>
+<p>Optional mappings that work in ALL modes:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Emergency exit"
+[global_mappings.trigger]
+type = "LongPress"
+note = 0
+hold_duration_ms = 3000
+[global_mappings.action]
+type = "Shell"
+command = "killall midimon"
+
+[[global_mappings]]
+description = "Volume up"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "Clockwise"
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Up"
+</code></pre>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Emergency shutdown</li>
+<li>Mode switching</li>
+<li>Volume control</li>
+<li>System-wide shortcuts (screenshot, lock screen)</li>
+</ul>
+<p><strong>Priority</strong>: Global mappings are checked after mode-specific mappings. If a mode-specific mapping matches the same trigger, it takes precedence.</p>
+<h2 id="triggers-and-actions"><a class="header" href="#triggers-and-actions">Triggers and Actions</a></h2>
+<p>Every mapping consists of a <strong>trigger</strong> (what event to detect) and an <strong>action</strong> (what to do when triggered).</p>
+<h3 id="common-trigger-types"><a class="header" href="#common-trigger-types">Common Trigger Types</a></h3>
+<pre><code class="language-toml"># Basic note on/off
+[trigger]
+type = "Note"
+note = 12
+
+# Velocity-sensitive
+[trigger]
+type = "VelocityRange"
+note = 12
+min_velocity = 0
+max_velocity = 40
+
+# Long press
+[trigger]
+type = "LongPress"
+note = 12
+hold_duration_ms = 2000
+
+# Double-tap
+[trigger]
+type = "DoubleTap"
+note = 12
+double_tap_timeout_ms = 300
+
+# Chord (multiple notes together)
+[trigger]
+type = "NoteChord"
+notes = [12, 13, 14]
+chord_timeout_ms = 100
+
+# Encoder rotation
+[trigger]
+type = "EncoderTurn"
+direction = "Clockwise"  # or "CounterClockwise"
+
+# Control change
+[trigger]
+type = "CC"
+cc_number = 1
+</code></pre>
+<p>See <a href="../reference/triggers.html">Triggers Reference</a> for complete list.</p>
+<h3 id="common-action-types"><a class="header" href="#common-action-types">Common Action Types</a></h3>
+<pre><code class="language-toml"># Keyboard shortcut
+[action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+# Type text
+[action]
+type = "Text"
+text = "Hello, world!"
+
+# Open application
+[action]
+type = "Launch"
+app = "Terminal"
+
+# Run shell command
+[action]
+type = "Shell"
+command = "cargo test"
+
+# Volume control
+[action]
+type = "VolumeControl"
+operation = "Up"  # Up, Down, Mute, Set
+
+# Change mode
+[action]
+type = "ModeChange"
+mode = "next"  # next, previous, or mode name
+
+# Sequence of actions
+[action]
+type = "Sequence"
+actions = [
+    { type = "Launch", app = "Spotify" },
+    { type = "Delay", duration_ms = 1000 },
+    { type = "Keystroke", keys = "space", modifiers = [] }
+]
+</code></pre>
+<p>See <a href="../reference/actions.html">Actions Reference</a> for complete list.</p>
+<h2 id="minimal-configuration-example"><a class="header" href="#minimal-configuration-example">Minimal Configuration Example</a></h2>
+<p>The simplest possible working config:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Default"
+
+[[modes.mappings]]
+description = "Test"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "a"
+modifiers = []
+</code></pre>
+<p><strong>What this does</strong>:</p>
+<ul>
+<li>Creates one mode called "Default"</li>
+<li>Pressing pad 12 types "A"</li>
+</ul>
+<h2 id="full-configuration-example"><a class="header" href="#full-configuration-example">Full Configuration Example</a></h2>
+<p>A complete, production-ready config:</p>
+<pre><code class="language-toml"># Device configuration
+[device]
+name = "Mikro"
+auto_connect = true
+
+# Advanced timing settings
+[advanced_settings]
+chord_timeout_ms = 100
+double_tap_timeout_ms = 300
+hold_threshold_ms = 2000
+
+# Mode 1: General productivity
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+description = "Copy"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Paste"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Switch app"
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+[modes.mappings.action]
+type = "Keystroke"
+keys = "tab"
+modifiers = ["cmd"]
+
+# Mode 2: Development
+[[modes]]
+name = "Developer"
+color = "green"
+
+[[modes.mappings]]
+description = "Run tests"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Shell"
+command = "cargo test"
+
+[[modes.mappings]]
+description = "Build release"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Shell"
+command = "cargo build --release"
+
+# Mode 3: Media control
+[[modes]]
+name = "Media"
+color = "purple"
+
+[[modes.mappings]]
+description = "Play/Pause"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = []
+
+[[modes.mappings]]
+description = "Next track"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Keystroke"
+keys = "right"
+modifiers = ["cmd"]
+
+# Global mappings (work in all modes)
+[[global_mappings]]
+description = "Emergency exit (hold 3 seconds)"
+[global_mappings.trigger]
+type = "LongPress"
+note = 0
+hold_duration_ms = 3000
+[global_mappings.action]
+type = "Shell"
+command = "killall midimon"
+
+[[global_mappings]]
+description = "Next mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "Clockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = "next"
+
+[[global_mappings]]
+description = "Previous mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "CounterClockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = "previous"
+
+[[global_mappings]]
+description = "Volume up"
+[global_mappings.trigger]
+type = "Note"
+note = 15
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[global_mappings]]
+description = "Volume down"
+[global_mappings.trigger]
+type = "Note"
+note = 11
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Down"
+</code></pre>
+<h2 id="configuration-validation"><a class="header" href="#configuration-validation">Configuration Validation</a></h2>
+<h3 id="loading-process"><a class="header" href="#loading-process">Loading Process</a></h3>
+<p>When MIDIMon starts, it:</p>
+<ol>
+<li><strong>Locates</strong> <code>config.toml</code></li>
+<li><strong>Parses</strong> TOML syntax</li>
+<li><strong>Validates</strong> structure and values</li>
+<li><strong>Compiles</strong> triggers and actions</li>
+<li><strong>Initializes</strong> mapping engine</li>
+</ol>
+<h3 id="common-validation-errors"><a class="header" href="#common-validation-errors">Common Validation Errors</a></h3>
+<h4 id="syntax-error"><a class="header" href="#syntax-error">Syntax Error</a></h4>
+<p><strong>Error</strong>:</p>
+<pre><code>TOML parse error: expected `=`, but found `:`
+</code></pre>
+<p><strong>Cause</strong>: Invalid TOML syntax (e.g., using <code>:</code> instead of <code>=</code>)</p>
+<p><strong>Fix</strong>: Check TOML syntax rules, ensure proper formatting</p>
+<hr />
+<h4 id="missing-required-field"><a class="header" href="#missing-required-field">Missing Required Field</a></h4>
+<p><strong>Error</strong>:</p>
+<pre><code>Missing field `type` in trigger definition
+</code></pre>
+<p><strong>Cause</strong>: Trigger or action missing required <code>type</code> field</p>
+<p><strong>Fix</strong>: Add required fields:</p>
+<pre><code class="language-toml">[trigger]
+type = "Note"  # Required
+note = 12      # Required for Note trigger
+</code></pre>
+<hr />
+<h4 id="invalid-field-value"><a class="header" href="#invalid-field-value">Invalid Field Value</a></h4>
+<p><strong>Error</strong>:</p>
+<pre><code>Invalid trigger type: 'NotePress' (expected: Note, VelocityRange, LongPress, ...)
+</code></pre>
+<p><strong>Cause</strong>: Typo or unsupported value</p>
+<p><strong>Fix</strong>: Check spelling, refer to <a href="../reference/triggers.html">Triggers Reference</a></p>
+<hr />
+<h4 id="mode-name-conflict"><a class="header" href="#mode-name-conflict">Mode Name Conflict</a></h4>
+<p><strong>Error</strong>:</p>
+<pre><code>Duplicate mode name: 'Default'
+</code></pre>
+<p><strong>Cause</strong>: Two modes with the same name</p>
+<p><strong>Fix</strong>: Ensure each mode has a unique name</p>
+<hr />
+<h4 id="no-mappings-defined"><a class="header" href="#no-mappings-defined">No Mappings Defined</a></h4>
+<p><strong>Warning</strong> (not an error, but MIDIMon won't do anything):</p>
+<pre><code>Warning: No mappings defined. Controller won't trigger any actions.
+</code></pre>
+<p><strong>Fix</strong>: Add at least one mapping in a mode or global_mappings</p>
+<h3 id="validation-checklist"><a class="header" href="#validation-checklist">Validation Checklist</a></h3>
+<p>Before running MIDIMon, verify:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+TOML syntax is valid (use <code>cargo check</code> or online TOML validator)</li>
+<li><input disabled="" type="checkbox"/>
+At least one <code>[[modes]]</code> section exists</li>
+<li><input disabled="" type="checkbox"/>
+Each mode has a unique <code>name</code></li>
+<li><input disabled="" type="checkbox"/>
+At least one mapping exists (in modes or global)</li>
+<li><input disabled="" type="checkbox"/>
+Every mapping has both <code>trigger</code> and <code>action</code></li>
+<li><input disabled="" type="checkbox"/>
+All trigger/action types are spelled correctly</li>
+<li><input disabled="" type="checkbox"/>
+Note numbers match your device (use <code>pad_mapper</code> to verify)</li>
+<li><input disabled="" type="checkbox"/>
+File is saved as UTF-8 (not UTF-16 or other encoding)</li>
+</ul>
+<h2 id="configuration-tips-and-best-practices"><a class="header" href="#configuration-tips-and-best-practices">Configuration Tips and Best Practices</a></h2>
+<h3 id="1-use-comments-liberally"><a class="header" href="#1-use-comments-liberally">1. Use Comments Liberally</a></h3>
+<pre><code class="language-toml"># ===================================
+# MODE 1: General Productivity
+# ===================================
+[[modes]]
+name = "Default"
+color = "blue"
+
+# Pad layout:
+# 12=Copy  13=Paste  14=Undo  15=Redo
+# 8=Save   9=Open    10=Find  11=App Switch
+# 4=Cut    5=Select  6=Delete 7=Screenshot
+# 0=Escape 1=Enter   2=Tab    3=Space
+
+[[modes.mappings]]
+description = "Copy (Pad 12)"
+# ... trigger and action ...
+</code></pre>
+<h3 id="2-group-related-mappings"><a class="header" href="#2-group-related-mappings">2. Group Related Mappings</a></h3>
+<pre><code class="language-toml"># Clipboard operations
+[[modes.mappings]]
+description = "Copy"
+# ... copy mapping ...
+
+[[modes.mappings]]
+description = "Cut"
+# ... cut mapping ...
+
+[[modes.mappings]]
+description = "Paste"
+# ... paste mapping ...
+
+# Navigation
+[[modes.mappings]]
+description = "Next tab"
+# ... next tab ...
+</code></pre>
+<h3 id="3-use-descriptive-names"><a class="header" href="#3-use-descriptive-names">3. Use Descriptive Names</a></h3>
+<pre><code class="language-toml"># Good: Clear and specific
+[[modes]]
+name = "Development-Rust"
+
+# Bad: Ambiguous
+[[modes]]
+name = "Mode2"
+</code></pre>
+<h3 id="4-test-incrementally"><a class="header" href="#4-test-incrementally">4. Test Incrementally</a></h3>
+<p>When building a complex config:</p>
+<ol>
+<li>Start with one mode and one mapping</li>
+<li>Test it works</li>
+<li>Add more mappings one at a time</li>
+<li>Test after each addition</li>
+</ol>
+<h3 id="5-keep-a-backup"><a class="header" href="#5-keep-a-backup">5. Keep a Backup</a></h3>
+<pre><code class="language-bash"># Before major changes
+cp config.toml config.toml.backup
+
+# Or use version control
+git add config.toml
+git commit -m "Add media mode mappings"
+</code></pre>
+<h3 id="6-use-variables-for-consistency"><a class="header" href="#6-use-variables-for-consistency">6. Use Variables (for consistency)</a></h3>
+<p>While TOML doesn't have variables, you can use comments to document repeated values:</p>
+<pre><code class="language-toml"># Standard velocity ranges (document once, use everywhere):
+# Soft: 0-40
+# Medium: 41-80
+# Hard: 81-127
+
+[[modes.mappings]]
+description = "Soft press"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 12
+min_velocity = 0    # Soft range
+max_velocity = 40
+# ... action ...
+
+[[modes.mappings]]
+description = "Hard press"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 12
+min_velocity = 81   # Hard range
+max_velocity = 127
+# ... action ...
+</code></pre>
+<h2 id="configuration-hot-reloading-future-feature"><a class="header" href="#configuration-hot-reloading-future-feature">Configuration Hot-Reloading (Future Feature)</a></h2>
+<p><strong>Note</strong>: Config hot-reloading is not yet implemented in the current version. To reload config changes:</p>
+<pre><code class="language-bash"># Current workaround: Restart MIDIMon
+killall midimon
+./target/release/midimon 2
+</code></pre>
+<p><strong>Planned feature</strong> (Phase 2):</p>
+<ul>
+<li>Watch <code>config.toml</code> for changes</li>
+<li>Automatically reload without restarting</li>
+<li>Validate before applying (no downtime on errors)</li>
+</ul>
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="../getting-started/modes.html">Modes Guide</a> - Deep dive into modes</li>
+<li><a href="../reference/triggers.html">Triggers Reference</a> - All trigger types</li>
+<li><a href="../reference/actions.html">Actions Reference</a> - All action types</li>
+<li><a href="../getting-started/first-mapping.html">First Mapping Tutorial</a> - Step-by-step guide</li>
+<li><a href="https://toml.io/">TOML Specification</a> - Official TOML documentation</li>
+</ul>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="config-not-loading"><a class="header" href="#config-not-loading">Config Not Loading</a></h3>
+<p><strong>Problem</strong>: MIDIMon says "Config file not found"</p>
+<p><strong>Solutions</strong>:</p>
+<pre><code class="language-bash"># Check file exists
+ls -la config.toml
+
+# Check current directory
+pwd
+
+# Specify full path
+./midimon --config /full/path/to/config.toml
+</code></pre>
+<hr />
+<h3 id="syntax-errors"><a class="header" href="#syntax-errors">Syntax Errors</a></h3>
+<p><strong>Problem</strong>: "TOML parse error"</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>Validate TOML syntax online: https://www.toml-lint.com/</li>
+<li>Check quotes, brackets, and indentation</li>
+<li>Look for typos in section names</li>
+</ol>
+<hr />
+<h3 id="mappings-not-working"><a class="header" href="#mappings-not-working">Mappings Not Working</a></h3>
+<p><strong>Problem</strong>: Config loads but pads don't trigger actions</p>
+<p><strong>Debug steps</strong>:</p>
+<pre><code class="language-bash"># 1. Verify note numbers
+cargo run --bin pad_mapper
+
+# 2. Enable debug logging
+DEBUG=1 cargo run --release 2
+
+# 3. Check MIDI events
+cargo run --bin midi_diagnostic 2
+</code></pre>
+<p>See <a href="../troubleshooting/common-issues.html">Common Issues</a> for more troubleshooting.</p>
+<hr />
+<p><strong>Last Updated</strong>: November 11, 2025
+<strong>Config Version</strong>: 0.1 (current implementation)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../examples/ableton-live.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../configuration/triggers.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../examples/ableton-live.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../configuration/triggers.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

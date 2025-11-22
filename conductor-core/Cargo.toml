@@ -1,0 +1,86 @@
+[package]
+name = "conductor-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Conductor core multi-protocol input mapping engine (UI-independent)"
+
+[lib]
+name = "conductor_core"
+path = "src/lib.rs"
+
+[dependencies]
+# Core engine dependencies
+midir.workspace = true
+serde.workspace = true
+serde_json.workspace = true  # Plugin system
+toml.workspace = true
+hidapi.workspace = true
+gilrs.workspace = true  # Gamepad/HID input (v3.0)
+quick-xml.workspace = true
+crossbeam-channel.workspace = true
+thiserror.workspace = true
+rand.workspace = true
+regex.workspace = true  # Security validation
+dirs.workspace = true  # Path handling
+midi-msg.workspace = true  # MIDI message parsing
+libloading.workspace = true  # Plugin loading (v2.3)
+sha2.workspace = true  # Checksum verification (v2.3)
+ed25519-dalek = { workspace = true, optional = true }  # Plugin signing (v2.7)
+hex = { workspace = true, optional = true }  # Hex encoding for signatures (v2.7)
+chrono = { workspace = true, optional = true }  # Timestamps for signatures (v2.7)
+reqwest = { version = "0.12", features = ["json"], optional = true }  # Plugin registry (v2.4)
+tokio = { version = "1.40", features = ["fs"], optional = true }  # Async runtime for registry (v2.4)
+anyhow = { version = "1.0", optional = true }  # Error handling for WASM (v2.5)
+
+# Structured logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
+tracing-appender = "0.2"
+
+# WASM plugin runtime (v2.5 - sandboxed execution)
+[dependencies.wasmtime]
+workspace = true
+optional = true
+
+[dependencies.wasmtime-wasi]
+workspace = true
+optional = true
+
+# Platform-specific MIDI output (optional)
+[target.'cfg(target_os = "macos")'.dependencies]
+coremidi = { workspace = true, optional = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+alsa = { workspace = true, optional = true }
+
+[dev-dependencies]
+conductor-daemon = { path = "../conductor-daemon" }  # For integration tests
+proptest.workspace = true
+rstest.workspace = true
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.15"  # For plugin discovery tests
+
+[[bench]]
+name = "event_processing"
+harness = false
+
+[[bench]]
+name = "mapping_engine"
+harness = false
+
+# action_executor benchmark moved to conductor-daemon (Phase 2 refactor)
+
+[[bench]]
+name = "end_to_end"
+harness = false
+
+[features]
+default = ["virtual-midi"]
+test-mocks = []
+virtual-midi = ["dep:coremidi", "dep:alsa"]
+plugin = []  # Enable plugin support (native .dylib/.so/.dll)
+plugin-registry = ["dep:reqwest", "dep:tokio"]  # Enable plugin registry client (v2.4)
+plugin-wasm = ["dep:wasmtime", "dep:wasmtime-wasi", "dep:anyhow", "dep:tokio"]  # Enable WASM plugin support (v2.5)
+plugin-signing = ["dep:ed25519-dalek", "dep:hex", "dep:chrono"]  # Enable plugin signing/verification (v2.7)

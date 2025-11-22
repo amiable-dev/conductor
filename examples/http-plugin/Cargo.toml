@@ -1,0 +1,19 @@
+[package]
+name = "midimon-http-plugin"
+version = "1.0.0"
+edition = "2021"
+authors = ["MIDIMon Contributors"]
+license = "MIT"
+description = "Example HTTP request plugin for MIDIMon"
+
+# This is a standalone plugin, not part of the main workspace
+[workspace]
+
+[lib]
+name = "midimon_http_plugin"
+crate-type = ["cdylib"]
+
+[dependencies]
+midimon-core = { path = "../../midimon-core" }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["blocking", "json"] }

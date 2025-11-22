@@ -1,0 +1,75 @@
+# MIDIMon Configuration Template
+# Device: Native Instruments Maschine Mikro MK3
+# Template Version: 1.0.0
+
+[device]
+name = "Maschine Mikro MK3"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50
+double_tap_timeout_ms = 300
+hold_threshold_ms = 1000
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+# Example: Pad 1 (Note 0) - Soft/Medium/Hard velocity ranges
+[[modes.mappings]]
+description = "Pad 1 - Volume Control"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 0
+soft_max = 40
+medium_max = 80
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F1"
+modifiers = []
+
+# Example: Encoder - Volume control
+[[modes.mappings]]
+description = "Encoder - System Volume"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "Clockwise"
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "Encoder - System Volume"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "CounterClockwise"
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+[[modes]]
+name = "Development"
+color = "green"
+
+# Development mode mappings
+[[modes.mappings]]
+description = "Pad 1 - Build Project"
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+[modes.mappings.action]
+type = "Keystroke"
+keys = "b"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Pad 2 - Run Tests"
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "t"
+modifiers = ["cmd"]

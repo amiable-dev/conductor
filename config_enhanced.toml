@@ -1,0 +1,304 @@
+[device]
+name = "Mikro"
+auto_connect = true
+
+# Advanced timing settings (all in milliseconds)
+[advanced_settings]
+chord_timeout_ms = 50        # Max time between notes to detect chord
+double_tap_timeout_ms = 300  # Max time between taps for double-tap
+hold_threshold_ms = 2000     # Time before a hold is detected
+
+# ====================================
+# Mode 0: Default Mode (Blue)
+# ====================================
+[[modes]]
+name = "Default"
+color = "blue"
+
+# Pad 12: Basic tap for Spotlight Search
+[[modes.mappings]]
+description = "Spotlight Search"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+velocity_min = 1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = ["cmd"]
+
+# Pad 13: Velocity-sensitive volume control
+[[modes.mappings]]
+description = "Volume Down (soft press)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 13
+min_velocity = 1
+max_velocity = 40
+[modes.mappings.action]
+type = "VolumeControl"
+action = "Down"
+
+[[modes.mappings]]
+description = "Volume Up (hard press)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 13
+min_velocity = 80
+max_velocity = 127
+[modes.mappings.action]
+type = "VolumeControl"
+action = "Up"
+
+# Pad 14: Screenshot on regular tap, screen recording on long press
+[[modes.mappings]]
+description = "Screenshot"
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+velocity_min = 1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "4"
+modifiers = ["cmd", "shift"]
+
+[[modes.mappings]]
+description = "Start/Stop Screen Recording (long press)"
+[modes.mappings.trigger]
+type = "LongPress"
+note = 14
+min_duration_ms = 1000
+[modes.mappings.action]
+type = "Keystroke"
+keys = "5"
+modifiers = ["cmd", "shift"]
+
+# Pad 15: Mission Control
+[[modes.mappings]]
+description = "Mission Control"
+[modes.mappings.trigger]
+type = "Note"
+note = 15
+[modes.mappings.action]
+type = "Keystroke"
+keys = "up"
+modifiers = ["ctrl"]
+
+# Pad 16: Double-tap for fullscreen
+[[modes.mappings]]
+description = "Toggle Fullscreen (double tap)"
+[modes.mappings.trigger]
+type = "DoubleTap"
+note = 16
+max_interval_ms = 300
+[modes.mappings.action]
+type = "Keystroke"
+keys = "f"
+modifiers = ["ctrl", "cmd"]
+
+# Pads 8+12: Chord for Force Quit
+[[modes.mappings]]
+description = "Force Quit Applications (chord)"
+[modes.mappings.trigger]
+type = "NoteChord"
+notes = [8, 12]
+max_interval_ms = 100
+[modes.mappings.action]
+type = "Keystroke"
+keys = "escape"
+modifiers = ["cmd", "option"]
+
+# Pad 4: Long press to quit current app
+[[modes.mappings]]
+description = "Quit Current App (long press)"
+[modes.mappings.trigger]
+type = "LongPress"
+note = 4
+min_duration_ms = 1500
+[modes.mappings.action]
+type = "Keystroke"
+keys = "q"
+modifiers = ["cmd"]
+
+# ====================================
+# Mode 1: Development Mode (Green)  
+# ====================================
+[[modes]]
+name = "Development"
+color = "green"
+
+# Pad 12: Git status
+[[modes.mappings]]
+description = "Git Status"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Shell"
+command = "osascript -e 'tell application \"Terminal\" to do script \"git status\"'"
+
+# Pad 13: Git add all
+[[modes.mappings]]
+description = "Git Add All"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Shell"
+command = "osascript -e 'tell application \"Terminal\" to do script \"git add .\"'"
+
+# Pad 14: Git commit (with message prompt)
+[[modes.mappings]]
+description = "Git Commit"
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+[modes.mappings.action]
+type = "Shell"
+command = "osascript -e 'tell application \"Terminal\" to do script \"git commit -m \\\"\\\"\" & activate'"
+
+# Pad 15: Run tests
+[[modes.mappings]]
+description = "Run Tests"
+[modes.mappings.trigger]
+type = "Note"
+note = 15
+[modes.mappings.action]
+type = "Shell"
+command = "osascript -e 'tell application \"Terminal\" to do script \"cargo test\"'"
+
+# Chord 12+13: Save All Files
+[[modes.mappings]]
+description = "Save All Files (chord)"
+[modes.mappings.trigger]
+type = "NoteChord"
+notes = [12, 13]
+max_interval_ms = 100
+[modes.mappings.action]
+type = "Keystroke"
+keys = "s"
+modifiers = ["cmd", "option"]
+
+# Long press pad 16: Force rebuild
+[[modes.mappings]]
+description = "Clean Build (long press)"
+[modes.mappings.trigger]
+type = "LongPress"
+note = 16
+min_duration_ms = 1000
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "Shell", command = "osascript -e 'tell application \"Terminal\" to do script \"cargo clean\"'" },
+    { type = "Delay", ms = 500 },
+    { type = "Shell", command = "osascript -e 'tell application \"Terminal\" to do script \"cargo build --release\"'" }
+]
+
+# ====================================
+# Mode 2: Media Mode (Purple)
+# ====================================
+[[modes]]
+name = "Media"
+color = "purple"
+
+# Pad 12: Play/Pause
+[[modes.mappings]]
+description = "Play/Pause"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F8"
+modifiers = []
+
+# Pad 13: Previous Track
+[[modes.mappings]]
+description = "Previous Track"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F7"
+modifiers = []
+
+# Pad 14: Next Track
+[[modes.mappings]]
+description = "Next Track"
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F9"
+modifiers = []
+
+# Pad 15: Mute (double tap)
+[[modes.mappings]]
+description = "Mute/Unmute (double tap)"
+[modes.mappings.trigger]
+type = "DoubleTap"
+note = 15
+max_interval_ms = 300
+[modes.mappings.action]
+type = "VolumeControl"
+action = "Mute"
+
+# ====================================
+# Global Mappings (work in all modes)
+# ====================================
+
+# Encoder 1: Mode switching
+[[global_mappings]]
+description = "Next Mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "Clockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = 1
+
+[[global_mappings]]
+description = "Previous Mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "CounterClockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = 0
+
+# Encoder 2: System volume
+[[global_mappings]]
+description = "Volume Up"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 2
+direction = "Clockwise"
+[global_mappings.action]
+type = "VolumeControl"
+action = "Up"
+
+[[global_mappings]]
+description = "Volume Down"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 2
+direction = "CounterClockwise"
+[global_mappings.action]
+type = "VolumeControl"
+action = "Down"
+
+# Emergency exit: Hold pad 1 for 3 seconds
+[[global_mappings]]
+description = "Emergency Exit (hold 3s)"
+[global_mappings.trigger]
+type = "LongPress"
+note = 1
+min_duration_ms = 3000
+[global_mappings.action]
+type = "Keystroke"
+keys = "escape"
+modifiers = []

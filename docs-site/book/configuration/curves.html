@@ -1,0 +1,617 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Velocity Mappings - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/configuration/curves.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="velocity-mapping-configuration"><a class="header" href="#velocity-mapping-configuration">Velocity Mapping Configuration</a></h1>
+<p>Complete TOML reference for velocity mapping configuration.</p>
+<hr />
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Velocity mappings transform input velocity (0-127) into output velocity using configurable curves. This allows you to customize the relationship between how hard you hit a pad and what action is triggered.</p>
+<hr />
+<h2 id="configuration-location"><a class="header" href="#configuration-location">Configuration Location</a></h2>
+<p>Velocity mappings are configured per-mapping in the <code>velocity_mapping</code> field:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "My mapping"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 5
+
+[modes.mappings.velocity_mapping]
+# Velocity mapping configuration goes here
+
+[modes.mappings.action]
+type = "SendMidi"
+# ...
+</code></pre>
+<hr />
+<h2 id="velocity-mapping-types"><a class="header" href="#velocity-mapping-types">Velocity Mapping Types</a></h2>
+<h3 id="fixed"><a class="header" href="#fixed">Fixed</a></h3>
+<p>Output is always the same velocity, regardless of input.</p>
+<p><strong>Fields</strong>:</p>
+<ul>
+<li><code>type</code> (string, required): Must be <code>"Fixed"</code></li>
+<li><code>velocity</code> (integer, required): Output velocity (0-127)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Fixed"
+velocity = 100
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Actions that don't need velocity variation</li>
+<li>Ensure consistent behavior regardless of hit strength</li>
+<li>Testing and debugging</li>
+</ul>
+<hr />
+<h3 id="passthrough"><a class="header" href="#passthrough">PassThrough</a></h3>
+<p>Output velocity equals input velocity (1:1 mapping). This is the default if no velocity mapping is specified.</p>
+<p><strong>Fields</strong>:</p>
+<ul>
+<li>Can be specified as just the string <code>"PassThrough"</code> (no fields required)</li>
+</ul>
+<p><strong>Example (short form)</strong>:</p>
+<pre><code class="language-toml">velocity_mapping = "PassThrough"
+</code></pre>
+<p><strong>Example (explicit form)</strong>:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "PassThrough"
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Natural, unmodified velocity response</li>
+<li>Direct MIDI pass-through</li>
+<li>When you want no velocity transformation</li>
+</ul>
+<hr />
+<h3 id="linear"><a class="header" href="#linear">Linear</a></h3>
+<p>Maps full input range (0-127) to custom output range with linear scaling.</p>
+<p><strong>Fields</strong>:</p>
+<ul>
+<li><code>type</code> (string, required): Must be <code>"Linear"</code></li>
+<li><code>min</code> (integer, required): Minimum output velocity (0-127)</li>
+<li><code>max</code> (integer, required): Maximum output velocity (0-127)</li>
+</ul>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>Input 0 → Output <code>min</code></li>
+<li>Input 127 → Output <code>max</code></li>
+<li>Values between are scaled proportionally</li>
+</ul>
+<p><strong>Formula</strong>:</p>
+<pre><code>output = min + (input / 127) × (max - min)
+</code></pre>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Linear"
+min = 40   # Softest hit = 40 (instead of 0)
+max = 110  # Hardest hit = 110 (instead of 127)
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Compress dynamic range (e.g., 0-127 → 60-100)</li>
+<li>Expand subtle playing (e.g., 0-127 → 20-127)</li>
+<li>Shift velocity range up or down</li>
+<li>Make soft hits louder while preventing loud spikes</li>
+</ul>
+<p><strong>Parameter Constraints</strong>:</p>
+<ul>
+<li><code>min</code> must be ≤ <code>max</code></li>
+<li>Both must be in range 0-127</li>
+<li>If <code>min</code> = <code>max</code>, acts like Fixed mapping</li>
+</ul>
+<hr />
+<h3 id="curve"><a class="header" href="#curve">Curve</a></h3>
+<p>Applies non-linear transformation with adjustable intensity.</p>
+<p><strong>Fields</strong>:</p>
+<ul>
+<li><code>type</code> (string, required): Must be <code>"Curve"</code></li>
+<li><code>curve_type</code> (string, required): One of <code>"Exponential"</code>, <code>"Logarithmic"</code>, or <code>"SCurve"</code></li>
+<li><code>intensity</code> (float, required): Curve intensity (0.0 = linear, 1.0 = maximum effect)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Curve"
+curve_type = "Exponential"
+intensity = 0.7
+</code></pre>
+<hr />
+<h4 id="exponential-curve"><a class="header" href="#exponential-curve">Exponential Curve</a></h4>
+<p>Makes soft hits louder while preserving hard hits.</p>
+<p><strong>Formula</strong>:</p>
+<pre><code>output = input^(1 - intensity)
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li><code>intensity = 0.0</code>: Linear (no change)</li>
+<li><code>intensity = 0.5</code>: Moderate compression of soft notes</li>
+<li><code>intensity = 1.0</code>: Maximum compression (all inputs → 127)</li>
+</ul>
+<p><strong>Effect</strong>:</p>
+<ul>
+<li>Low input velocities are boosted significantly</li>
+<li>High input velocities remain relatively unchanged</li>
+<li>Creates "compressed" feel that makes subtle playing more audible</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Curve"
+curve_type = "Exponential"
+intensity = 0.8  # Strong boost for soft hits
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Make soft playing more audible</li>
+<li>Compensate for light touch</li>
+<li>Reduce dynamic range while preserving expressiveness</li>
+<li>MIDI output to DAWs where soft notes get lost</li>
+</ul>
+<hr />
+<h4 id="logarithmic-curve"><a class="header" href="#logarithmic-curve">Logarithmic Curve</a></h4>
+<p>Compresses dynamic range, making loud hits quieter relative to soft hits.</p>
+<p><strong>Formula</strong>:</p>
+<pre><code>normalized_input = input / 127
+output = log(1 + intensity × normalized_input) / log(1 + intensity) × 127
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li><code>intensity = 0.0</code>: Linear (no change)</li>
+<li><code>intensity = 0.5</code>: Moderate compression</li>
+<li><code>intensity = 1.0</code>: Maximum compression</li>
+</ul>
+<p><strong>Effect</strong>:</p>
+<ul>
+<li>High input velocities are attenuated</li>
+<li>Low input velocities are relatively preserved</li>
+<li>Creates "tamed" feel that prevents aggressive playing from being too loud</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Curve"
+curve_type = "Logarithmic"
+intensity = 0.6  # Moderate taming of loud hits
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Tame aggressive playing</li>
+<li>Prevent ear-splitting volume spikes</li>
+<li>Smooth out dynamic range for consistent mix</li>
+<li>Volume control actions that need gentle adjustment</li>
+</ul>
+<hr />
+<h4 id="s-curve-sigmoid"><a class="header" href="#s-curve-sigmoid">S-Curve (Sigmoid)</a></h4>
+<p>Smooth acceleration in middle range with soft and hard extremes less affected.</p>
+<p><strong>Formula</strong>:</p>
+<pre><code>normalized_input = input / 127
+k = intensity × 10 + 0.5
+sigmoid = 1 / (1 + exp(-k × (normalized_input - 0.5)))
+output = normalize(sigmoid) × 127
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li><code>intensity = 0.0</code>: Nearly linear</li>
+<li><code>intensity = 0.5</code>: Balanced S-curve with noticeable "sweet spot"</li>
+<li><code>intensity = 1.0</code>: Sharp transition in midrange</li>
+</ul>
+<p><strong>Effect</strong>:</p>
+<ul>
+<li>Creates a "sweet spot" in the middle velocity range</li>
+<li>Soft and hard extremes are less affected</li>
+<li>Natural-feeling response with smooth acceleration</li>
+<li>Provides more control in the middle range while preserving extremes</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Curve"
+curve_type = "SCurve"
+intensity = 0.5  # Balanced response with sweet spot
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Natural-feeling dynamics</li>
+<li>Emphasis on mid-range control</li>
+<li>Smooth transitions between soft and hard</li>
+<li>Expressive MIDI control with gradual acceleration</li>
+</ul>
+<hr />
+<h2 id="intensity-parameter-guide"><a class="header" href="#intensity-parameter-guide">Intensity Parameter Guide</a></h2>
+<p>For Curve mappings, the <code>intensity</code> parameter controls how pronounced the curve effect is:</p>
+<div class="table-wrapper"><table><thead><tr><th>Intensity</th><th>Effect</th><th>Typical Use Case</th></tr></thead><tbody>
+<tr><td>0.0 - 0.2</td><td>Very subtle</td><td>Fine-tuning, slight adjustment</td></tr>
+<tr><td>0.3 - 0.5</td><td>Moderate</td><td>Noticeable but natural feel</td></tr>
+<tr><td>0.6 - 0.8</td><td>Strong</td><td>Significant transformation</td></tr>
+<tr><td>0.9 - 1.0</td><td>Extreme</td><td>Dramatic effect, testing</td></tr>
+</tbody></table>
+</div>
+<p><strong>Recommendation</strong>: Start with <code>0.5</code> and adjust in increments of 0.1 until you find the desired feel.</p>
+<hr />
+<h2 id="combining-with-actions"><a class="header" href="#combining-with-actions">Combining with Actions</a></h2>
+<p>Velocity mappings apply <strong>before</strong> the action is executed. The transformed velocity is passed to the action.</p>
+<h3 id="sendmidi-action"><a class="header" href="#sendmidi-action">SendMidi Action</a></h3>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Curve"
+curve_type = "Exponential"
+intensity = 0.7
+
+[action]
+type = "SendMidi"
+port = "Virtual MIDI Port"
+message_type = "NoteOn"
+channel = 0
+note = 60
+# Velocity is derived from the mapped input velocity
+</code></pre>
+<h3 id="velocityrange-action"><a class="header" href="#velocityrange-action">VelocityRange Action</a></h3>
+<p>Velocity mapping transforms the input <strong>before</strong> VelocityRange thresholds are applied:</p>
+<pre><code class="language-toml">[velocity_mapping]
+type = "Linear"
+min = 30
+max = 120
+
+[action]
+type = "VelocityRange"
+soft_max = 50    # Applied to mapped velocity (30-120 range)
+medium_max = 90
+soft_action = { type = "Text", text = "Soft" }
+medium_action = { type = "Text", text = "Medium" }
+hard_action = { type = "Text", text = "Hard" }
+</code></pre>
+<hr />
+<h2 id="default-behavior"><a class="header" href="#default-behavior">Default Behavior</a></h2>
+<p>If no <code>velocity_mapping</code> is specified, <strong>PassThrough</strong> is used by default:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+# No velocity_mapping specified = PassThrough
+[modes.mappings.action]
+type = "SendMidi"
+# Velocity is passed through unchanged
+</code></pre>
+<hr />
+<h2 id="validation-rules"><a class="header" href="#validation-rules">Validation Rules</a></h2>
+<p><strong>Type Validation</strong>:</p>
+<ul>
+<li><code>type</code> must be one of: <code>"Fixed"</code>, <code>"PassThrough"</code>, <code>"Linear"</code>, <code>"Curve"</code></li>
+<li>Invalid type will cause config load error</li>
+</ul>
+<p><strong>Fixed Validation</strong>:</p>
+<ul>
+<li><code>velocity</code> must be 0-127</li>
+<li>Missing <code>velocity</code> will cause error</li>
+</ul>
+<p><strong>Linear Validation</strong>:</p>
+<ul>
+<li><code>min</code> and <code>max</code> must be 0-127</li>
+<li><code>min</code> should be ≤ <code>max</code> (not enforced, but illogical if reversed)</li>
+<li>Missing <code>min</code> or <code>max</code> will cause error</li>
+</ul>
+<p><strong>Curve Validation</strong>:</p>
+<ul>
+<li><code>curve_type</code> must be one of: <code>"Exponential"</code>, <code>"Logarithmic"</code>, <code>"SCurve"</code></li>
+<li><code>intensity</code> must be 0.0-1.0</li>
+<li>Missing <code>curve_type</code> or <code>intensity</code> will cause error</li>
+</ul>
+<hr />
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<h3 id="example-1-consistent-launch-action"><a class="header" href="#example-1-consistent-launch-action">Example 1: Consistent Launch Action</a></h3>
+<p>Ignore velocity variation for application launching:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Launch browser (any hit strength)"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 5
+
+[modes.mappings.velocity_mapping]
+type = "Fixed"
+velocity = 100  # Doesn't actually matter for Launch
+
+[modes.mappings.action]
+type = "Launch"
+app = "Safari"
+</code></pre>
+<hr />
+<h3 id="example-2-gentle-volume-control"><a class="header" href="#example-2-gentle-volume-control">Example 2: Gentle Volume Control</a></h3>
+<p>Compress volume adjustments for smoother control:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Volume up (gentle)"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 10
+
+[modes.mappings.velocity_mapping]
+type = "Linear"
+min = 60   # Even soft tap has impact
+max = 100  # Prevent ear-splitting jumps
+
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+</code></pre>
+<hr />
+<h3 id="example-3-expressive-midi-output"><a class="header" href="#example-3-expressive-midi-output">Example 3: Expressive MIDI Output</a></h3>
+<p>Boost soft playing for DAW control:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "MIDI note with boosted soft hits"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[modes.mappings.velocity_mapping]
+type = "Curve"
+curve_type = "Exponential"
+intensity = 0.7
+
+[modes.mappings.action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 0
+note = 60
+velocity = 100  # This is overridden by mapped velocity
+</code></pre>
+<hr />
+<h3 id="example-4-natural-response-curve"><a class="header" href="#example-4-natural-response-curve">Example 4: Natural Response Curve</a></h3>
+<p>S-Curve for smooth, natural feel:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Natural dynamics with sweet spot"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 3
+
+[modes.mappings.velocity_mapping]
+type = "Curve"
+curve_type = "SCurve"
+intensity = 0.5
+
+[modes.mappings.action]
+type = "SendMidi"
+port = "Virtual MIDI Port"
+message_type = "CC"
+channel = 0
+controller = 7  # Volume CC
+value = 64      # Overridden by mapped velocity
+</code></pre>
+<hr />
+<h2 id="related-documentation"><a class="header" href="#related-documentation">Related Documentation</a></h2>
+<ul>
+<li><a href="../guides/velocity-curves.html">Guide: Customizing Velocity Response</a> - User guide with tutorials</li>
+<li><a href="actions.html">Configuration: Actions</a> - Action types that use velocity</li>
+<li><a href="../guides/context-aware.html">Guide: Context-Aware Mappings</a> - Combine with conditionals</li>
+</ul>
+<hr />
+<p><strong>See Also</strong>: The GUI provides a visual curve preview graph to help you dial in the perfect response curve. The graph updates in real-time as you adjust parameters.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../configuration/actions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../configuration/conditionals.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../configuration/actions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../configuration/conditionals.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

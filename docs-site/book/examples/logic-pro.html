@@ -1,0 +1,802 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Logic Pro Integration - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/examples/logic-pro.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="logic-pro-integration"><a class="header" href="#logic-pro-integration">Logic Pro Integration</a></h1>
+<p>This guide shows you how to set up MIDIMon to control Logic Pro, Apple's professional digital audio workstation. We'll cover transport controls, mixer automation, and smart control integration.</p>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
+<ul>
+<li>macOS (Logic Pro is macOS-only)</li>
+<li>MIDIMon v2.1.0 or later</li>
+<li>Logic Pro 10.5 or later</li>
+<li>IAC Driver configured (see <a href="../guides/daw-control.html#macos-iac-driver">DAW Control Guide</a>)</li>
+</ul>
+<h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<h3 id="1-enable-iac-driver"><a class="header" href="#1-enable-iac-driver">1. Enable IAC Driver</a></h3>
+<p>First, ensure your IAC Driver is enabled:</p>
+<ol>
+<li>Open <strong>Audio MIDI Setup</strong> (Applications → Utilities)</li>
+<li>Show MIDI Studio (Window → Show MIDI Studio)</li>
+<li>Double-click <strong>IAC Driver</strong></li>
+<li>Check <strong>"Device is online"</strong></li>
+<li>Ensure at least one bus exists (default: "IAC Driver Bus 1")</li>
+<li>Click <strong>Apply</strong></li>
+</ol>
+<h3 id="2-configure-logic-pro-midi-input"><a class="header" href="#2-configure-logic-pro-midi-input">2. Configure Logic Pro MIDI Input</a></h3>
+<p>In Logic Pro:</p>
+<ol>
+<li>Open <strong>Logic Pro → Settings → MIDI → Inputs</strong> (or press ⌘,)</li>
+<li>Locate <strong>IAC Driver Bus 1</strong> in the device list</li>
+<li>Check the box to enable it</li>
+<li>Close Settings</li>
+</ol>
+<h3 id="3-create-a-basic-transport-control-profile"><a class="header" href="#3-create-a-basic-transport-control-profile">3. Create a Basic Transport Control Profile</a></h3>
+<p>Create or update your <code>~/.config/midimon/config.toml</code>:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Logic Pro"
+color = "purple"
+
+# Play/Pause (Pad 1)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 115  # Logic Pro Play/Pause CC
+value = 127
+channel = 0
+
+# Stop (Pad 2)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 2
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 116  # Logic Pro Stop CC
+value = 127
+channel = 0
+
+# Record (Pad 3)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 3
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 117  # Logic Pro Record CC
+value = 127
+channel = 0
+</code></pre>
+<h3 id="4-set-up-logic-pro-control-surface"><a class="header" href="#4-set-up-logic-pro-control-surface">4. Set Up Logic Pro Control Surface</a></h3>
+<p>In Logic Pro:</p>
+<ol>
+<li>Open <strong>Logic Pro → Control Surfaces → Setup</strong></li>
+<li>Click <strong>New → Install...</strong> (or press ⌘N)</li>
+<li>Choose <strong>Mackie Control</strong> or <strong>Generic</strong> from the list</li>
+<li>In the device settings:
+<ul>
+<li><strong>Input</strong>: Select <strong>IAC Driver Bus 1</strong></li>
+<li><strong>Output</strong>: (Optional - for feedback)</li>
+</ul>
+</li>
+<li>Click <strong>Apply</strong> or <strong>OK</strong></li>
+</ol>
+<h3 id="5-test-the-configuration"><a class="header" href="#5-test-the-configuration">5. Test the Configuration</a></h3>
+<ol>
+<li>Start the MIDIMon daemon: <code>midimon</code></li>
+<li>Open a Logic Pro project</li>
+<li>Press Pad 1 on your controller → Logic should Play/Pause</li>
+<li>Press Pad 2 → Logic should Stop</li>
+<li>Press Pad 3 → Logic should start Recording</li>
+</ol>
+<h2 id="logic-pro-midi-cc-mapping-reference"><a class="header" href="#logic-pro-midi-cc-mapping-reference">Logic Pro MIDI CC Mapping Reference</a></h2>
+<p>Logic Pro uses specific CC numbers for different transport and control functions:</p>
+<div class="table-wrapper"><table><thead><tr><th>Function</th><th>CC Number</th><th>Value Range</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Play/Pause</td><td>115</td><td>127</td><td>Toggle transport</td></tr>
+<tr><td>Stop</td><td>116</td><td>127</td><td>Stop playback</td></tr>
+<tr><td>Record</td><td>117</td><td>127</td><td>Toggle record</td></tr>
+<tr><td>Rewind</td><td>118</td><td>127</td><td>Skip backward</td></tr>
+<tr><td>Fast Forward</td><td>119</td><td>127</td><td>Skip forward</td></tr>
+<tr><td>Cycle</td><td>120</td><td>127</td><td>Toggle cycle mode</td></tr>
+<tr><td>Volume (Track 1)</td><td>7</td><td>0-127</td><td>Channel 0</td></tr>
+<tr><td>Pan (Track 1)</td><td>10</td><td>0-127</td><td>Channel 0</td></tr>
+<tr><td>Volume (Track 2)</td><td>7</td><td>0-127</td><td>Channel 1</td></tr>
+<tr><td>Pan (Track 2)</td><td>10</td><td>0-127</td><td>Channel 1</td></tr>
+</tbody></table>
+</div>
+<p><strong>Note</strong>: Track-specific controls use different MIDI channels (Track 1 = Channel 0, Track 2 = Channel 1, etc.)</p>
+<h2 id="complete-transport-control-profile"><a class="header" href="#complete-transport-control-profile">Complete Transport Control Profile</a></h2>
+<p>Here's a full-featured transport control profile for Logic Pro:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Logic Pro"
+color = "purple"
+
+# ===== Transport Controls =====
+
+# Play/Pause (Pad 1)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 115
+value = 127
+channel = 0
+
+# Stop (Pad 2)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 2
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 116
+value = 127
+channel = 0
+
+# Record (Pad 3)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 3
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 117
+value = 127
+channel = 0
+
+# Rewind (Pad 4)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 4
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 118
+value = 127
+channel = 0
+
+# Fast Forward (Pad 5)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 5
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 119
+value = 127
+channel = 0
+
+# Cycle On/Off (Pad 6)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 6
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 120
+value = 127
+channel = 0
+</code></pre>
+<h2 id="mixer-control-with-velocity-curves"><a class="header" href="#mixer-control-with-velocity-curves">Mixer Control with Velocity Curves</a></h2>
+<p>Use velocity-sensitive pads to control track volume with smooth curves:</p>
+<pre><code class="language-toml"># Track 1 Volume (Pad 9, velocity-sensitive)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 9
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 7  # Volume
+channel = 0     # Track 1
+
+[modes.mappings.action.then_action.message.velocity_curve]
+type = "Curve"
+input_min = 0
+input_max = 127
+output_min = 0
+output_max = 127
+curve = 1.5  # Slightly exponential for better fader control
+
+# Track 2 Volume (Pad 10)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 10
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 7
+channel = 1     # Track 2
+
+[modes.mappings.action.then_action.message.velocity_curve]
+type = "Curve"
+input_min = 0
+input_max = 127
+output_min = 0
+output_max = 127
+curve = 1.5
+</code></pre>
+<h2 id="smart-controls-integration"><a class="header" href="#smart-controls-integration">Smart Controls Integration</a></h2>
+<p>Logic Pro's Smart Controls can be MIDI-mapped for parameter automation:</p>
+<h3 id="step-1-map-smart-controls-in-logic-pro"><a class="header" href="#step-1-map-smart-controls-in-logic-pro">Step 1: Map Smart Controls in Logic Pro</a></h3>
+<ol>
+<li>Open a Logic Pro project with a software instrument</li>
+<li>Show <strong>Smart Controls</strong> (press B or View → Show Smart Controls)</li>
+<li>Click <strong>Learn</strong> button in Smart Controls header</li>
+<li>Press a pad on your MIDI controller</li>
+<li>Logic will assign that CC to the Smart Control knob</li>
+<li>Repeat for up to 8 Smart Control parameters</li>
+</ol>
+<h3 id="step-2-configure-midimon-to-send-smart-control-ccs"><a class="header" href="#step-2-configure-midimon-to-send-smart-control-ccs">Step 2: Configure MIDIMon to Send Smart Control CCs</a></h3>
+<pre><code class="language-toml"># Smart Control 1 (Pad 13, velocity controls CC value)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 71  # Smart Control 1 (default)
+channel = 0
+
+[modes.mappings.action.then_action.message.velocity_curve]
+type = "PassThrough"  # Direct velocity → CC value mapping
+
+# Smart Control 2 (Pad 14)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 72  # Smart Control 2
+channel = 0
+
+[modes.mappings.action.then_action.message.velocity_curve]
+type = "PassThrough"
+</code></pre>
+<p><strong>Default Smart Control CC Numbers</strong>:</p>
+<ul>
+<li>Smart Control 1: CC 71</li>
+<li>Smart Control 2: CC 72</li>
+<li>Smart Control 3: CC 73</li>
+<li>Smart Control 4: CC 74</li>
+<li>Smart Control 5: CC 75</li>
+<li>Smart Control 6: CC 76</li>
+<li>Smart Control 7: CC 77</li>
+<li>Smart Control 8: CC 78</li>
+</ul>
+<h2 id="advanced-multi-function-pads-with-long-press"><a class="header" href="#advanced-multi-function-pads-with-long-press">Advanced: Multi-Function Pads with Long Press</a></h2>
+<p>Use long press to access secondary functions on the same pad:</p>
+<pre><code class="language-toml"># Pad 1: Play (short press) / Stop (long press)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 115  # Play
+value = 127
+channel = 0
+
+# Long press variant (Stop)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "LongPress"
+note = 1
+duration_ms = 800
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 116  # Stop
+value = 127
+channel = 0
+</code></pre>
+<h2 id="using-midi-learn-in-logic-pro"><a class="header" href="#using-midi-learn-in-logic-pro">Using MIDI Learn in Logic Pro</a></h2>
+<p>Logic Pro has a built-in MIDI Learn feature for custom mappings:</p>
+<h3 id="step-1-enter-midi-learn-mode"><a class="header" href="#step-1-enter-midi-learn-mode">Step 1: Enter MIDI Learn Mode</a></h3>
+<ol>
+<li>In Logic Pro, go to <strong>Logic Pro → Control Surfaces → Learn Assignment</strong></li>
+<li>Click the parameter you want to control (e.g., a plugin knob, fader, button)</li>
+<li>Press the pad on your MIDI controller</li>
+<li>Logic will map that CC to the parameter</li>
+<li>Press <strong>Done</strong> when finished</li>
+</ol>
+<h3 id="step-2-configure-midimon"><a class="header" href="#step-2-configure-midimon">Step 2: Configure MIDIMon</a></h3>
+<p>Once Logic has learned the CC mapping, configure MIDIMon to send that CC:</p>
+<pre><code class="language-toml"># Example: Plugin parameter learned as CC 20
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 15
+
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.then_action.message]
+type = "CC"
+controller = 20  # Whatever Logic learned
+channel = 0
+
+[modes.mappings.action.then_action.message.velocity_curve]
+type = "PassThrough"
+</code></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="iac-driver-not-appearing-in-logic-pro"><a class="header" href="#iac-driver-not-appearing-in-logic-pro">IAC Driver Not Appearing in Logic Pro</a></h3>
+<p><strong>Problem</strong>: IAC Driver doesn't show up in Logic Pro's MIDI Inputs.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Verify IAC Driver is enabled in Audio MIDI Setup</li>
+<li>Restart Logic Pro after enabling IAC Driver</li>
+<li>Check <strong>Logic Pro → Settings → MIDI → Reset MIDI Drivers</strong></li>
+</ol>
+<h3 id="messages-sent-but-no-response"><a class="header" href="#messages-sent-but-no-response">Messages Sent But No Response</a></h3>
+<p><strong>Problem</strong>: MIDIMon sends MIDI but Logic doesn't respond.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Verify the control surface is configured in <strong>Logic Pro → Control Surfaces → Setup</strong></li>
+<li>Ensure the correct CC numbers for your Logic version (some changed in Logic Pro 10.5+)</li>
+<li>Try using MIDI Learn to discover the correct CC numbers</li>
+<li>Check MIDI channel (most Logic functions use Channel 0)</li>
+</ol>
+<h3 id="latency-issues"><a class="header" href="#latency-issues">Latency Issues</a></h3>
+<p><strong>Problem</strong>: Noticeable delay between pad press and Logic response.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Lower Logic Pro's I/O buffer size: <strong>Logic Pro → Settings → Audio → I/O Buffer Size</strong></li>
+<li>Use IAC Driver (lowest latency) instead of virtual MIDI apps</li>
+<li>Reduce CPU load (freeze tracks, disable unused plugins)</li>
+</ol>
+<h3 id="control-surface-conflicts"><a class="header" href="#control-surface-conflicts">Control Surface Conflicts</a></h3>
+<p><strong>Problem</strong>: Multiple control surfaces interfering with each other.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>In <strong>Logic Pro → Control Surfaces → Setup</strong>, disable unused control surfaces</li>
+<li>Ensure IAC Driver is assigned to only one control surface</li>
+<li>Use unique MIDI channels for different control surfaces</li>
+</ol>
+<h2 id="complete-example-profile"><a class="header" href="#complete-example-profile">Complete Example Profile</a></h2>
+<p>Here's a production-ready Logic Pro control profile with all features:</p>
+<p>Download: <a href="../downloads/logic-pro-complete.toml">logic-pro-complete.toml</a> (coming soon)</p>
+<p><strong>Features</strong>:</p>
+<ul>
+<li>Transport controls (Play, Stop, Record, Rewind, FF, Cycle)</li>
+<li>4-track mixer (Volume + Pan per track)</li>
+<li>8 Smart Control parameters</li>
+<li>Multi-function pads (short/long press)</li>
+<li>Velocity-sensitive mixer control</li>
+<li>AppFrontmost conditional (only works when Logic is active)</li>
+</ul>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li><strong><a href="ableton-live.html">Ableton Live Integration</a></strong> - Control Ableton Live with MIDIMon</li>
+<li><strong><a href="../troubleshooting/midi-output.html">MIDI Output Troubleshooting</a></strong> - Advanced debugging</li>
+<li><strong><a href="../guides/daw-control.html">DAW Control Guide</a></strong> - General DAW control concepts</li>
+</ul>
+<h2 id="further-reading"><a class="header" href="#further-reading">Further Reading</a></h2>
+<ul>
+<li><a href="https://support.apple.com/guide/logicpro/welcome/mac">Logic Pro User Guide - MIDI</a></li>
+<li><a href="https://support.apple.com/guide/logicpro/control-surfaces-overview-lgcp2d83e0e9/mac">Logic Pro Control Surfaces</a></li>
+<li><a href="https://support.apple.com/guide/audio-midi-setup/transfer-midi-information-between-apps-ams1013/mac">IAC Driver Configuration</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../tutorials/dynamic-workflows.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../examples/ableton-live.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../tutorials/dynamic-workflows.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../examples/ableton-live.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

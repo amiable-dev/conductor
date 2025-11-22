@@ -1,0 +1,284 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Get version from tag
+        id: get_version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get previous tag
+          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # First release, show all commits
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            # Show commits since previous tag
+            CHANGELOG=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          fi
+
+          # Save changelog to file for reuse
+          echo "$CHANGELOG" > changelog.txt
+
+          # Also output for GitHub
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ steps.get_version.outputs.version }}
+          body: |
+            ## What's Changed
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ## Installation
+
+            ### GUI Application (Recommended for v2.0+)
+
+            Download the Conductor GUI for your platform:
+            - **macOS**: conductor-gui-macos-universal.tar.gz (Universal binary for Intel & Apple Silicon)
+            - **Linux**: conductor-gui-linux-x86_64.tar.gz (or .AppImage/.deb)
+
+            Extract and run:
+            ```bash
+            # macOS
+            tar xzf conductor-gui-macos-universal.tar.gz
+            open "Conductor GUI.app"
+
+            # Linux (tarball)
+            tar xzf conductor-gui-linux-x86_64.tar.gz
+            chmod +x conductor-gui
+            ./conductor-gui
+
+            # Linux (AppImage)
+            chmod +x *.AppImage
+            ./*.AppImage
+
+            # Linux (.deb package)
+            sudo dpkg -i conductor-gui_*_amd64.deb
+            ```
+
+            ### Daemon Binary (CLI/headless usage)
+
+            Download the appropriate daemon binary for your platform:
+            - **macOS (Apple Silicon)**: conductor-aarch64-apple-darwin.tar.gz
+            - **macOS (Intel)**: conductor-x86_64-apple-darwin.tar.gz
+            - **Linux**: conductor-x86_64-unknown-linux-gnu.tar.gz
+
+            Extract and make it executable:
+            ```bash
+            tar xzf conductor-*.tar.gz
+            chmod +x conductor
+            sudo mv conductor /usr/local/bin/
+            ```
+
+            See [README.md](https://github.com/amiable-dev/conductor#installation) for full installation instructions.
+
+            ---
+
+            🤖 Generated with Claude Code
+          draft: false
+          prerelease: ${{ contains(github.ref, 'pre') || contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+          generate_release_notes: true
+
+  build-release:
+    name: Build Release (${{ matrix.target }})
+    needs: create-release
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            binary_name: conductor
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            binary_name: conductor
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            binary_name: conductor
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install system dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libudev-dev pkg-config
+
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }} --package conductor-daemon
+
+      - name: Strip binary (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: strip target/${{ matrix.target }}/release/${{ matrix.binary_name }}
+
+      - name: Create tarball
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czf conductor-${{ matrix.target }}.tar.gz ${{ matrix.binary_name }}
+          shasum -a 256 conductor-${{ matrix.target }}.tar.gz > conductor-${{ matrix.target }}.tar.gz.sha256
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/${{ matrix.target }}/release/conductor-${{ matrix.target }}.tar.gz
+            target/${{ matrix.target }}/release/conductor-${{ matrix.target }}.tar.gz.sha256
+
+  build-tauri-gui:
+    name: Build Tauri GUI Release (${{ matrix.platform }})
+    needs: create-release
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos
+            os: macos-latest
+            target: universal-apple-darwin
+          - platform: linux
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: conductor-gui/ui/package-lock.json
+
+      - name: Install system dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2-dev \
+            libudev-dev \
+            pkg-config \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Install frontend dependencies
+        working-directory: conductor-gui/ui
+        run: npm ci
+
+      - name: Build Tauri app (macOS)
+        if: runner.os == 'macOS'
+        working-directory: conductor-gui
+        run: |
+          cd ui
+          npm run build
+          cd ../src-tauri
+          cargo build --release
+
+      - name: Build Tauri app (Linux)
+        if: runner.os == 'Linux'
+        working-directory: conductor-gui
+        run: |
+          cd ui
+          npm run build
+          cd ../src-tauri
+          cargo build --release
+
+      - name: Create macOS DMG
+        if: runner.os == 'macOS'
+        working-directory: conductor-gui/src-tauri
+        run: |
+          # Create .dmg installer (macOS)
+          mkdir -p dist
+          # Copy app bundle if it exists
+          if [ -d "target/release/bundle/macos/Conductor GUI.app" ]; then
+            cp -r "target/release/bundle/macos/Conductor GUI.app" dist/
+            cd dist
+            tar czf conductor-gui-macos-universal.tar.gz "Conductor GUI.app"
+            shasum -a 256 conductor-gui-macos-universal.tar.gz > conductor-gui-macos-universal.tar.gz.sha256
+          else
+            echo "Warning: App bundle not found, creating tarball from binary"
+            cd target/release
+            tar czf ../../dist/conductor-gui-macos-universal.tar.gz conductor-gui
+            cd ../../dist
+            shasum -a 256 conductor-gui-macos-universal.tar.gz > conductor-gui-macos-universal.tar.gz.sha256
+          fi
+
+      - name: Create Linux packages
+        if: runner.os == 'Linux'
+        working-directory: conductor-gui/src-tauri
+        run: |
+          mkdir -p dist
+          cd target/release
+          # Create tarball
+          tar czf ../../dist/conductor-gui-linux-x86_64.tar.gz conductor-gui
+          cd ../../dist
+          sha256sum conductor-gui-linux-x86_64.tar.gz > conductor-gui-linux-x86_64.tar.gz.sha256
+          # Copy AppImage if it exists
+          if [ -f "../target/release/bundle/appimage/*.AppImage" ]; then
+            cp ../target/release/bundle/appimage/*.AppImage ./ || true
+          fi
+          # Copy .deb if it exists
+          if [ -f "../target/release/bundle/deb/*.deb" ]; then
+            cp ../target/release/bundle/deb/*.deb ./ || true
+          fi
+
+      - name: Upload Tauri GUI Release Assets (macOS)
+        if: runner.os == 'macOS'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            conductor-gui/src-tauri/dist/conductor-gui-macos-universal.tar.gz
+            conductor-gui/src-tauri/dist/conductor-gui-macos-universal.tar.gz.sha256
+
+      - name: Upload Tauri GUI Release Assets (Linux)
+        if: runner.os == 'Linux'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            conductor-gui/src-tauri/dist/conductor-gui-linux-x86_64.tar.gz
+            conductor-gui/src-tauri/dist/conductor-gui-linux-x86_64.tar.gz.sha256
+            conductor-gui/src-tauri/dist/*.AppImage
+            conductor-gui/src-tauri/dist/*.deb

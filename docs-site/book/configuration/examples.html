@@ -1,0 +1,1011 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Configuration Examples - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/configuration/examples.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="configuration-examples"><a class="header" href="#configuration-examples">Configuration Examples</a></h1>
+<p>Real-world configuration patterns for common use cases. Each example is production-ready and can be adapted to your workflow.</p>
+<h2 id="table-of-contents"><a class="header" href="#table-of-contents">Table of Contents</a></h2>
+<ol>
+<li><a href="#basic-workflows">Basic Workflows</a></li>
+<li><a href="#developer-productivity">Developer Productivity</a></li>
+<li><a href="#content-creation">Content Creation</a></li>
+<li><a href="#repetition--automation">Repetition &amp; Automation</a></li>
+<li><a href="#advanced-patterns">Advanced Patterns</a></li>
+</ol>
+<h2 id="basic-workflows"><a class="header" href="#basic-workflows">Basic Workflows</a></h2>
+<h3 id="application-launcher"><a class="header" href="#application-launcher">Application Launcher</a></h3>
+<p>Quick launch frequently used applications:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Launcher"
+color = "blue"
+
+[[modes.mappings]]
+description = "Open Terminal"
+[modes.mappings.trigger]
+type = "Note"
+note = 60
+[modes.mappings.action]
+type = "Launch"
+app = "Terminal"
+
+[[modes.mappings]]
+description = "Open VS Code"
+[modes.mappings.trigger]
+type = "Note"
+note = 61
+[modes.mappings.action]
+type = "Launch"
+app = "Visual Studio Code"
+
+[[modes.mappings]]
+description = "Open Browser"
+[modes.mappings.trigger]
+type = "Note"
+note = 62
+[modes.mappings.action]
+type = "Launch"
+app = "Google Chrome"
+</code></pre>
+<h3 id="text-snippets"><a class="header" href="#text-snippets">Text Snippets</a></h3>
+<p>Common text expansions for email and documentation:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Email signature"
+[modes.mappings.trigger]
+type = "Note"
+note = 70
+[modes.mappings.action]
+type = "Text"
+text = """
+Best regards,
+Chris Joseph
+Software Engineer
+chris@amiable.dev
+"""
+
+[[modes.mappings]]
+description = "Code review template"
+[modes.mappings.trigger]
+type = "Note"
+note = 71
+[modes.mappings.action]
+type = "Text"
+text = """
+## Review Checklist
+- [ ] Code follows style guide
+- [ ] Tests are passing
+- [ ] Documentation updated
+- [ ] No obvious security issues
+"""
+</code></pre>
+<h2 id="developer-productivity"><a class="header" href="#developer-productivity">Developer Productivity</a></h2>
+<h3 id="git-workflow"><a class="header" href="#git-workflow">Git Workflow</a></h3>
+<p>Common git operations on a single pad:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Git"
+color = "green"
+
+# Soft press: git status
+[[modes.mappings]]
+description = "Git status (soft)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 60
+ranges = [{ min = 0, max = 40 }]
+[modes.mappings.action]
+type = "Shell"
+command = "git status"
+
+# Medium press: git add &amp; commit
+[[modes.mappings]]
+description = "Quick commit (medium)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 60
+ranges = [{ min = 41, max = 80 }]
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "Shell", command = "git add -A" },
+    { type = "Delay", ms = 100 },
+    { type = "Shell", command = "git commit -m 'quick save'" }
+]
+
+# Hard press: commit and push
+[[modes.mappings]]
+description = "Commit and push (hard)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 60
+ranges = [{ min = 81, max = 127 }]
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "Shell", command = "git add -A" },
+    { type = "Delay", ms = 100 },
+    { type = "Shell", command = "git commit -m 'quick save'" },
+    { type = "Delay", ms = 100 },
+    { type = "Shell", command = "git push" }
+]
+</code></pre>
+<h3 id="code-navigation"><a class="header" href="#code-navigation">Code Navigation</a></h3>
+<p>Navigate code with velocity-based jumps:</p>
+<pre><code class="language-toml"># Jump lines based on velocity
+[[modes.mappings]]
+description = "Jump down (velocity-based)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 65
+ranges = [
+    { min = 0, max = 40, action = { type = "Keystroke", keys = "down" } },
+    { min = 41, max = 80, action = { type = "Repeat", count = 5, action = { type = "Keystroke", keys = "down" } } },
+    { min = 81, max = 127, action = { type = "Repeat", count = 10, action = { type = "Keystroke", keys = "down" } } }
+]
+
+# Navigate between functions
+[[modes.mappings]]
+description = "Next function"
+[modes.mappings.trigger]
+type = "Note"
+note = 66
+[modes.mappings.action]
+type = "Keystroke"
+keys = "down"
+modifiers = ["cmd", "shift"]
+</code></pre>
+<h2 id="content-creation"><a class="header" href="#content-creation">Content Creation</a></h2>
+<h3 id="video-editing"><a class="header" href="#video-editing">Video Editing</a></h3>
+<p>Timeline navigation and editing:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Video"
+color = "purple"
+
+# Play/Pause
+[[modes.mappings]]
+description = "Play/Pause"
+[modes.mappings.trigger]
+type = "Note"
+note = 60
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+
+# Frame-by-frame navigation
+[[modes.mappings]]
+description = "Previous frame"
+[modes.mappings.trigger]
+type = "Note"
+note = 61
+[modes.mappings.action]
+type = "Keystroke"
+keys = "left"
+
+[[modes.mappings]]
+description = "Next frame"
+[modes.mappings.trigger]
+type = "Note"
+note = 62
+[modes.mappings.action]
+type = "Keystroke"
+keys = "right"
+
+# Jump 10 frames
+[[modes.mappings]]
+description = "Jump forward 10 frames"
+[modes.mappings.trigger]
+type = "Note"
+note = 63
+[modes.mappings.action]
+type = "Repeat"
+count = 10
+action = { type = "Keystroke", keys = "right" }
+</code></pre>
+<h3 id="document-formatting"><a class="header" href="#document-formatting">Document Formatting</a></h3>
+<p>Batch formatting operations:</p>
+<pre><code class="language-toml"># Apply heading and next line
+[[modes.mappings]]
+description = "Apply heading 2"
+[modes.mappings.trigger]
+type = "Note"
+note = 70
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "Keystroke", keys = "home" },  # Start of line
+    { type = "Text", text = "## " },
+    { type = "Keystroke", keys = "end" },  # End of line
+    { type = "Keystroke", keys = "return" },  # New line
+]
+</code></pre>
+<h2 id="repetition--automation"><a class="header" href="#repetition--automation">Repetition &amp; Automation</a></h2>
+<h3 id="simple-repeats"><a class="header" href="#simple-repeats">Simple Repeats</a></h3>
+<p>Scroll through long lists or documents:</p>
+<pre><code class="language-toml"># Scroll down 10 lines
+[[modes.mappings]]
+description = "Scroll down 10 lines"
+[modes.mappings.trigger]
+type = "Note"
+note = 80
+[modes.mappings.action]
+type = "Repeat"
+count = 10
+action = { type = "Keystroke", keys = "down" }
+
+# Slow scroll (with delay)
+[[modes.mappings]]
+description = "Slow scroll down"
+[modes.mappings.trigger]
+type = "Note"
+note = 81
+[modes.mappings.action]
+type = "Repeat"
+count = 5
+delay_between_ms = 200
+action = { type = "Keystroke", keys = "down" }
+
+# Page down 5 times
+[[modes.mappings]]
+description = "Jump 5 pages down"
+[modes.mappings.trigger]
+type = "Note"
+note = 82
+[modes.mappings.action]
+type = "Repeat"
+count = 5
+delay_between_ms = 300
+action = { type = "Keystroke", keys = "pagedown" }
+</code></pre>
+<h3 id="batch-file-processing"><a class="header" href="#batch-file-processing">Batch File Processing</a></h3>
+<p>Process multiple files with a repeated sequence:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Batch process 3 files"
+[modes.mappings.trigger]
+type = "LongPress"
+note = 85
+hold_duration_ms = 1500
+[modes.mappings.action]
+type = "Repeat"
+count = 3
+delay_between_ms = 1000
+action = {
+    type = "Sequence",
+    actions = [
+        { type = "Keystroke", keys = "return" },  # Open file
+        { type = "Delay", ms = 800 },  # Wait for file to load
+        { type = "Keystroke", keys = "e", modifiers = ["cmd"] },  # Export
+        { type = "Delay", ms = 500 },
+        { type = "Keystroke", keys = "return" },  # Confirm export
+        { type = "Delay", ms = 1000 },  # Wait for export
+        { type = "Keystroke", keys = "w", modifiers = ["cmd"] },  # Close file
+        { type = "Delay", ms = 200 },
+        { type = "Keystroke", keys = "down" }  # Next file
+    ]
+}
+</code></pre>
+<h3 id="velocity-based-repeats"><a class="header" href="#velocity-based-repeats">Velocity-Based Repeats</a></h3>
+<p>Different repeat counts based on pad pressure:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Variable repeat based on velocity"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 90
+ranges = [
+    # Soft: repeat 3 times
+    { min = 0, max = 40, action = {
+        type = "Repeat",
+        count = 3,
+        action = { type = "Keystroke", keys = "down" }
+    }},
+    # Medium: repeat 5 times
+    { min = 41, max = 80, action = {
+        type = "Repeat",
+        count = 5,
+        delay_between_ms = 100,
+        action = { type = "Keystroke", keys = "down" }
+    }},
+    # Hard: repeat 10 times
+    { min = 81, max = 127, action = {
+        type = "Repeat",
+        count = 10,
+        delay_between_ms = 50,
+        action = { type = "Keystroke", keys = "down" }
+    }}
+]
+</code></pre>
+<h3 id="nested-repeats"><a class="header" href="#nested-repeats">Nested Repeats</a></h3>
+<p>Multiply effect for grid or matrix operations:</p>
+<pre><code class="language-toml"># Navigate a 3x5 grid (15 total moves)
+[[modes.mappings]]
+description = "Navigate 3x5 grid"
+[modes.mappings.trigger]
+type = "DoubleTap"
+note = 95
+max_interval_ms = 300
+[modes.mappings.action]
+type = "Repeat"
+count = 3  # 3 rows
+delay_between_ms = 500
+action = {
+    type = "Sequence",
+    actions = [
+        # Move right 5 times
+        { type = "Repeat", count = 5, delay_between_ms = 100, action = { type = "Keystroke", keys = "right" } },
+        # Move down 1
+        { type = "Delay", ms = 200 },
+        { type = "Keystroke", keys = "down" },
+        # Return to start of row
+        { type = "Repeat", count = 5, action = { type = "Keystroke", keys = "left" } }
+    ]
+}
+</code></pre>
+<h3 id="retry-logic"><a class="header" href="#retry-logic">Retry Logic</a></h3>
+<p>Attempt operations with error tolerance:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Launch Xcode (retry 3 times)"
+[modes.mappings.trigger]
+type = "Note"
+note = 100
+[modes.mappings.action]
+type = "Repeat"
+count = 3
+delay_between_ms = 2000
+stop_on_error = false  # Continue even if already running
+action = { type = "Launch", app = "Xcode" }
+
+[[modes.mappings]]
+description = "Network test (stop on first failure)"
+[modes.mappings.trigger]
+type = "Note"
+note = 101
+[modes.mappings.action]
+type = "Repeat"
+count = 5
+delay_between_ms = 1000
+stop_on_error = true  # Stop if ping fails
+action = { type = "Shell", command = "ping -c 1 8.8.8.8" }
+</code></pre>
+<h2 id="advanced-patterns"><a class="header" href="#advanced-patterns">Advanced Patterns</a></h2>
+<h3 id="spotlight-launcher"><a class="header" href="#spotlight-launcher">Spotlight Launcher</a></h3>
+<p>Use Spotlight for precise app launching:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Spotlight launcher for Terminal"
+[modes.mappings.trigger]
+type = "Note"
+note = 110
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "Keystroke", keys = "space", modifiers = ["cmd"] },  # Open Spotlight
+    { type = "Delay", ms = 200 },  # Wait for Spotlight
+    { type = "Text", text = "Terminal" },
+    { type = "Delay", ms = 100 },
+    { type = "Keystroke", keys = "return" }
+]
+</code></pre>
+<h3 id="form-automation"><a class="header" href="#form-automation">Form Automation</a></h3>
+<p>Fill complex forms with timing:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Fill registration form"
+[modes.mappings.trigger]
+type = "LongPress"
+note = 115
+hold_duration_ms = 2000
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    # First name
+    { type = "Text", text = "Chris" },
+    { type = "Delay", ms = 100 },
+    { type = "Keystroke", keys = "tab" },
+    { type = "Delay", ms = 100 },
+
+    # Last name
+    { type = "Text", text = "Joseph" },
+    { type = "Delay", ms = 100 },
+    { type = "Keystroke", keys = "tab" },
+    { type = "Delay", ms = 100 },
+
+    # Email
+    { type = "Text", text = "chris@amiable.dev" },
+    { type = "Delay", ms = 100 },
+    { type = "Keystroke", keys = "tab" },
+    { type = "Delay", ms = 100 },
+
+    # Phone
+    { type = "Text", text = "+1-555-123-4567" },
+    { type = "Delay", ms = 200 },
+
+    # Submit
+    { type = "Keystroke", keys = "return" }
+]
+</code></pre>
+<h3 id="multi-click-automation"><a class="header" href="#multi-click-automation">Multi-Click Automation</a></h3>
+<p>Repeat mouse clicks at intervals:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Click button 5 times"
+[modes.mappings.trigger]
+type = "DoubleTap"
+note = 120
+max_interval_ms = 300
+[modes.mappings.action]
+type = "Repeat"
+count = 5
+delay_between_ms = 500
+action = { type = "MouseClick", button = "Left" }
+
+# Click at specific location repeatedly
+[[modes.mappings]]
+description = "Click refresh button"
+[modes.mappings.trigger]
+type = "Note"
+note = 121
+[modes.mappings.action]
+type = "Repeat"
+count = 3
+delay_between_ms = 2000
+action = { type = "MouseClick", button = "Left", x = 1200, y = 100 }
+</code></pre>
+<h3 id="macro-pad-layout"><a class="header" href="#macro-pad-layout">Macro Pad Layout</a></h3>
+<p>Complete 16-pad layout for development:</p>
+<pre><code class="language-toml">[device]
+name = "Mikro"
+auto_connect = true
+
+[[modes]]
+name = "Development"
+color = "green"
+
+# Row 1: Git operations
+[[modes.mappings]]
+description = "Git status"
+[modes.mappings.trigger]
+type = "Note"
+note = 60
+[modes.mappings.action]
+type = "Shell"
+command = "git status"
+
+[[modes.mappings]]
+description = "Git diff"
+[modes.mappings.trigger]
+type = "Note"
+note = 61
+[modes.mappings.action]
+type = "Shell"
+command = "git diff"
+
+[[modes.mappings]]
+description = "Quick commit"
+[modes.mappings.trigger]
+type = "Note"
+note = 62
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "Shell", command = "git add -A" },
+    { type = "Delay", ms = 100 },
+    { type = "Shell", command = "git commit -m 'quick save'" }
+]
+
+[[modes.mappings]]
+description = "Git push"
+[modes.mappings.trigger]
+type = "Note"
+note = 63
+[modes.mappings.action]
+type = "Shell"
+command = "git push"
+
+# Row 2: Build &amp; test
+[[modes.mappings]]
+description = "Build project"
+[modes.mappings.trigger]
+type = "Note"
+note = 64
+[modes.mappings.action]
+type = "Shell"
+command = "cargo build"
+
+[[modes.mappings]]
+description = "Run tests"
+[modes.mappings.trigger]
+type = "Note"
+note = 65
+[modes.mappings.action]
+type = "Shell"
+command = "cargo test"
+
+[[modes.mappings]]
+description = "Run app"
+[modes.mappings.trigger]
+type = "Note"
+note = 66
+[modes.mappings.action]
+type = "Shell"
+command = "cargo run"
+
+[[modes.mappings]]
+description = "Format code"
+[modes.mappings.trigger]
+type = "Note"
+note = 67
+[modes.mappings.action]
+type = "Shell"
+command = "cargo fmt"
+
+# Row 3: Navigation
+[[modes.mappings]]
+description = "Jump down (velocity)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 68
+ranges = [
+    { min = 0, max = 40, action = { type = "Keystroke", keys = "down" } },
+    { min = 41, max = 80, action = { type = "Repeat", count = 5, action = { type = "Keystroke", keys = "down" } } },
+    { min = 81, max = 127, action = { type = "Repeat", count = 10, action = { type = "Keystroke", keys = "down" } } }
+]
+
+[[modes.mappings]]
+description = "Jump up (velocity)"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 69
+ranges = [
+    { min = 0, max = 40, action = { type = "Keystroke", keys = "up" } },
+    { min = 41, max = 80, action = { type = "Repeat", count = 5, action = { type = "Keystroke", keys = "up" } } },
+    { min = 81, max = 127, action = { type = "Repeat", count = 10, action = { type = "Keystroke", keys = "up" } } }
+]
+
+# Row 4: Utilities
+[[modes.mappings]]
+description = "Open Terminal"
+[modes.mappings.trigger]
+type = "Note"
+note = 72
+[modes.mappings.action]
+type = "Launch"
+app = "Terminal"
+
+[[modes.mappings]]
+description = "Open VS Code"
+[modes.mappings.trigger]
+type = "Note"
+note = 73
+[modes.mappings.action]
+type = "Launch"
+app = "Visual Studio Code"
+
+[[modes.mappings]]
+description = "Open Browser"
+[modes.mappings.trigger]
+type = "Note"
+note = 74
+[modes.mappings.action]
+type = "Launch"
+app = "Google Chrome"
+</code></pre>
+<h3 id="context-aware-actions-conditional"><a class="header" href="#context-aware-actions-conditional">Context-Aware Actions (Conditional)</a></h3>
+<p>Execute different actions based on runtime conditions like active app, time of day, or system state.</p>
+<h4 id="app-based-conditional"><a class="header" href="#app-based-conditional">App-Based Conditional</a></h4>
+<p>Different behavior when specific apps are running:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Context-aware play/pause"
+[modes.mappings.trigger]
+type = "Note"
+note = 130
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "AppRunning", bundle_id = "com.apple.Logic" }
+]
+then_action = { type = "Keystroke", keys = "space" }  # Logic: Space to play/pause
+else_action = { type = "Keystroke", keys = "space", modifiers = ["cmd"] }  # System: Media play/pause
+</code></pre>
+<h4 id="time-based-automation"><a class="header" href="#time-based-automation">Time-Based Automation</a></h4>
+<p>Launch different apps based on work hours:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Time-aware launcher"
+[modes.mappings.trigger]
+type = "Note"
+note = 131
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "TimeRange", start = "09:00", end = "17:00" },
+    { type = "DayOfWeek", days = ["Mon", "Tue", "Wed", "Thu", "Fri"] }
+]
+operator = "And"
+then_action = { type = "Launch", app = "Slack" }  # Work app during work hours
+else_action = { type = "Launch", app = "Discord" }  # Personal app otherwise
+</code></pre>
+<h4 id="multiple-conditions-or-logic"><a class="header" href="#multiple-conditions-or-logic">Multiple Conditions (OR Logic)</a></h4>
+<p>Launch file if any IDE is running:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Open project in active IDE"
+[modes.mappings.trigger]
+type = "Note"
+note = 132
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "AppRunning", bundle_id = "com.microsoft.VSCode" },
+    { type = "AppRunning", bundle_id = "com.jetbrains.IntelliJ" },
+    { type = "AppRunning", bundle_id = "com.sublimetext.4" }
+]
+operator = "Or"  # Any one IDE is enough
+then_action = { type = "Keystroke", keys = "o", modifiers = ["cmd"] }  # Cmd+O to open file
+else_action = { type = "Launch", app = "Visual Studio Code" }  # Launch IDE if none running
+</code></pre>
+<h4 id="modifier-based-conditional"><a class="header" href="#modifier-based-conditional">Modifier-Based Conditional</a></h4>
+<p>Hold Shift for alternative behavior:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Delete or force-delete"
+[modes.mappings.trigger]
+type = "Note"
+note = 133
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "ModifierPressed", modifier = "Shift" }
+]
+then_action = { type = "Keystroke", keys = "delete", modifiers = ["cmd", "option"] }  # Force delete
+else_action = { type = "Keystroke", keys = "delete", modifiers = ["cmd"] }  # Normal delete
+</code></pre>
+<h4 id="nested-conditionals"><a class="header" href="#nested-conditionals">Nested Conditionals</a></h4>
+<p>Complex decision trees with multiple levels:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Smart launcher with time and app detection"
+[modes.mappings.trigger]
+type = "LongPress"
+note = 135
+hold_duration_ms = 1000
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "TimeRange", start = "09:00", end = "17:00" }
+]
+then_action = {
+    type = "Conditional",
+    conditions = [
+        { type = "AppRunning", bundle_id = "com.apple.Logic" }
+    ],
+    then_action = { type = "Keystroke", keys = "n", modifiers = ["cmd"] },  # New Logic project
+    else_action = { type = "Launch", app = "Logic Pro" }  # Launch Logic
+}
+else_action = {
+    type = "Conditional",
+    conditions = [
+        { type = "DayOfWeek", days = ["Sat", "Sun"] }
+    ],
+    then_action = { type = "Launch", app = "Spotify" },  # Weekend music
+    else_action = { type = "Launch", app = "Safari" }  # Evening browsing
+}
+</code></pre>
+<h4 id="launch-only-if-not-running"><a class="header" href="#launch-only-if-not-running">Launch Only if Not Running</a></h4>
+<p>Avoid duplicate app launches:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Launch Spotify or play/pause if running"
+[modes.mappings.trigger]
+type = "Note"
+note = 136
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "AppNotRunning", bundle_id = "com.spotify.client" }
+]
+then_action = { type = "Launch", app = "Spotify" }
+else_action = { type = "Keystroke", keys = "space" }  # Already running, just play/pause
+</code></pre>
+<h4 id="mode-aware-shortcuts"><a class="header" href="#mode-aware-shortcuts">Mode-Aware Shortcuts</a></h4>
+<p>Different actions per mode using global mappings:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Mode-aware F5 key"
+[global_mappings.trigger]
+type = "Note"
+note = 137
+[global_mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "ModeActive", mode = 1 }  # Development mode
+]
+then_action = { type = "Shell", command = "npm test" }  # Run tests in dev mode
+else_action = { type = "Keystroke", keys = "f5" }  # Refresh in other modes
+</code></pre>
+<h4 id="weekend-vs-weekday-behavior"><a class="header" href="#weekend-vs-weekday-behavior">Weekend vs Weekday Behavior</a></h4>
+<p>Different workflows based on day of week:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Morning routine launcher"
+[modes.mappings.trigger]
+type = "Note"
+note = 138
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    { type = "DayOfWeek", days = ["Sat", "Sun"] },
+    { type = "TimeRange", start = "08:00", end = "12:00" }
+]
+operator = "And"
+then_action = {
+    type = "Sequence",
+    actions = [
+        { type = "Launch", app = "Apple Music" },
+        { type = "Delay", ms = 1000 },
+        { type = "Launch", app = "Mail" }
+    ]
+}
+else_action = {
+    type = "Sequence",
+    actions = [
+        { type = "Launch", app = "Slack" },
+        { type = "Delay", ms = 1000 },
+        { type = "Launch", app = "Calendar" },
+        { type = "Delay", ms = 500 },
+        { type = "Launch", app = "Visual Studio Code" }
+    ]
+}
+</code></pre>
+<h2 id="performance-tips"><a class="header" href="#performance-tips">Performance Tips</a></h2>
+<h3 id="timing-best-practices"><a class="header" href="#timing-best-practices">Timing Best Practices</a></h3>
+<ol>
+<li><strong>Application Launch</strong>: Wait 1000-2000ms after launching apps</li>
+<li><strong>UI Navigation</strong>: Use 100-200ms between UI interactions</li>
+<li><strong>Form Fills</strong>: 100ms delay between field navigation</li>
+<li><strong>File Operations</strong>: 500-1000ms for save/load operations</li>
+<li><strong>Network Operations</strong>: 2000ms+ for remote operations</li>
+</ol>
+<h3 id="repeat-guidelines"><a class="header" href="#repeat-guidelines">Repeat Guidelines</a></h3>
+<ol>
+<li><strong>Start Small</strong>: Begin with count=1, increase gradually</li>
+<li><strong>Add Delays</strong>: Use <code>delay_between_ms</code> for counts &gt;5</li>
+<li><strong>Test Incrementally</strong>: Verify each step before combining</li>
+<li><strong>Consider UX</strong>: Counts &gt;100 may appear as hang</li>
+<li><strong>Monitor Performance</strong>: Watch CPU/memory with large counts</li>
+</ol>
+<h3 id="debugging"><a class="header" href="#debugging">Debugging</a></h3>
+<p>Enable debug mode to see action execution:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+<p>Common issues:</p>
+<ul>
+<li><strong>Timing too tight</strong>: Increase <code>delay_between_ms</code></li>
+<li><strong>Actions not executing</strong>: Check application focus</li>
+<li><strong>Repeats stopping early</strong>: Check <code>stop_on_error</code> setting</li>
+<li><strong>Slow performance</strong>: Reduce repeat counts or add delays</li>
+</ul>
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="actions.html">Actions Reference</a> - Complete action type documentation</li>
+<li><a href="../reference/action-types.html">Action Types Reference</a> - Technical specifications</li>
+<li><a href="../reference/trigger-types.html">Trigger Types</a> - Trigger configuration</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../configuration/device-profiles.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../reference/trigger-types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../configuration/device-profiles.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../reference/trigger-types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

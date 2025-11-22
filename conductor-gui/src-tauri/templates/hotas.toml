@@ -1,0 +1,503 @@
+# MIDIMon Configuration Template
+# Device: HOTAS (Hands On Throttle And Stick) System
+# Template Version: 1.0.0
+# Gamepad Support: v3.0
+# Compatible with: Thrustmaster HOTAS, Logitech X56, CH Products, and similar
+
+[device]
+name = "HOTAS Controller"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50
+double_tap_timeout_ms = 300
+hold_threshold_ms = 1000
+
+# ========== Mode 1: Space Sim ==========
+[[modes]]
+name = "Space Sim"
+color = "cyan"
+
+# Stick trigger - Primary weapon/fire
+[[modes.mappings]]
+description = "Stick Trigger (Stage 1): Primary Fire"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # Stick trigger stage 1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+
+[[modes.mappings]]
+description = "Stick Trigger (Stage 2): Secondary Fire"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129  # Stick trigger stage 2
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftAlt"
+
+# Stick thumb buttons - Targeting & weapons
+[[modes.mappings]]
+description = "Stick Button 1: Cycle Target Forward"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Keystroke"
+keys = "t"
+
+[[modes.mappings]]
+description = "Stick Button 2: Cycle Target Backward"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Keystroke"
+keys = "t"
+modifiers = ["shift"]
+
+[[modes.mappings]]
+description = "Stick Button 3: Select Hostile Target"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "h"
+
+[[modes.mappings]]
+description = "Stick Button 4: Fire Countermeasures"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+
+# Stick Hat Switch - View/Camera control
+[[modes.mappings]]
+description = "Hat Up: Look Up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+modifiers = ["alt"]
+
+[[modes.mappings]]
+description = "Hat Down: Look Down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+modifiers = ["alt"]
+
+[[modes.mappings]]
+description = "Hat Left: Look Left"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+modifiers = ["alt"]
+
+[[modes.mappings]]
+description = "Hat Right: Look Right"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["alt"]
+
+# Throttle base buttons - Ship systems
+[[modes.mappings]]
+description = "Throttle Button 1: Landing Gear"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 138
+[modes.mappings.action]
+type = "Keystroke"
+keys = "l"
+
+[[modes.mappings]]
+description = "Throttle Button 2: Cargo Scoop"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 139
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Home"
+
+[[modes.mappings]]
+description = "Throttle Button 3: Flight Assist"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 140
+[modes.mappings.action]
+type = "Keystroke"
+keys = "z"
+
+[[modes.mappings]]
+description = "Throttle Button 4: Boost"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 141
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+
+[[modes.mappings]]
+description = "Throttle Button 5: Lights"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 142
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Insert"
+
+[[modes.mappings]]
+description = "Throttle Button 6: Silent Running"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 143
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Delete"
+
+# Throttle hat - Power distribution
+[[modes.mappings]]
+description = "Throttle Hat Up: Power to Systems"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 144
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+[[modes.mappings]]
+description = "Throttle Hat Down: Power to Engines"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 145
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+
+[[modes.mappings]]
+description = "Throttle Hat Left: Power to Weapons"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 146
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+
+[[modes.mappings]]
+description = "Throttle Hat Right: Balance Power"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 147
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+
+# Pinkie switches - Quick actions
+[[modes.mappings]]
+description = "Pinkie Switch: Hardpoints Deploy"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 148
+[modes.mappings.action]
+type = "Keystroke"
+keys = "u"
+
+[[modes.mappings]]
+description = "Pinkie Button: Frame Shift Drive"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 149
+[modes.mappings.action]
+type = "Keystroke"
+keys = "j"
+
+# ========== Mode 2: Productivity ==========
+[[modes]]
+name = "Productivity"
+color = "orange"
+
+# Stick trigger - Mouse clicks
+[[modes.mappings]]
+description = "Stick Trigger (Stage 1): Left Click"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "MouseClick"
+button = "left"
+
+[[modes.mappings]]
+description = "Stick Trigger (Stage 2): Right Click"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129
+[modes.mappings.action]
+type = "MouseClick"
+button = "right"
+
+# Stick thumb buttons - Common shortcuts
+[[modes.mappings]]
+description = "Stick Button 1: Copy"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Stick Button 2: Paste"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Stick Button 3: Undo"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "z"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Stick Button 4: Redo"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "z"
+modifiers = ["cmd", "shift"]
+
+# Stick Hat - Workspace navigation
+[[modes.mappings]]
+description = "Hat Up: Mission Control"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+modifiers = ["ctrl"]
+
+[[modes.mappings]]
+description = "Hat Down: Application Windows"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+modifiers = ["ctrl"]
+
+[[modes.mappings]]
+description = "Hat Left: Previous Desktop"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+modifiers = ["ctrl"]
+
+[[modes.mappings]]
+description = "Hat Right: Next Desktop"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["ctrl"]
+
+# Throttle buttons - Application launching
+[[modes.mappings]]
+description = "Throttle Button 1: Launch Browser"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 138
+[modes.mappings.action]
+type = "Launch"
+app = "Safari"
+
+[[modes.mappings]]
+description = "Throttle Button 2: Launch Terminal"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 139
+[modes.mappings.action]
+type = "Launch"
+app = "Terminal"
+
+[[modes.mappings]]
+description = "Throttle Button 3: Launch Code Editor"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 140
+[modes.mappings.action]
+type = "Launch"
+app = "Visual Studio Code"
+
+[[modes.mappings]]
+description = "Throttle Button 4: Launch Finder"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 141
+[modes.mappings.action]
+type = "Keystroke"
+keys = "n"
+modifiers = ["cmd", "alt"]
+
+[[modes.mappings]]
+description = "Throttle Button 5: New Window"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 142
+[modes.mappings.action]
+type = "Keystroke"
+keys = "n"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Throttle Button 6: Close Window"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 143
+[modes.mappings.action]
+type = "Keystroke"
+keys = "w"
+modifiers = ["cmd"]
+
+# Throttle hat - Tab/Window management
+[[modes.mappings]]
+description = "Throttle Hat Up: Next Application"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 144
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Throttle Hat Down: Previous Application"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 145
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["cmd", "shift"]
+
+[[modes.mappings]]
+description = "Throttle Hat Left: Previous Tab"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 146
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["ctrl", "shift"]
+
+[[modes.mappings]]
+description = "Throttle Hat Right: Next Tab"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 147
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["ctrl"]
+
+# Pinkie switches - Volume control
+[[modes.mappings]]
+description = "Pinkie Switch: Mute"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 148
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Mute"
+
+[[modes.mappings]]
+description = "Pinkie Button: Spotlight Search"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 149
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+modifiers = ["cmd"]
+
+# ========== Global Mappings ==========
+[[global_mappings]]
+description = "Mode Switch Button: Toggle Between Modes"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 150  # Mode switch button (if available)
+[global_mappings.action]
+type = "ModeChange"
+mode = "Productivity"
+
+[[global_mappings]]
+description = "Emergency Stop: Escape"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 151  # Emergency button
+[global_mappings.action]
+type = "Keystroke"
+keys = "Escape"
+
+# Volume control on throttle rotary (if mapped as buttons)
+[[global_mappings]]
+description = "Rotary Up: Volume Up"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 152
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[global_mappings]]
+description = "Rotary Down: Volume Down"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 153
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+# Button chord for screenshot
+[[global_mappings]]
+description = "Stick Button 1+2: Screenshot"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [130, 131]
+timeout_ms = 50
+[global_mappings.action]
+type = "Keystroke"
+keys = "3"
+modifiers = ["cmd", "shift"]

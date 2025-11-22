@@ -1,0 +1,42 @@
+# MIDIMon Configuration Template
+# Device: Generic 25-Key MIDI Keyboard
+# Template Version: 1.0.0
+
+[device]
+name = "MIDI Keyboard"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+# Note examples (C3-C5 range)
+[[modes.mappings]]
+description = "Middle C - Trigger Action"
+[modes.mappings.trigger]
+type = "Note"
+note = 60
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = []
+
+# Pitch bend
+[[modes.mappings]]
+description = "Pitch Bend Up"
+[modes.mappings.trigger]
+type = "PitchBend"
+value_min = 8192
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+# Mod wheel (CC 1)
+[[modes.mappings]]
+description = "Mod Wheel"
+[modes.mappings.trigger]
+type = "CC"
+cc = 1
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Set"

@@ -1,0 +1,33 @@
+# MIDIMon Configuration Template
+# Device: KORG nanoKONTROL2
+# Template Version: 1.0.0
+
+[device]
+name = "nanoKONTROL2"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+# Channel 1 - Fader
+[[modes.mappings]]
+description = "Fader 1 - System Volume"
+[modes.mappings.trigger]
+type = "CC"
+cc = 0
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Set"
+value = 50
+
+# Channel 1 - Play button
+[[modes.mappings]]
+description = "Play Button 1"
+[modes.mappings.trigger]
+type = "Note"
+note = 41
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = []

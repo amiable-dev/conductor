@@ -1,0 +1,31 @@
+# MIDIMon Configuration Template
+# Device: Novation Launchpad Mini MK3
+# Template Version: 1.0.0
+
+[device]
+name = "Launchpad Mini"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+# 8x8 grid - example mappings for top row
+[[modes.mappings]]
+description = "Pad 1,1 - Application Launcher"
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+[modes.mappings.action]
+type = "Launch"
+app = "Safari"
+
+[[modes.mappings]]
+description = "Pad 1,2 - Keyboard Shortcut"
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = ["cmd"]

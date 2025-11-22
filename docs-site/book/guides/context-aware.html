@@ -1,0 +1,764 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Context-Aware Mappings - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/guides/context-aware.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="context-aware-mappings"><a class="header" href="#context-aware-mappings">Context-Aware Mappings</a></h1>
+<p>Make your MIDI controller adapt to your workflow by executing different actions based on time, active application, current mode, or day of week.</p>
+<hr />
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Context-aware mappings use <strong>conditional actions</strong> to change behavior dynamically. Instead of always doing the same thing, your controller can:</p>
+<ul>
+<li>Switch profiles based on work hours vs evening</li>
+<li>Route commands to the frontmost application</li>
+<li>Execute different actions on weekdays vs weekends</li>
+<li>Adapt to the current mode</li>
+</ul>
+<p>This eliminates the need to manually switch profiles throughout the day.</p>
+<hr />
+<h2 id="basic-conditional-structure"><a class="header" href="#basic-conditional-structure">Basic Conditional Structure</a></h2>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Context-aware action"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 5
+
+[modes.mappings.action]
+type = "Conditional"
+condition = { /* condition goes here */ }
+then_action = { /* action if condition is true */ }
+else_action = { /* optional action if condition is false */ }
+</code></pre>
+<hr />
+<h2 id="condition-types"><a class="header" href="#condition-types">Condition Types</a></h2>
+<h3 id="1-always"><a class="header" href="#1-always">1. Always</a></h3>
+<p><strong>Always executes the then_action</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+condition = "Always"
+then_action = { type = "Keystroke", keys = "space", modifiers = [] }
+</code></pre>
+<p><strong>Use Case</strong>: Testing, default behavior, or when you just want the <code>then_action</code> wrapper.</p>
+<hr />
+<h3 id="2-never"><a class="header" href="#2-never">2. Never</a></h3>
+<p><strong>Never executes the then_action (effectively disables the mapping)</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+condition = "Never"
+then_action = { type = "Launch", app = "Disabled App" }
+</code></pre>
+<p><strong>Use Case</strong>: Temporarily disable a mapping without deleting it.</p>
+<hr />
+<h3 id="3-timerange"><a class="header" href="#3-timerange">3. TimeRange</a></h3>
+<p><strong>Executes only during specific hours (24-hour format)</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "TimeRange"
+start = "09:00"
+end = "17:00"
+
+[modes.mappings.action.then_action]
+type = "Launch"
+app = "Slack"
+
+[modes.mappings.action.else_action]
+type = "Text"
+text = "Outside work hours"
+</code></pre>
+<p><strong>Features</strong>:</p>
+<ul>
+<li>Automatically handles ranges crossing midnight (e.g., <code>22:00</code> to <code>06:00</code>)</li>
+<li>Time is checked when action is triggered (not when config is loaded)</li>
+</ul>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Work mode (9am-5pm): Launch productivity apps</li>
+<li>Evening mode (5pm-11pm): Launch entertainment apps</li>
+<li>Night mode (11pm-9am): Disable noisy actions</li>
+</ul>
+<hr />
+<h3 id="4-dayofweek"><a class="header" href="#4-dayofweek">4. DayOfWeek</a></h3>
+<p><strong>Executes only on specific days</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "DayOfWeek"
+days = [1, 2, 3, 4, 5]  # Monday=1 through Sunday=7
+
+[modes.mappings.action.then_action]
+type = "Shell"
+command = "open ~/Work"
+
+[modes.mappings.action.else_action]
+type = "Shell"
+command = "open ~/Personal"
+</code></pre>
+<p><strong>Day Numbers</strong>:</p>
+<ul>
+<li>1 = Monday</li>
+<li>2 = Tuesday</li>
+<li>3 = Wednesday</li>
+<li>4 = Thursday</li>
+<li>5 = Friday</li>
+<li>6 = Saturday</li>
+<li>7 = Sunday</li>
+</ul>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Weekday-only shortcuts (work apps)</li>
+<li>Weekend-only shortcuts (gaming, hobbies)</li>
+<li>Different behaviors for different days</li>
+</ul>
+<hr />
+<h3 id="5-apprunning"><a class="header" href="#5-apprunning">5. AppRunning</a></h3>
+<p><strong>Checks if a specific application is currently running</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "AppRunning"
+app_name = "Logic Pro"
+
+[modes.mappings.action.then_action]
+type = "Keystroke"
+keys = "space"
+modifiers = []  # Play/pause in Logic
+
+[modes.mappings.action.else_action]
+type = "Launch"
+app = "Logic Pro"
+</code></pre>
+<p><strong>Platform Support</strong>:</p>
+<ul>
+<li>✅ macOS: Uses <code>pgrep</code> (case-insensitive)</li>
+<li>✅ Linux: Uses <code>pgrep</code> (case-insensitive)</li>
+<li>❌ Windows: Not yet supported</li>
+</ul>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Smart play/pause (launch DAW if not running, play/pause if running)</li>
+<li>Toggle between apps (if browser running, open it; else launch IDE)</li>
+<li>Conditional workflows based on running processes</li>
+</ul>
+<p><strong>Note</strong>: Uses partial string matching. <code>"Chrome"</code> matches <code>"Google Chrome Helper"</code>.</p>
+<hr />
+<h3 id="6-appfrontmost"><a class="header" href="#6-appfrontmost">6. AppFrontmost</a></h3>
+<p><strong>Checks if a specific application has focus (active window)</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "AppFrontmost"
+app_name = "Safari"
+
+[modes.mappings.action.then_action]
+type = "Keystroke"
+keys = "t"
+modifiers = ["cmd"]  # New tab in Safari
+
+[modes.mappings.action.else_action]
+type = "Text"
+text = "Not in Safari"
+</code></pre>
+<p><strong>Platform Support</strong>:</p>
+<ul>
+<li>✅ macOS: Uses NSWorkspace API</li>
+<li>❌ Linux: Not yet supported</li>
+<li>❌ Windows: Not yet supported</li>
+</ul>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>App-specific shortcuts (browser shortcuts vs IDE shortcuts)</li>
+<li>Context-switching workflows</li>
+<li>Smart key remapping based on frontmost app</li>
+</ul>
+<p><strong>Note</strong>: Checks the actual frontmost application, not just if it's running.</p>
+<hr />
+<h3 id="7-modeis"><a class="header" href="#7-modeis">7. ModeIs</a></h3>
+<p><strong>Checks if the current mode matches</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "ModeIs"
+mode = "Development"
+
+[modes.mappings.action.then_action]
+type = "Shell"
+command = "git status"
+
+[modes.mappings.action.else_action]
+type = "Text"
+text = "Switch to Development mode first"
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Mode-specific behaviors within global mappings</li>
+<li>Validate mode before executing sensitive commands</li>
+<li>Different actions for different modes on same pad</li>
+</ul>
+<p><strong>Note</strong>: Mode name must match exactly (case-sensitive).</p>
+<hr />
+<h3 id="8-and-logical-and"><a class="header" href="#8-and-logical-and">8. And (Logical AND)</a></h3>
+<p><strong>All sub-conditions must be true</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "And"
+conditions = [
+  { type = "TimeRange", start = "09:00", end = "17:00" },
+  { type = "DayOfWeek", days = [1, 2, 3, 4, 5] },
+  { type = "AppRunning", app_name = "Slack" }
+]
+
+[modes.mappings.action.then_action]
+type = "Keystroke"
+keys = "s"
+modifiers = ["cmd", "shift"]  # Search in Slack during work hours on weekdays
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Work mode: weekdays AND business hours AND specific app</li>
+<li>Complex conditions requiring multiple criteria</li>
+</ul>
+<hr />
+<h3 id="9-or-logical-or"><a class="header" href="#9-or-logical-or">9. Or (Logical OR)</a></h3>
+<p><strong>At least one sub-condition must be true</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "Or"
+conditions = [
+  { type = "AppFrontmost", app_name = "Safari" },
+  { type = "AppFrontmost", app_name = "Chrome" },
+  { type = "AppFrontmost", app_name = "Firefox" }
+]
+
+[modes.mappings.action.then_action]
+type = "Keystroke"
+keys = "t"
+modifiers = ["cmd"]  # New tab in any browser
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Action applies to multiple apps</li>
+<li>Alternative conditions (weekend OR evening)</li>
+</ul>
+<hr />
+<h3 id="10-not-logical-not"><a class="header" href="#10-not-logical-not">10. Not (Logical NOT)</a></h3>
+<p><strong>Inverts the result of a condition</strong></p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "Not"
+condition = { type = "AppRunning", app_name = "Music" }
+
+[modes.mappings.action.then_action]
+type = "Launch"
+app = "Music"
+
+[modes.mappings.action.else_action]
+type = "Text"
+text = "Music already running"
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>"If NOT running, launch"</li>
+<li>"If NOT work hours, disable"</li>
+<li>Invert any condition logic</li>
+</ul>
+<hr />
+<h2 id="gui-configuration"><a class="header" href="#gui-configuration">GUI Configuration</a></h2>
+<p>The Conditional Action Editor in the GUI provides:</p>
+<ol>
+<li><strong>Condition Type Selector</strong>: Dropdown with descriptions</li>
+<li><strong>Time Pickers</strong>: Visual time selection for TimeRange</li>
+<li><strong>Day Toggles</strong>: Click days for DayOfWeek conditions</li>
+<li><strong>Text Inputs</strong>: For app names (AppRunning, AppFrontmost)</li>
+<li><strong>Mode Dropdown</strong>: Auto-populated from available modes (ModeIs)</li>
+<li><strong>Logical Operators</strong>: Add/remove sub-conditions for And/Or
+<ul>
+<li>Simple (non-nested) And/Or/Not supported</li>
+<li>Complex nested logic requires TOML editing</li>
+</ul>
+</li>
+<li><strong>Then/Else Actions</strong>: Full ActionSelector for both branches</li>
+<li><strong>Optional Else</strong>: Toggle to add/remove else_action</li>
+</ol>
+<p><strong>To Configure</strong>:</p>
+<ol>
+<li>Select action type = "Conditional"</li>
+<li>Choose condition type</li>
+<li>Fill in condition parameters</li>
+<li>Configure then_action</li>
+<li>(Optional) Enable else_action and configure</li>
+<li>Save</li>
+</ol>
+<hr />
+<h2 id="practical-examples"><a class="header" href="#practical-examples">Practical Examples</a></h2>
+<h3 id="example-1-work-hours-profile"><a class="header" href="#example-1-work-hours-profile">Example 1: Work Hours Profile</a></h3>
+<p>Different behavior during work hours vs personal time:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Smart launcher - Slack at work, Discord after hours"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 8
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "And"
+conditions = [
+  { type = "TimeRange", start = "09:00", end = "17:00" },
+  { type = "DayOfWeek", days = [1, 2, 3, 4, 5] }
+]
+
+[modes.mappings.action.then_action]
+type = "Launch"
+app = "Slack"
+
+[modes.mappings.action.else_action]
+type = "Launch"
+app = "Discord"
+</code></pre>
+<hr />
+<h3 id="example-2-app-aware-playpause"><a class="header" href="#example-2-app-aware-playpause">Example 2: App-Aware Play/Pause</a></h3>
+<p>Different shortcuts for different media apps:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Universal play/pause"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "Or"
+conditions = [
+  { type = "AppFrontmost", app_name = "Spotify" },
+  { type = "AppFrontmost", app_name = "Music" }
+]
+
+[modes.mappings.action.then_action]
+type = "Keystroke"
+keys = "space"
+modifiers = []
+
+[modes.mappings.action.else_action]
+type = "Conditional"
+condition = { type = "AppFrontmost", app_name = "Logic Pro" }
+then_action = { type = "Keystroke", keys = "Return", modifiers = [] }
+else_action = { type = "VolumeControl", operation = "Mute" }
+</code></pre>
+<p>Nested conditionals: Spotify/Music → space, Logic → Return, else → Mute</p>
+<hr />
+<h3 id="example-3-weekend-gaming-mode"><a class="header" href="#example-3-weekend-gaming-mode">Example 3: Weekend Gaming Mode</a></h3>
+<p>Enable gaming shortcuts only on weekends:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Discord overlay (weekends only)"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 15
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "DayOfWeek"
+days = [6, 7]  # Saturday, Sunday
+
+[modes.mappings.action.then_action]
+type = "Keystroke"
+keys = "`"
+modifiers = ["shift", "cmd"]
+
+# No else_action (does nothing on weekdays)
+</code></pre>
+<hr />
+<h3 id="example-4-smart-daw-control"><a class="header" href="#example-4-smart-daw-control">Example 4: Smart DAW Control</a></h3>
+<p>Launch DAW if not running, otherwise send MIDI:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Launch or control Logic Pro"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 5
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "AppRunning"
+app_name = "Logic Pro"
+
+[modes.mappings.action.then_action]
+type = "SendMidi"
+port = "IAC Driver Bus 1"
+message_type = "NoteOn"
+channel = 0
+note = 60
+velocity = 100
+
+[modes.mappings.action.else_action]
+type = "Launch"
+app = "Logic Pro"
+</code></pre>
+<hr />
+<h2 id="advanced-nested-conditions"><a class="header" href="#advanced-nested-conditions">Advanced: Nested Conditions</a></h2>
+<p>Combine multiple logical operators for complex logic:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Complex work mode: (weekday AND work hours) OR (weekend AND app running)"
+
+[modes.mappings.trigger]
+type = "Note"
+note = 10
+
+[modes.mappings.action]
+type = "Conditional"
+
+[modes.mappings.action.condition]
+type = "Or"
+conditions = [
+  {
+    type = "And"
+    conditions = [
+      { type = "DayOfWeek", days = [1, 2, 3, 4, 5] },
+      { type = "TimeRange", start = "09:00", end = "17:00" }
+    ]
+  },
+  {
+    type = "And"
+    conditions = [
+      { type = "DayOfWeek", days = [6, 7] },
+      { type = "AppRunning", app_name = "Xcode" }
+    ]
+  }
+]
+
+[modes.mappings.action.then_action]
+type = "Shell"
+command = "open ~/Code"
+</code></pre>
+<p><strong>Translation</strong>: Open code folder if:</p>
+<ul>
+<li>(Monday-Friday AND 9am-5pm) OR</li>
+<li>(Saturday-Sunday AND Xcode is running)</li>
+</ul>
+<hr />
+<h2 id="tips--best-practices"><a class="header" href="#tips--best-practices">Tips &amp; Best Practices</a></h2>
+<h3 id="start-simple"><a class="header" href="#start-simple">Start Simple</a></h3>
+<p>Begin with single conditions:</p>
+<ol>
+<li>Test TimeRange alone</li>
+<li>Test AppRunning alone</li>
+<li>Combine with And/Or once individual conditions work</li>
+</ol>
+<h3 id="use-descriptive-mappings"><a class="header" href="#use-descriptive-mappings">Use Descriptive Mappings</a></h3>
+<pre><code class="language-toml">description = "Slack during work (Mon-Fri 9-5), Discord otherwise"
+</code></pre>
+<p>Clear descriptions help when debugging.</p>
+<h3 id="test-edge-cases"><a class="header" href="#test-edge-cases">Test Edge Cases</a></h3>
+<ul>
+<li>Midnight crossing (TimeRange: 22:00 - 02:00)</li>
+<li>Day transitions (Saturday → Sunday at midnight)</li>
+<li>App name variations ("Chrome" vs "Google Chrome")</li>
+</ul>
+<h3 id="combine-with-velocity-mappings"><a class="header" href="#combine-with-velocity-mappings">Combine with Velocity Mappings</a></h3>
+<pre><code class="language-toml">[modes.mappings.velocity_mapping]
+type = "Curve"
+curve_type = "Exponential"
+intensity = 0.7
+
+[modes.mappings.action]
+type = "Conditional"
+# Velocity mapping applies before condition evaluation
+</code></pre>
+<h3 id="global-vs-mode-specific"><a class="header" href="#global-vs-mode-specific">Global vs Mode-Specific</a></h3>
+<ul>
+<li><strong>Global mappings</strong>: Use ModeIs condition to adapt to current mode</li>
+<li><strong>Mode mappings</strong>: Already scoped to mode, use other conditions</li>
+</ul>
+<h3 id="performance"><a class="header" href="#performance">Performance</a></h3>
+<p>Conditions are evaluated each time the trigger fires. Keep deeply nested conditions reasonable (&lt;5 levels deep).</p>
+<hr />
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="condition-never-true"><a class="header" href="#condition-never-true">Condition Never True</a></h3>
+<p><strong>Problem</strong>: Action never executes</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>Check condition type matches intended logic</li>
+<li>Verify app name matches process name (<code>ps aux | grep &lt;app&gt;</code>)</li>
+<li>Test time format (must be <code>HH:MM</code>, 24-hour)</li>
+<li>Check day numbers (Monday=1, not 0)</li>
+<li>Add debug <code>else_action</code> to confirm condition is evaluating</li>
+</ol>
+<h3 id="wrong-action-executes"><a class="header" href="#wrong-action-executes">Wrong Action Executes</a></h3>
+<p><strong>Problem</strong>: else_action runs instead of then_action</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>Verify condition logic (And vs Or)</li>
+<li>Check app name capitalization (case-sensitive on some platforms)</li>
+<li>Test each sub-condition individually</li>
+<li>Add <code>type = "Text"</code> debug actions to see which path executes</li>
+</ol>
+<h3 id="appfrontmost-not-working"><a class="header" href="#appfrontmost-not-working">AppFrontmost Not Working</a></h3>
+<p><strong>Problem</strong>: Condition always false</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>Verify platform support (macOS only currently)</li>
+<li>Check app name matches bundle name (use Activity Monitor)</li>
+<li>Try partial name ("Safari" instead of "com.apple.Safari")</li>
+</ol>
+<hr />
+<h2 id="related-documentation"><a class="header" href="#related-documentation">Related Documentation</a></h2>
+<ul>
+<li><a href="../configuration/conditionals.html">Configuration: Conditionals</a> - Complete TOML reference</li>
+<li><a href="../tutorials/dynamic-workflows.html">Tutorial: Dynamic Workflows</a> - Step-by-step guide</li>
+<li><a href="velocity-curves.html">Guides: Velocity Curves</a> - Combine with velocity mappings</li>
+<li><a href="../configuration/actions.html">Configuration: Actions</a> - Action types reference</li>
+</ul>
+<hr />
+<p><strong>Next</strong>: Try the <a href="../tutorials/dynamic-workflows.html">Dynamic Workflows Tutorial</a> for a hands-on example combining conditionals and velocity curves.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../guides/velocity-curves.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../guides/daw-control.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../guides/velocity-curves.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../guides/daw-control.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

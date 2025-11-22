@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions - Questions & Help
+    url: https://github.com/amiable-dev/conductor/discussions
+    about: Ask questions, share ideas, and get help from the community
+  - name: Documentation
+    url: https://amiable-dev.github.io/conductor/
+    about: Read the full documentation, guides, and reference material
+  - name: Discord Community (Coming Soon)
+    url: https://github.com/amiable-dev/conductor/discussions
+    about: Real-time chat and support (check Discussions for updates)

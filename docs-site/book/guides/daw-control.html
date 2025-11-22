@@ -1,0 +1,926 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>DAW Control - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/guides/daw-control.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="daw-control-with-midimon"><a class="header" href="#daw-control-with-midimon">DAW Control with MIDIMon</a></h1>
+<p>Control your Digital Audio Workstation (DAW) directly from your MIDI controller using MIDIMon's SendMIDI action. Transform your Maschine Mikro MK3 or other MIDI controller into a custom control surface for transport control, mixer automation, and parameter manipulation.</p>
+<hr />
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>MIDIMon can send MIDI messages to your DAW, allowing you to:</p>
+<ul>
+<li><strong>Transport Control</strong>: Play, Stop, Record, Rewind, Fast Forward</li>
+<li><strong>Mixer Control</strong>: Volume faders (CC 7), Pan controls (CC 10), Mute/Solo</li>
+<li><strong>Parameter Automation</strong>: Plugin parameters, effect sends, EQ controls</li>
+<li><strong>MIDI Learn</strong>: Map any pad to any DAW parameter using MIDI Learn</li>
+<li><strong>Scene/Clip Triggering</strong>: Launch clips, scenes, or patterns in Live/Bitwig</li>
+</ul>
+<p>This enables you to create custom control surfaces tailored to your workflow, without needing hardware-specific DAW integration.</p>
+<hr />
+<h2 id="how-it-works"><a class="header" href="#how-it-works">How It Works</a></h2>
+<pre><code>[Your MIDI Controller]
+        ↓ (MIDI Input to MIDIMon)
+  [MIDIMon Daemon]
+        ↓ (SendMIDI Action)
+  [Virtual MIDI Port] (IAC Driver, loopMIDI, ALSA)
+        ↓ (MIDI from MIDIMon)
+    [Your DAW] (Logic Pro, Ableton Live, etc.)
+</code></pre>
+<p><strong>Key Components</strong>:</p>
+<ol>
+<li><strong>Input</strong>: MIDIMon receives MIDI from your controller (pads, encoders, buttons)</li>
+<li><strong>Mapping</strong>: MIDIMon maps input events to SendMIDI actions</li>
+<li><strong>Output</strong>: SendMIDI sends MIDI messages to a virtual MIDI port</li>
+<li><strong>DAW</strong>: Your DAW receives MIDI from the virtual port and responds</li>
+</ol>
+<hr />
+<h2 id="platform-setup"><a class="header" href="#platform-setup">Platform Setup</a></h2>
+<p>Before using SendMIDI, you need a virtual MIDI port that MIDIMon can send to and your DAW can receive from.</p>
+<h3 id="macos-iac-driver"><a class="header" href="#macos-iac-driver">macOS: IAC Driver</a></h3>
+<p>macOS includes a built-in virtual MIDI driver called IAC (Inter-Application Communication).</p>
+<p><strong>Setup Steps</strong>:</p>
+<ol>
+<li>
+<p>Open <strong>Audio MIDI Setup</strong> application</p>
+<ul>
+<li>Found in <code>/Applications/Utilities/Audio MIDI Setup.app</code></li>
+<li>Or press <code>Cmd+Space</code> and search "Audio MIDI Setup"</li>
+</ul>
+</li>
+<li>
+<p>Show MIDI Studio</p>
+<ul>
+<li>Go to <code>Window</code> → <code>Show MIDI Studio</code> (or press <code>Cmd+2</code>)</li>
+</ul>
+</li>
+<li>
+<p>Double-click <strong>IAC Driver</strong> icon</p>
+<ul>
+<li>If you don't see it, create it: <code>Window</code> → <code>Show MIDI Studio</code> → click the globe icon</li>
+</ul>
+</li>
+<li>
+<p>Enable the driver</p>
+<ul>
+<li>Check <strong>"Device is online"</strong> checkbox</li>
+<li>You should see at least one port named "IAC Driver Bus 1"</li>
+</ul>
+</li>
+<li>
+<p>(Optional) Add more ports</p>
+<ul>
+<li>Click the <strong>+</strong> button under "Ports" to create additional buses</li>
+<li>Rename buses to something meaningful (e.g., "MIDIMon → Logic Pro")</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Apply</strong></p>
+</li>
+</ol>
+<p><strong>Verify IAC Driver is Working</strong>:</p>
+<pre><code class="language-bash"># List MIDI output ports (MIDIMon should see IAC Driver)
+./target/release/midimon-daemon --list-midi-outputs
+
+# You should see:
+# MIDI Output Ports:
+# 0: IAC Driver Bus 1
+</code></pre>
+<p><strong>Troubleshooting</strong>:</p>
+<ul>
+<li>If IAC Driver doesn't appear: Restart Audio MIDI Setup or reboot macOS</li>
+<li>If port disappears after reboot: Make sure "Device is online" was checked and saved</li>
+</ul>
+<hr />
+<h3 id="windows-loopmidi"><a class="header" href="#windows-loopmidi">Windows: loopMIDI</a></h3>
+<p>Windows doesn't include built-in virtual MIDI ports, so we use <strong>loopMIDI</strong> (free, open-source).</p>
+<p><strong>Download &amp; Install</strong>:</p>
+<ol>
+<li>Visit <a href="https://www.tobias-erichsen.de/software/loopmidi.html">Tobias Erichsen's loopMIDI page</a></li>
+<li>Download the installer (free, no registration required)</li>
+<li>Run the installer (requires Administrator privileges)</li>
+<li>Launch <strong>loopMIDI</strong> from Start Menu</li>
+</ol>
+<p><strong>Create Virtual Port</strong>:</p>
+<ol>
+<li>In loopMIDI window, enter a port name (e.g., "MIDIMon Virtual Out")</li>
+<li>Click <strong>+</strong> (Plus button) to create the port</li>
+<li>The port should appear in the list with status "Opened by 0 applications"</li>
+</ol>
+<p><strong>Keep loopMIDI Running</strong>:</p>
+<ul>
+<li>loopMIDI must be running for the virtual port to exist</li>
+<li>To auto-start with Windows: Right-click loopMIDI in system tray → "Start minimized with Windows"</li>
+</ul>
+<p><strong>Verify loopMIDI Port</strong>:</p>
+<pre><code class="language-powershell"># List MIDI output ports
+.\target\release\midimon-daemon.exe --list-midi-outputs
+
+# You should see:
+# MIDI Output Ports:
+# 0: MIDIMon Virtual Out
+</code></pre>
+<p><strong>Troubleshooting</strong>:</p>
+<ul>
+<li>Port not found: Make sure loopMIDI is running and port is created</li>
+<li>Port opens but no MIDI received in DAW: Check DAW MIDI input preferences</li>
+<li>loopMIDI crashes: Try creating port with simpler name (no special characters)</li>
+</ul>
+<hr />
+<h3 id="linux-alsa-virtual-port"><a class="header" href="#linux-alsa-virtual-port">Linux: ALSA Virtual Port</a></h3>
+<p>Linux supports virtual MIDI ports through <strong>ALSA</strong> (Advanced Linux Sound Architecture).</p>
+<p><strong>Create Virtual Port with <code>aconnect</code></strong>:</p>
+<pre><code class="language-bash"># Method 1: Using MIDIMon's built-in virtual port creation (recommended)
+# MIDIMon can create virtual ports automatically on Linux via midir
+
+# Method 2: Manual ALSA virtual port (if needed)
+# Install ALSA utilities
+sudo apt-get install alsa-utils
+
+# Create a virtual port named "MIDIMon Output"
+# This command creates a port that stays active
+aseqdump -p "MIDIMon Output" &amp;
+
+# List ALSA MIDI ports
+aconnect -l
+
+# You should see something like:
+# client 128: 'MIDIMon Output' [type=user]
+#     0 'MIDIMon Output'
+</code></pre>
+<p><strong>Using JACK for MIDI (Alternative)</strong>:</p>
+<p>If you use JACK for audio:</p>
+<pre><code class="language-bash"># Install JACK MIDI tools
+sudo apt-get install qjackctl
+
+# Start JACK
+qjackctl &amp;
+
+# In QjackCtl:
+# - Go to "Graph" or "Patchbay"
+# - Create MIDI connections between MIDIMon and your DAW
+</code></pre>
+<p><strong>Verify ALSA Port</strong>:</p>
+<pre><code class="language-bash"># List MIDI output ports
+./target/release/midimon-daemon --list-midi-outputs
+
+# You should see your created virtual port
+</code></pre>
+<p><strong>Troubleshooting</strong>:</p>
+<ul>
+<li>No ALSA ports: <code>sudo modprobe snd-seq</code> (load ALSA sequencer module)</li>
+<li>Permission denied: Add user to <code>audio</code> group: <code>sudo usermod -a -G audio $USER</code> (logout/login after)</li>
+<li>JACK vs ALSA confusion: Choose one system (ALSA is simpler for most users)</li>
+</ul>
+<hr />
+<h2 id="midimon-configuration"><a class="header" href="#midimon-configuration">MIDIMon Configuration</a></h2>
+<h3 id="basic-sendmidi-example"><a class="header" href="#basic-sendmidi-example">Basic SendMIDI Example</a></h3>
+<p>Here's a minimal configuration that sends a MIDI Note On message when you press pad 1:</p>
+<pre><code class="language-toml"># config.toml
+
+[[modes]]
+name = "Default"
+
+# Send MIDI Note On (C4 / note 60) when pad 1 is pressed
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1  # Pad 1 on Maschine Mikro MK3
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"  # macOS (use your port name)
+# port = "MIDIMon Virtual Out"  # Windows (loopMIDI)
+# port = "MIDIMon Output"  # Linux (ALSA)
+
+[modes.mappings.action.message]
+type = "NoteOn"
+note = 60  # MIDI note 60 = C4 (Middle C)
+velocity = 100
+channel = 0  # MIDI channel 1 (0-indexed)
+</code></pre>
+<p><strong>Test This Configuration</strong>:</p>
+<ol>
+<li>Save the config above to your <code>config.toml</code></li>
+<li>Restart MIDIMon daemon: <code>midimonctl reload</code></li>
+<li>Open your DAW and create a software instrument track</li>
+<li>Set the track's MIDI input to your virtual port (IAC Driver/loopMIDI)</li>
+<li>Enable MIDI input recording on the track</li>
+<li>Press pad 1 on your controller</li>
+<li>You should hear the instrument play note C4!</li>
+</ol>
+<hr />
+<h2 id="midi-message-types"><a class="header" href="#midi-message-types">MIDI Message Types</a></h2>
+<p>MIDIMon supports all common MIDI message types. Here's a reference for each:</p>
+<h3 id="1-note-on--note-off"><a class="header" href="#1-note-on--note-off">1. Note On / Note Off</a></h3>
+<p>Trigger notes in software instruments.</p>
+<pre><code class="language-toml">[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+# Note On: Start playing a note
+[modes.mappings.action.message]
+type = "NoteOn"
+note = 60        # MIDI note number (0-127, 60 = C4)
+velocity = 100   # How hard the note is played (0-127)
+channel = 0      # MIDI channel (0-15, displays as 1-16 in DAWs)
+</code></pre>
+<pre><code class="language-toml"># Note Off: Stop playing a note
+[modes.mappings.action.message]
+type = "NoteOff"
+note = 60        # Same note number as the Note On
+velocity = 64    # Release velocity (usually 0 or 64)
+channel = 0
+</code></pre>
+<p><strong>Common Note Numbers</strong>:</p>
+<ul>
+<li>C3 (48), C4 (60), C5 (72) - Middle octaves</li>
+<li>A0 (21) - Lowest note on 88-key piano</li>
+<li>C8 (108) - Highest note on 88-key piano</li>
+</ul>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Trigger drum samples in drum racks</li>
+<li>Play melodies on virtual instruments</li>
+<li>Trigger clips in Ableton Live's Session View</li>
+</ul>
+<hr />
+<h3 id="2-control-change-cc"><a class="header" href="#2-control-change-cc">2. Control Change (CC)</a></h3>
+<p>Control parameters like volume, pan, filters, and effects.</p>
+<pre><code class="language-toml">[modes.mappings.action.message]
+type = "CC"
+controller = 7   # Controller number (0-127)
+value = 100      # Controller value (0-127)
+channel = 0
+</code></pre>
+<p><strong>Common CC Numbers</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>CC#</th><th>Name</th><th>Purpose</th><th>Range</th></tr></thead><tbody>
+<tr><td>1</td><td>Modulation Wheel</td><td>Vibrato, tremolo</td><td>0-127</td></tr>
+<tr><td>7</td><td>Volume</td><td>Track/channel volume</td><td>0-127 (100=max)</td></tr>
+<tr><td>10</td><td>Pan</td><td>Left/right panning</td><td>0=left, 64=center, 127=right</td></tr>
+<tr><td>11</td><td>Expression</td><td>Volume changes within a note</td><td>0-127</td></tr>
+<tr><td>64</td><td>Sustain Pedal</td><td>Hold notes</td><td>0-63=off, 64-127=on</td></tr>
+<tr><td>71</td><td>Filter Resonance</td><td>Synth filter resonance</td><td>0-127</td></tr>
+<tr><td>74</td><td>Filter Cutoff</td><td>Synth filter cutoff freq</td><td>0-127</td></tr>
+</tbody></table>
+</div>
+<p><strong>Example: Volume Control</strong></p>
+<pre><code class="language-toml"># Soft velocity = low volume (CC 7 = 40)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 1
+min_velocity = 0
+max_velocity = 40
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.message]
+type = "CC"
+controller = 7
+value = 40
+channel = 0
+</code></pre>
+<hr />
+<h3 id="3-program-change"><a class="header" href="#3-program-change">3. Program Change</a></h3>
+<p>Switch between presets/patches in instruments or effects.</p>
+<pre><code class="language-toml">[modes.mappings.action.message]
+type = "ProgramChange"
+program = 42     # Program number (0-127)
+channel = 0
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Switch guitar amp presets</li>
+<li>Change synthesizer patches</li>
+<li>Load different drum kits</li>
+</ul>
+<p><strong>Note</strong>: Program Change numbers are 0-indexed in MIDI (0-127) but often displayed as 1-128 in DAWs.</p>
+<hr />
+<h3 id="4-pitch-bend"><a class="header" href="#4-pitch-bend">4. Pitch Bend</a></h3>
+<p>Bend notes up or down (like a pitch wheel).</p>
+<pre><code class="language-toml">[modes.mappings.action.message]
+type = "PitchBend"
+value = 0        # Pitch bend value (-8192 to +8191)
+                 # 0 = center (no bend)
+                 # +8191 = max up
+                 # -8192 = max down
+channel = 0
+</code></pre>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-toml"># Pitch up (full bend up)
+value = 8191
+
+# Center position (no bend)
+value = 0
+
+# Pitch down (full bend down)
+value = -8192
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Guitar bends in virtual guitars</li>
+<li>Synth lead pitch slides</li>
+<li>Trombone-style glissando effects</li>
+</ul>
+<hr />
+<h3 id="5-aftertouch-channel-pressure"><a class="header" href="#5-aftertouch-channel-pressure">5. Aftertouch (Channel Pressure)</a></h3>
+<p>Apply pressure-based modulation to all notes on a channel.</p>
+<pre><code class="language-toml">[modes.mappings.action.message]
+type = "Aftertouch"
+pressure = 64    # Pressure amount (0-127)
+channel = 0
+</code></pre>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Vibrato after note starts</li>
+<li>Filter modulation with sustained notes</li>
+<li>Expressive synth control</li>
+</ul>
+<p><strong>Note</strong>: This is <em>Channel Aftertouch</em> (affects all notes). MIDI also supports <em>Polyphonic Aftertouch</em> (per-note), but it's rarely used and not currently supported by SendMIDI.</p>
+<hr />
+<h2 id="common-use-cases"><a class="header" href="#common-use-cases">Common Use Cases</a></h2>
+<h3 id="transport-control"><a class="header" href="#transport-control">Transport Control</a></h3>
+<p>Control DAW playback using MIDI CC messages. Most DAWs support MMC (MIDI Machine Control) or specific CC numbers for transport.</p>
+<p><strong>Logic Pro Transport</strong> (using CC messages):</p>
+<pre><code class="language-toml"># Play/Pause (CC 115)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.message]
+type = "CC"
+controller = 115  # Play/Continue
+value = 127
+channel = 0
+
+# Stop (CC 116)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 2
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.message]
+type = "CC"
+controller = 116  # Stop
+value = 127
+channel = 0
+
+# Record (CC 117)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 3
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.message]
+type = "CC"
+controller = 117  # Record
+value = 127
+channel = 0
+</code></pre>
+<p><strong>Ableton Live Transport</strong> (using Note messages):</p>
+<p>Ableton responds to specific MIDI notes for transport in some modes:</p>
+<pre><code class="language-toml"># Play (Note 91 on Channel 1)
+[modes.mappings.action.message]
+type = "NoteOn"
+note = 91
+velocity = 127
+channel = 0
+
+# Stop (Note 93)
+[modes.mappings.action.message]
+type = "NoteOn"
+note = 93
+velocity = 127
+channel = 0
+</code></pre>
+<p><em>Note: Actual values depend on your DAW's MIDI remote script. Check your DAW's documentation or use MIDI Learn.</em></p>
+<hr />
+<h3 id="mixer-control-volume--pan"><a class="header" href="#mixer-control-volume--pan">Mixer Control (Volume &amp; Pan)</a></h3>
+<p>Control track volume and panning using CC 7 (Volume) and CC 10 (Pan).</p>
+<p><strong>Volume Fader with Velocity</strong>:</p>
+<pre><code class="language-toml"># Map pad velocity to track volume
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.message]
+type = "CC"
+controller = 7    # Volume
+value = 100       # Will be overridden by velocity mapping
+channel = 0       # Track 1
+
+# Use velocity mapping to scale velocity to volume
+[modes.mappings.action.velocity_mapping]
+type = "Linear"
+min = 0           # Soft hit = volume 0
+max = 127         # Hard hit = volume 127
+</code></pre>
+<p><strong>Pan Control</strong>:</p>
+<pre><code class="language-toml"># Encoder left/right = pan left/right
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "EncoderTurn"
+encoder = 1
+direction = "Clockwise"
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.message]
+type = "CC"
+controller = 10   # Pan
+value = 127       # Full right
+channel = 0
+</code></pre>
+<hr />
+<h3 id="midi-learn-in-your-daw"><a class="header" href="#midi-learn-in-your-daw">MIDI Learn in Your DAW</a></h3>
+<p>Most DAWs support <strong>MIDI Learn</strong> - a feature that lets you map any incoming MIDI message to any parameter by clicking the parameter and moving your controller.</p>
+<p><strong>General MIDI Learn Workflow</strong>:</p>
+<ol>
+<li>
+<p><strong>Configure MIDIMon</strong> to send a MIDI message when you press a pad:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[modes.mappings.action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+
+[modes.mappings.action.message]
+type = "CC"
+controller = 20  # Arbitrary CC number
+value = 127
+channel = 0
+</code></pre>
+</li>
+<li>
+<p><strong>In your DAW</strong>:</p>
+<ul>
+<li>Enable MIDI Learn mode (varies by DAW)</li>
+<li>Click the parameter you want to control (e.g., filter cutoff)</li>
+<li>Press your mapped pad</li>
+<li>DAW learns the association (CC 20 → filter cutoff)</li>
+<li>Exit MIDI Learn mode</li>
+</ul>
+</li>
+<li>
+<p><strong>Test</strong>: Press the pad again - the parameter should move!</p>
+</li>
+</ol>
+<p><strong>DAW-Specific MIDI Learn</strong>:</p>
+<ul>
+<li><strong>Logic Pro</strong>: <code>Cmd+L</code> → Click parameter → Move controller → <code>Cmd+L</code> to exit</li>
+<li><strong>Ableton Live</strong>: Click "MIDI" button in top right → Click parameter → Move controller → Click "MIDI" again</li>
+<li><strong>Reaper</strong>: Right-click parameter → "Learn" → Move controller</li>
+<li><strong>FL Studio</strong>: Right-click parameter → "Link to controller" → Move controller</li>
+</ul>
+<hr />
+<h2 id="combining-with-conditionals"><a class="header" href="#combining-with-conditionals">Combining with Conditionals</a></h2>
+<p>Use Conditional actions to send different MIDI messages based on context (time, active app, mode).</p>
+<p><strong>Example: Different Transport Controls for Different DAWs</strong></p>
+<pre><code class="language-toml">[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 1
+
+[modes.mappings.action]
+type = "Conditional"
+
+# If Logic Pro is frontmost, send CC 115 (Play)
+[[modes.mappings.action.conditions]]
+type = "AppFrontmost"
+bundle_id = "com.apple.logic10"
+
+[modes.mappings.action.then_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+message = { type = "CC", controller = 115, value = 127, channel = 0 }
+
+# Otherwise (Ableton), send Note 91
+[modes.mappings.action.else_action]
+type = "SendMIDI"
+port = "IAC Driver Bus 1"
+message = { type = "NoteOn", note = 91, velocity = 127, channel = 0 }
+</code></pre>
+<hr />
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="midi-messages-not-received-in-daw"><a class="header" href="#midi-messages-not-received-in-daw">MIDI Messages Not Received in DAW</a></h3>
+<p><strong>Check MIDIMon is sending</strong>:</p>
+<pre><code class="language-bash"># Enable debug logging
+DEBUG=1 midimonctl reload
+
+# Press your mapped pad
+# You should see: "Sending MIDI: [0x90, 0x3C, 0x64] to port 'IAC Driver Bus 1'"
+</code></pre>
+<p><strong>Check DAW MIDI input settings</strong>:</p>
+<ol>
+<li>Open DAW preferences/settings</li>
+<li>Go to MIDI Input settings</li>
+<li>Ensure your virtual port is enabled:
+<ul>
+<li>Logic Pro: <code>Preferences</code> → <code>MIDI</code> → <code>Inputs</code> → Enable "IAC Driver Bus 1"</li>
+<li>Ableton Live: <code>Preferences</code> → <code>Link/Tempo/MIDI</code> → <code>MIDI Ports</code> → Enable "Track" and "Remote" for IAC Driver</li>
+<li>Reaper: <code>Preferences</code> → <code>MIDI Devices</code> → Enable input for virtual port</li>
+</ul>
+</li>
+</ol>
+<p><strong>Check track MIDI input</strong>:</p>
+<ul>
+<li>Make sure the track is set to receive MIDI from your virtual port</li>
+<li>Enable "Input Monitoring" or "Record Enable" on the track</li>
+</ul>
+<hr />
+<h3 id="high-latency--delayed-response"><a class="header" href="#high-latency--delayed-response">High Latency / Delayed Response</a></h3>
+<p><strong>Symptoms</strong>: MIDI messages arrive 50-500ms late</p>
+<p><strong>Causes</strong>:</p>
+<ol>
+<li>
+<p><strong>DAW Buffer Size</strong>: Larger audio buffers = more latency</p>
+<ul>
+<li>Solution: Reduce buffer size in DAW audio preferences (e.g., 128 or 256 samples)</li>
+</ul>
+</li>
+<li>
+<p><strong>MIDI Port Polling</strong>: Some virtual MIDI implementations poll slowly</p>
+<ul>
+<li>Solution: Restart DAW and MIDIMon daemon</li>
+</ul>
+</li>
+<li>
+<p><strong>System Load</strong>: High CPU usage delays MIDI processing</p>
+<ul>
+<li>Solution: Close unnecessary applications</li>
+</ul>
+</li>
+</ol>
+<p><strong>Test Latency</strong>:</p>
+<pre><code class="language-bash"># Send test Note On and measure response time in DAW
+./target/release/midimonctl send-test-midi
+</code></pre>
+<hr />
+<h3 id="port-not-found"><a class="header" href="#port-not-found">Port Not Found</a></h3>
+<p><strong>Error</strong>: <code>Port 'IAC Driver Bus 1' is not connected</code></p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>
+<p><strong>List available ports</strong>:</p>
+<pre><code class="language-bash">midimonctl list-midi-outputs
+</code></pre>
+</li>
+<li>
+<p><strong>Check port name matches exactly</strong> (case-sensitive):</p>
+<pre><code class="language-toml"># Wrong:
+port = "iac driver bus 1"
+
+# Correct:
+port = "IAC Driver Bus 1"
+</code></pre>
+</li>
+<li>
+<p><strong>macOS</strong>: Verify IAC Driver is online in Audio MIDI Setup</p>
+</li>
+<li>
+<p><strong>Windows</strong>: Ensure loopMIDI is running and port is created</p>
+</li>
+<li>
+<p><strong>Linux</strong>: Check ALSA port exists with <code>aconnect -l</code></p>
+</li>
+</ol>
+<hr />
+<h3 id="wrong-midi-channel"><a class="header" href="#wrong-midi-channel">Wrong MIDI Channel</a></h3>
+<p><strong>Symptom</strong>: MIDI messages sent but DAW doesn't respond, or wrong track responds</p>
+<p><strong>Solution</strong>: Check MIDI channel configuration</p>
+<pre><code class="language-toml"># MIDI channels are 0-indexed in MIDIMon config (0-15)
+# But displayed as 1-16 in DAWs
+
+# Channel 0 in MIDIMon = Channel 1 in DAW
+[modes.mappings.action.message]
+channel = 0  # This is MIDI channel 1
+
+# Channel 15 in MIDIMon = Channel 16 in DAW
+channel = 15  # This is MIDI channel 16
+</code></pre>
+<p><strong>Check DAW track MIDI input channel</strong>:</p>
+<ul>
+<li>Set track to receive from "All Channels" or specific channel that matches your config</li>
+</ul>
+<hr />
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="1-use-descriptive-port-names"><a class="header" href="#1-use-descriptive-port-names">1. Use Descriptive Port Names</a></h3>
+<pre><code class="language-toml"># Instead of generic names:
+port = "IAC Driver Bus 1"
+
+# Use descriptive names (rename in Audio MIDI Setup):
+port = "MIDIMon → Logic Pro"
+port = "MIDIMon → Ableton"
+</code></pre>
+<h3 id="2-organize-mappings-by-function"><a class="header" href="#2-organize-mappings-by-function">2. Organize Mappings by Function</a></h3>
+<p>Group related controls together in your config:</p>
+<pre><code class="language-toml"># Transport Controls
+[[modes.mappings]]
+# ... Play mapping ...
+
+[[modes.mappings]]
+# ... Stop mapping ...
+
+# Mixer Controls
+[[modes.mappings]]
+# ... Volume mapping ...
+
+[[modes.mappings]]
+# ... Pan mapping ...
+</code></pre>
+<h3 id="3-document-your-cc-assignments"><a class="header" href="#3-document-your-cc-assignments">3. Document Your CC Assignments</a></h3>
+<pre><code class="language-toml"># CC 20-29: Filter controls
+[[modes.mappings]]
+[modes.mappings.action.message]
+type = "CC"
+controller = 20  # Filter Cutoff
+value = 64
+channel = 0
+
+# CC 30-39: Effect sends
+[[modes.mappings]]
+[modes.mappings.action.message]
+type = "CC"
+controller = 30  # Reverb Send
+value = 50
+channel = 0
+</code></pre>
+<h3 id="4-use-velocity-mapping-for-expressive-control"><a class="header" href="#4-use-velocity-mapping-for-expressive-control">4. Use Velocity Mapping for Expressive Control</a></h3>
+<pre><code class="language-toml"># Map pad velocity to filter cutoff for expressive control
+[modes.mappings.action.velocity_mapping]
+type = "Curve"
+curve_type = "Exponential"
+intensity = 0.5  # Gentle curve for nuanced control
+</code></pre>
+<h3 id="5-test-incrementally"><a class="header" href="#5-test-incrementally">5. Test Incrementally</a></h3>
+<ul>
+<li>Add one mapping at a time</li>
+<li>Test each mapping before adding more</li>
+<li>Use <code>DEBUG=1</code> to verify MIDI messages are sent correctly</li>
+</ul>
+<hr />
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li><strong>Platform-Specific Guides</strong>: See detailed examples for <a href="../examples/logic-pro.html">Logic Pro</a> and <a href="../examples/ableton-live.html">Ableton Live</a></li>
+<li><strong>Advanced Patterns</strong>: Learn about <a href="context-aware.html">context-aware mappings</a> with conditionals</li>
+<li><strong>Velocity Control</strong>: Explore <a href="velocity-curves.html">velocity curves</a> for expressive MIDI control</li>
+<li><strong>Troubleshooting</strong>: Check <a href="../troubleshooting/midi-output.html">MIDI Output Troubleshooting</a> for common issues</li>
+</ul>
+<hr />
+<p><strong>Ready to control your DAW?</strong> Start with the basic transport control example above, then customize to your workflow!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../guides/context-aware.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../tutorials/dynamic-workflows.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../guides/context-aware.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../tutorials/dynamic-workflows.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

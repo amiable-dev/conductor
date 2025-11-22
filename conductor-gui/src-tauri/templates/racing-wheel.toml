@@ -1,0 +1,304 @@
+# MIDIMon Configuration Template
+# Device: Racing Wheel (Logitech G29/G920, Thrustmaster T150, etc.)
+# Template Version: 1.0.0
+# Gamepad Support: v3.0
+
+[device]
+name = "Racing Wheel"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50
+double_tap_timeout_ms = 300
+hold_threshold_ms = 1000
+
+# ========== Mode 1: Racing Sim ==========
+[[modes]]
+name = "Racing Sim"
+color = "red"
+
+# Face buttons on wheel (common layout)
+[[modes.mappings]]
+description = "Cross/A button: Change view"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # Cross/A button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+
+[[modes.mappings]]
+description = "Circle/B button: Handbrake"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129  # Circle/B button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+
+[[modes.mappings]]
+description = "Square/X button: Look back"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130  # Square/X button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "b"
+
+[[modes.mappings]]
+description = "Triangle/Y button: Pause menu"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131  # Triangle/Y button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Escape"
+
+# D-Pad for quick functions
+[[modes.mappings]]
+description = "D-Pad Up: HUD toggle"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "h"
+
+[[modes.mappings]]
+description = "D-Pad Down: Look left"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "q"
+
+[[modes.mappings]]
+description = "D-Pad Left: Flash headlights"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "f"
+
+[[modes.mappings]]
+description = "D-Pad Right: Look right"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "e"
+
+# Paddle shifters (most important for racing)
+[[modes.mappings]]
+description = "Left paddle: Shift down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136  # LB/L1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+
+[[modes.mappings]]
+description = "Right paddle: Shift up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137  # RB/R1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+# Wheel center buttons
+[[modes.mappings]]
+description = "Options/Menu button: Pause"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 140  # Start button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Escape"
+
+[[modes.mappings]]
+description = "Share/View button: Photo mode"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 141  # Select button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "p"
+
+# L2/R2 buttons (if not used as analog triggers)
+[[modes.mappings]]
+description = "L2 button: Clutch kick"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 138
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftShift"
+
+[[modes.mappings]]
+description = "R2 button: Nitrous/Boost"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 139
+[modes.mappings.action]
+type = "Keystroke"
+keys = "n"
+
+# Thumbstick buttons (L3/R3)
+[[modes.mappings]]
+description = "L3: Reset to track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 143
+[modes.mappings.action]
+type = "Keystroke"
+keys = "r"
+
+# ========== Mode 2: Media Control ==========
+[[modes]]
+name = "Media Control"
+color = "purple"
+
+# Face buttons for media playback (for when driving casually)
+[[modes.mappings]]
+description = "Cross/A button: Play/Pause"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Keystroke"
+keys = "PlayPause"
+
+[[modes.mappings]]
+description = "Square/X button: Previous Track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Previous"
+
+[[modes.mappings]]
+description = "Triangle/Y button: Next Track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Next"
+
+[[modes.mappings]]
+description = "Circle/B button: Mute"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Mute"
+
+# D-Pad for volume control
+[[modes.mappings]]
+description = "D-Pad Up: Volume Up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "D-Pad Down: Volume Down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+# Paddle shifters for track navigation
+[[modes.mappings]]
+description = "Left paddle: Previous track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Previous"
+
+[[modes.mappings]]
+description = "Right paddle: Next track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Next"
+
+# Analog triggers for fine volume control
+[[modes.mappings]]
+description = "Right Trigger: Volume Up (analog)"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 133  # RT
+threshold = 64
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "Left Trigger: Volume Down (analog)"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 132  # LT
+threshold = 64
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+# ========== Global Mappings ==========
+[[global_mappings]]
+description = "PS/Xbox button: Quick screenshot"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 142  # Guide/Home button
+[global_mappings.action]
+type = "Keystroke"
+keys = "3"
+modifiers = ["cmd", "shift"]
+
+[[global_mappings]]
+description = "Share/View button: Start recording"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 141
+[global_mappings.action]
+type = "Keystroke"
+keys = "5"
+modifiers = ["cmd", "shift"]
+
+# Paddle chord for mode switching
+[[global_mappings]]
+description = "Both paddles: Switch to Media Control mode"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 137]  # Left + Right paddles
+timeout_ms = 50
+[global_mappings.action]
+type = "ModeChange"
+mode = "Media Control"
+
+# Emergency exit with center button combo
+[[global_mappings]]
+description = "Options+Share: Emergency exit"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [140, 141]  # Start + Select
+timeout_ms = 50
+[global_mappings.action]
+type = "Keystroke"
+keys = "q"
+modifiers = ["cmd"]

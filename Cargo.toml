@@ -1,0 +1,96 @@
+[workspace]
+members = [
+    "conductor-core",
+    "conductor-daemon",
+    "conductor-gui/src-tauri",
+]
+exclude = [
+    "plugins/conductor-spotify-plugin",
+    "plugins/conductor-obs-plugin",
+    "plugins/wasm-template",
+]
+resolver = "2"
+
+[workspace.package]
+version = "4.0.0"
+edition = "2024"
+authors = ["Conductor Contributors"]
+license = "MIT"
+repository = "https://github.com/amiable-dev/conductor"
+
+# Root package
+[package]
+name = "conductor"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Conductor - Multi-protocol input mapping system for MIDI controllers, game controllers, and custom hardware"
+
+[lib]
+name = "conductor"
+path = "src/lib.rs"
+
+[dependencies]
+# Re-export conductor_core
+conductor-core = { path = "conductor-core" }
+
+[dev-dependencies]
+# For integration tests that use ActionExecutor and PluginManager
+conductor-daemon = { path = "conductor-daemon" }
+proptest.workspace = true
+rstest.workspace = true
+chrono.workspace = true
+enigo.workspace = true
+toml.workspace = true
+serde_json.workspace = true
+dirs.workspace = true
+
+[workspace.dependencies]
+# Core dependencies (used by midimon-core)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.9"
+midir = "0.10"
+hidapi = { version = "2.6", features = ["macos-shared-device"] }
+quick-xml = { version = "0.37", features = ["serialize"] }
+crossbeam-channel = "0.5"
+thiserror = "2.0"
+rand = "0.8"
+regex = "1.10"  # Security validation
+dirs = "5.0"  # Path handling
+libloading = "0.8"  # Plugin loading - native .dylib/.so/.dll (v2.3)
+gilrs = "0.10"  # Gamepad/HID input (v3.0 - HID gamepad support)
+sha2 = "0.10"  # Checksum verification (v2.3)
+ed25519-dalek = { version = "2.1", features = ["rand_core"] }  # Plugin signing (v2.7)
+hex = "0.4"  # Hex encoding for signatures (v2.7)
+
+# WASM plugin runtime (v2.5 - sandboxed plugin execution)
+wasmtime = "26.0"
+wasmtime-wasi = "26.0"
+
+# Platform-specific MIDI output (optional, for virtual port creation)
+coremidi = "0.8"  # macOS virtual MIDI ports (0.9 not available on crates.io)
+alsa = "0.9"  # Linux ALSA virtual ports
+
+# MIDI message parsing
+midi-msg = "0.8"  # Modern MIDI message parser (actively maintained)
+
+# Shared dependencies (used by multiple crates)
+chrono = "0.4"  # Timestamps for signing, logs, etc.
+
+# CLI/display dependencies (NOT in midimon-core, only midimon-daemon)
+enigo = "0.6"
+colored = "3.0"
+ctrlc = "3.4"
+clap = { version = "4.5", features = ["derive", "cargo"] }
+
+# Testing
+proptest = "1.5"
+rstest = "0.23"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

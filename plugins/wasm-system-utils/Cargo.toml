@@ -1,0 +1,25 @@
+[package]
+name = "conductor-wasm-system-utils"
+version = "0.1.0"
+edition = "2021"
+authors = ["Amiable Team"]
+description = "System utilities: clipboard, screenshots, notifications"
+license = "MIT"
+
+[workspace]
+# Empty workspace to exclude from parent workspace
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"], default-features = false }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+wee_alloc = "0.4"
+
+[profile.release]
+opt-level = "z"     # Optimize for size
+lto = true          # Enable link-time optimization
+codegen-units = 1   # Reduce number of codegen units
+panic = "abort"     # Abort on panic
+strip = true        # Strip symbols

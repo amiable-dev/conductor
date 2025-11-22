@@ -1,0 +1,227 @@
+.TH MIDIMON 1 "2025-01" "MIDIMon v1.0.0" "User Commands"
+.SH NAME
+midimon \- MIDI controller mapping daemon with hot-reload support
+.SH SYNOPSIS
+.B midimon
+[\fB\-\-config\fR \fIPATH\fR]
+[\fB\-\-state\-dir\fR \fIPATH\fR]
+[\fB\-\-log\-level\fR \fILEVEL\fR]
+[\fB\-\-no\-ipc\fR]
+[\fB\-h\fR|\fB\-\-help\fR]
+[\fB\-V\fR|\fB\-\-version\fR]
+.SH DESCRIPTION
+.B midimon
+is a background daemon that transforms MIDI controllers into advanced macro pads with support for velocity sensitivity, long press detection, double-tap, chord detection, and RGB LED feedback.
+
+The daemon continuously monitors MIDI input, processes events according to the configured mappings, and executes actions such as keyboard shortcuts, application launches, shell commands, and system volume control.
+
+Configuration changes are automatically detected and reloaded without interrupting service, typically within 10ms.
+.SH OPTIONS
+.TP
+.BR \-c ", " \-\-config " " \fIPATH\fR
+Path to configuration file (default: ~/.config/midimon/config.toml)
+.TP
+.BR \-s ", " \-\-state\-dir " " \fIPATH\fR
+Path to state directory for daemon state persistence (default: ~/.local/state/midimon)
+.TP
+.BR \-l ", " \-\-log\-level " " \fILEVEL\fR
+Set logging level: trace, debug, info, warn, error (default: info)
+.TP
+.BR \-\-no\-ipc
+Disable IPC server (cannot be controlled via midimonctl)
+.TP
+.BR \-h ", " \-\-help
+Print help information
+.TP
+.BR \-V ", " \-\-version
+Print version information
+.SH FILES
+.TP
+.I ~/.config/midimon/config.toml
+Default configuration file location
+.TP
+.I ~/.local/state/midimon/daemon.state
+Daemon state persistence (current mode, uptime, statistics)
+.TP
+.I /tmp/midimon.sock
+Unix domain socket for IPC communication (macOS/Linux)
+.TP
+.I ~/.local/share/midimon/logs/midimon.log
+Log file location when running as daemon
+.SH CONFIGURATION
+The configuration file uses TOML format with the following structure:
+
+.nf
+[device]
+name = "Mikro"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50
+double_tap_timeout_ms = 300
+hold_threshold_ms = 2000
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+trigger = { type = "Note", note = 60 }
+action = { type = "Keystroke", keys = "cmd+space" }
+
+[[global_mappings]]
+trigger = { type = "EncoderTurn", direction = "Clockwise" }
+action = { type = "VolumeControl", direction = "Up" }
+.fi
+
+See the example configuration in /usr/share/doc/midimon/config.toml.example
+.SH TRIGGER TYPES
+.TP
+.B Note
+Basic note on/off with optional velocity range
+.TP
+.B VelocityRange
+Different actions for soft/medium/hard presses (velocity thresholds: 0-40, 41-80, 81-127)
+.TP
+.B LongPress
+Hold detection with configurable duration (default 2000ms)
+.TP
+.B DoubleTap
+Quick double-tap detection (default 300ms window)
+.TP
+.B NoteChord
+Multiple notes pressed simultaneously (default 100ms window)
+.TP
+.B EncoderTurn
+Encoder rotation with direction (Clockwise/CounterClockwise)
+.TP
+.B Aftertouch
+Pressure sensitivity
+.TP
+.B PitchBend
+Touch strip control
+.TP
+.B CC
+Control change messages
+.SH ACTION TYPES
+.TP
+.B Keystroke
+Keyboard shortcuts with modifiers (cmd, ctrl, alt, shift)
+.TP
+.B Text
+Type text strings
+.TP
+.B Launch
+Open applications
+.TP
+.B Shell
+Execute shell commands
+.TP
+.B VolumeControl
+System volume (Up/Down/Mute/Set)
+.TP
+.B ModeChange
+Switch between mapping modes
+.TP
+.B Sequence
+Chain multiple actions
+.TP
+.B Delay
+Timing control between actions
+.TP
+.B MouseClick
+Mouse simulation (Left/Right/Middle)
+.TP
+.B Repeat
+Repeat an action N times
+.TP
+.B Conditional
+Conditional execution based on app state, time, etc.
+.SH DAEMON CONTROL
+Control the daemon using
+.BR midimonctl (1):
+
+.nf
+midimonctl status    # Check daemon status
+midimonctl reload    # Reload configuration
+midimonctl stop      # Stop daemon
+midimonctl ping      # Test connectivity
+.fi
+
+Or send signals directly:
+.nf
+SIGHUP   # Reload configuration
+SIGTERM  # Graceful shutdown
+SIGINT   # Immediate shutdown
+.fi
+.SH PERFORMANCE
+Typical performance characteristics:
+.IP \[bu] 2
+MIDI event latency: <1ms
+.IP \[bu]
+Config reload time: 0-10ms (Grade A: <20ms)
+.IP \[bu]
+Memory usage: 5-10MB
+.IP \[bu]
+CPU usage: <1% idle, <5% active
+.SH EXAMPLES
+.TP
+Start daemon with default configuration:
+.nf
+midimon
+.fi
+.TP
+Start with custom config and debug logging:
+.nf
+midimon --config ~/my-config.toml --log-level debug
+.fi
+.TP
+Run as systemd service:
+.nf
+systemctl --user start midimon
+systemctl --user enable midimon
+.fi
+.TP
+Run as macOS LaunchAgent:
+.nf
+launchctl load ~/Library/LaunchAgents/com.amiable.midimon.plist
+.fi
+.SH DIAGNOSTICS
+The daemon provides several diagnostic tools:
+.TP
+.B midi_diagnostic
+Visualize all MIDI events in real-time
+.TP
+.B led_diagnostic
+Test LED functionality
+.TP
+.B pad_mapper
+Map physical pad positions to MIDI notes
+.SH ERRORS
+Exit status codes:
+.TP
+.B 0
+Success
+.TP
+.B 1
+Configuration error
+.TP
+.B 2
+MIDI device not found
+.TP
+.B 3
+IPC server failed to start
+.TP
+.B 4
+Runtime error
+.SH BUGS
+Report bugs at: https://github.com/amiable/midimon/issues
+.SH AUTHOR
+Written by Amiable (Christopher Joseph)
+.SH COPYRIGHT
+Copyright 2025 Amiable. Licensed under MIT License.
+.SH SEE ALSO
+.BR midimonctl (1),
+.BR midi_diagnostic (1)
+
+Full documentation: https://github.com/amiable/midimon

@@ -1,0 +1,448 @@
+# MIDIMon Configuration: Hardware Synthesizer Control
+# Virtual MIDI Output Demo
+#
+# This configuration demonstrates how to control external hardware synthesizers
+# via MIDI output. Replace port names with your actual hardware device names.
+#
+# Setup:
+# 1. Connect your hardware synth via USB MIDI or MIDI interface
+# 2. Check available ports: Run MIDIMon with debug logging to see port names
+# 3. Update the "port" field in each mapping to match your device name
+# 4. Adjust MIDI channels to match your synth's configuration
+
+[device]
+name = "Mikro"
+auto_connect = true
+
+[logging]
+level = "info"
+
+# ========== Mode 1: Performance Mode ==========
+[[modes]]
+name = "Synth Performance"
+color = "red"
+
+# Chromatic note triggering
+[[modes.mappings]]
+description = "Play C"
+[modes.mappings.trigger]
+type = "Note"
+note = 36  # Pad 1
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"  # Replace with your synth name
+message_type = "NoteOn"
+channel = 0
+note = 48    # C3
+velocity = 100
+
+[[modes.mappings]]
+description = "Play C#"
+[modes.mappings.trigger]
+type = "Note"
+note = 37
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 49    # C#3
+velocity = 100
+
+[[modes.mappings]]
+description = "Play D"
+[modes.mappings.trigger]
+type = "Note"
+note = 38
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 50    # D3
+velocity = 100
+
+[[modes.mappings]]
+description = "Play D#"
+[modes.mappings.trigger]
+type = "Note"
+note = 39
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 51    # D#3
+velocity = 100
+
+[[modes.mappings]]
+description = "Play E"
+[modes.mappings.trigger]
+type = "Note"
+note = 40
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 52    # E3
+velocity = 100
+
+[[modes.mappings]]
+description = "Play F"
+[modes.mappings.trigger]
+type = "Note"
+note = 41
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 53    # F3
+velocity = 100
+
+[[modes.mappings]]
+description = "Play F#"
+[modes.mappings.trigger]
+type = "Note"
+note = 42
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 54    # F#3
+velocity = 100
+
+[[modes.mappings]]
+description = "Play G"
+[modes.mappings.trigger]
+type = "Note"
+note = 43
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 55    # G3
+velocity = 100
+
+# Octave shift
+[[modes.mappings]]
+description = "Octave up (play C4 instead)"
+[modes.mappings.trigger]
+type = "Note"
+note = 44
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 60    # C4
+velocity = 100
+
+[[modes.mappings]]
+description = "Octave down (play C2 instead)"
+[modes.mappings.trigger]
+type = "Note"
+note = 45
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "NoteOn"
+channel = 0
+note = 36    # C2
+velocity = 100
+
+# ========== Mode 2: Sound Design ==========
+[[modes]]
+name = "Synth Sound Design"
+color = "orange"
+
+# Filter cutoff control
+[[modes.mappings]]
+description = "Open filter cutoff"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "Clockwise"
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 74  # Filter cutoff (MIDI CC 74)
+value = 127
+
+[[modes.mappings]]
+description = "Close filter cutoff"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "CounterClockwise"
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 74
+value = 0
+
+# Filter resonance control
+[[modes.mappings]]
+description = "Increase resonance"
+[modes.mappings.trigger]
+type = "Note"
+note = 48  # Pad 1
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 71  # Filter resonance (MIDI CC 71)
+value = 127
+
+[[modes.mappings]]
+description = "Decrease resonance"
+[modes.mappings.trigger]
+type = "Note"
+note = 49  # Pad 2
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 71
+value = 0
+
+# LFO rate control
+[[modes.mappings]]
+description = "Increase LFO rate"
+[modes.mappings.trigger]
+type = "Note"
+note = 50  # Pad 3
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 3   # LFO rate (MIDI CC 3 - may vary by synth)
+value = 127
+
+[[modes.mappings]]
+description = "Decrease LFO rate"
+[modes.mappings.trigger]
+type = "Note"
+note = 51  # Pad 4
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 3
+value = 0
+
+# Envelope attack
+[[modes.mappings]]
+description = "Long attack"
+[modes.mappings.trigger]
+type = "Note"
+note = 52  # Pad 5
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 73  # Attack time (MIDI CC 73)
+value = 127
+
+[[modes.mappings]]
+description = "Short attack"
+[modes.mappings.trigger]
+type = "Note"
+note = 53  # Pad 6
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 73
+value = 0
+
+# Modulation wheel
+[[modes.mappings]]
+description = "Max modulation"
+[modes.mappings.trigger]
+type = "Note"
+note = 54  # Pad 7
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 1   # Modulation wheel (MIDI CC 1)
+value = 127
+
+[[modes.mappings]]
+description = "No modulation"
+[modes.mappings.trigger]
+type = "Note"
+note = 55  # Pad 8
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 1
+value = 0
+
+# ========== Mode 3: Preset Management ==========
+[[modes]]
+name = "Synth Presets"
+color = "cyan"
+
+# Program change messages to switch presets
+[[modes.mappings]]
+description = "Load preset 1"
+[modes.mappings.trigger]
+type = "Note"
+note = 60  # Pad 1
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "ProgramChange"
+channel = 0
+program = 0
+
+[[modes.mappings]]
+description = "Load preset 2"
+[modes.mappings.trigger]
+type = "Note"
+note = 61  # Pad 2
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "ProgramChange"
+channel = 0
+program = 1
+
+[[modes.mappings]]
+description = "Load preset 3"
+[modes.mappings.trigger]
+type = "Note"
+note = 62  # Pad 3
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "ProgramChange"
+channel = 0
+program = 2
+
+[[modes.mappings]]
+description = "Load preset 4"
+[modes.mappings.trigger]
+type = "Note"
+note = 63  # Pad 4
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "ProgramChange"
+channel = 0
+program = 3
+
+[[modes.mappings]]
+description = "Load preset 5"
+[modes.mappings.trigger]
+type = "Note"
+note = 64  # Pad 5
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "ProgramChange"
+channel = 0
+program = 4
+
+[[modes.mappings]]
+description = "Load preset 6"
+[modes.mappings.trigger]
+type = "Note"
+note = 65  # Pad 6
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "ProgramChange"
+channel = 0
+program = 5
+
+# ========== Mode 4: Multi-Synth Routing ==========
+[[modes]]
+name = "Multi-Synth Routing"
+color = "yellow"
+
+# Route to different synths based on pad
+[[modes.mappings]]
+description = "Play note on Synth A"
+[modes.mappings.trigger]
+type = "Note"
+note = 70  # Pad 1
+[modes.mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"  # Synth A
+message_type = "NoteOn"
+channel = 0
+note = 60
+velocity = 100
+
+[[modes.mappings]]
+description = "Play note on Synth B"
+[modes.mappings.trigger]
+type = "Note"
+note = 71  # Pad 2
+[modes.mappings.action]
+type = "SendMidi"
+port = "Korg Minilogue XD"  # Synth B (replace with your synth)
+message_type = "NoteOn"
+channel = 1  # Different MIDI channel
+note = 60
+velocity = 100
+
+[[modes.mappings]]
+description = "Play note on both synths (layered)"
+[modes.mappings.trigger]
+type = "Note"
+note = 72  # Pad 3
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "SendMidi", port = "Moog Subsequent 37", message_type = "NoteOn", channel = 0, note = 60, velocity = 100 },
+    { type = "SendMidi", port = "Korg Minilogue XD", message_type = "NoteOn", channel = 1, note = 60, velocity = 100 },
+]
+
+# ========== Global Mappings ==========
+
+# Sustain pedal simulation
+[[global_mappings]]
+description = "Sustain pedal on"
+[global_mappings.trigger]
+type = "Note"
+note = 2  # Encoder button hold
+[global_mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 64  # Sustain pedal (CC 64)
+value = 127
+
+[[global_mappings]]
+description = "All notes off (MIDI panic)"
+[global_mappings.trigger]
+type = "NoteChord"
+notes = [36, 37, 38]  # Press pads 1+2+3 simultaneously
+[global_mappings.action]
+type = "SendMidi"
+port = "Moog Subsequent 37"
+message_type = "CC"
+channel = 0
+controller = 123  # All Notes Off (CC 123)
+value = 0

@@ -1,0 +1,46 @@
+[device]
+name = "Mikro"
+auto_connect = true
+
+[[global_mappings]]
+description = "Global Action Example"
+[global_mappings.trigger]
+type = "Note"
+note = 0
+[global_mappings.action]
+type = "Keystroke"
+keys = "a"
+modifiers = ["cmd"]
+
+[[modes]]
+name = "Test"
+
+[[modes.mappings]]
+description = "Show Function Key (Fn)"
+[modes.mappings.trigger]
+type = "Note"
+note = 12  # The pad you pressed
+[modes.mappings.action]
+type = "Keystroke"
+keys = "fn"
+modifiers = []
+
+[[modes.mappings]]
+description = "Type Q"
+[modes.mappings.trigger]
+type = "Note"
+note = 13  # The pad you pressed
+[modes.mappings.action]
+type = "Keystroke"
+keys = "q"
+modifiers = []
+
+[[modes.mappings]]
+description = "Trigger Wispr (Ctrl+Opt+Cmd+Shift+W)"
+[modes.mappings.trigger]
+type = "Note"
+note = 14  # The pad you pressed
+[modes.mappings.action]
+type = "Keystroke"
+keys = "w"
+modifiers = ["ctrl", "alt", "cmd", "shift"]

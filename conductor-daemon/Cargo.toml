@@ -1,0 +1,128 @@
+[package]
+name = "conductor-daemon"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Conductor CLI daemon and diagnostic tools"
+
+[[bin]]
+name = "conductor"
+path = "src/main.rs"
+
+# Diagnostic tools
+[[bin]]
+name = "midi_diagnostic"
+path = "src/bin/midi_diagnostic.rs"
+
+[[bin]]
+name = "led_diagnostic"
+path = "src/bin/led_diagnostic.rs"
+
+[[bin]]
+name = "led_tester"
+path = "src/bin/led_tester.rs"
+
+[[bin]]
+name = "pad_mapper"
+path = "src/bin/pad_mapper.rs"
+
+[[bin]]
+name = "test_midi"
+path = "src/bin/test_midi.rs"
+
+[[bin]]
+name = "midi_simulator"
+path = "src/bin/midi_simulator.rs"
+
+[[bin]]
+name = "conductorctl"
+path = "src/bin/conductorctl.rs"
+
+# Menu bar service
+[[bin]]
+name = "conductor-menubar"
+path = "src/bin/conductor_menubar.rs"
+
+# Plugin signing tool (v2.7)
+[[bin]]
+name = "conductor-sign"
+path = "src/bin/conductor-sign.rs"
+required-features = ["plugin-signing"]
+
+[[bench]]
+name = "reload_benchmark"
+path = "benches/reload_benchmark.rs"
+harness = false
+
+[dependencies]
+# Core engine (with optional WASM plugin support)
+conductor-core = { path = "../conductor-core", features = [] }
+
+# CLI dependencies
+colored.workspace = true
+chrono.workspace = true
+ctrlc.workspace = true
+clap.workspace = true
+
+# Action execution (moved from core for architectural purity)
+enigo.workspace = true
+
+# MIDI I/O and threading
+midir.workspace = true
+midi-msg.workspace = true
+crossbeam-channel.workspace = true
+
+# HID device access (for LED diagnostic tools)
+hidapi.workspace = true
+gilrs.workspace = true  # Gamepad/HID input (v3.0)
+
+# Async runtime and utilities
+tokio = { version = "1.40", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# IPC and file watching
+interprocess = "2.2"
+notify = "7.0"
+notify-debouncer-full = "0.4"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "2.0"
+
+# System integration
+tray-icon = "0.19"
+dirs = "5.0"
+
+# Utilities
+uuid = { version = "1.0", features = ["v4", "serde"] }
+sha2 = "0.10"
+
+# Plugin signing (v2.7 - optional)
+ed25519-dalek = { workspace = true, optional = true }
+hex = { workspace = true, optional = true }
+rand = { workspace = true, optional = true }
+
+# Platform-specific dependencies for menu bar
+[target.'cfg(target_os = "macos")'.dependencies]
+cocoa = "0.25"
+objc = "0.2"
+
+# Unix system calls (for permission checking)
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+rstest.workspace = true
+tempfile = "3.8"
+
+[features]
+default = []
+plugin-wasm = ["conductor-core/plugin-wasm"]
+plugin-signing = ["conductor-core/plugin-signing", "dep:ed25519-dalek", "dep:hex", "dep:rand"]

@@ -1,0 +1,853 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Understanding Modes - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/getting-started/modes.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="modes-context-switching-for-different-workflows"><a class="header" href="#modes-context-switching-for-different-workflows">Modes: Context Switching for Different Workflows</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Modes are MIDIMon's system for context switching - they allow you to define completely different mapping sets for different workflows, all accessible from the same MIDI controller. Think of modes as "profiles" or "layers" that transform your controller's behavior based on what you're doing.</p>
+<p>For example:</p>
+<ul>
+<li><strong>Default Mode</strong>: General productivity shortcuts (copy, paste, window switching)</li>
+<li><strong>Developer Mode</strong>: IDE shortcuts, terminal commands, debugging tools</li>
+<li><strong>Media Mode</strong>: Audio/video playback controls, screen capture, streaming tools</li>
+</ul>
+<p>Modes enable a single 16-pad controller to provide hundreds of distinct functions without reconfiguring anything.</p>
+<h2 id="mode-architecture"><a class="header" href="#mode-architecture">Mode Architecture</a></h2>
+<h3 id="mode-structure-in-configtoml"><a class="header" href="#mode-structure-in-configtoml">Mode Structure in config.toml</a></h3>
+<p>Modes are defined in your <code>config.toml</code> using the <code>[[modes]]</code> array:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+description = "Copy text"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Paste text"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd"]
+
+[[modes]]
+name = "Developer"
+color = "green"
+
+[[modes.mappings]]
+description = "Run tests"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Shell"
+command = "cargo test"
+
+[[modes.mappings]]
+description = "Git commit"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Shell"
+command = "git commit"
+</code></pre>
+<p><strong>Key Points</strong>:</p>
+<ul>
+<li>Each <code>[[modes]]</code> section defines a complete mode</li>
+<li><code>name</code>: Displayed in console when switching modes</li>
+<li><code>color</code>: LED feedback color theme (optional but recommended)</li>
+<li><code>[[modes.mappings]]</code>: Array of triggers and actions for this mode</li>
+</ul>
+<h3 id="mode-colors-and-led-feedback"><a class="header" href="#mode-colors-and-led-feedback">Mode Colors and LED Feedback</a></h3>
+<p>Each mode can have a distinct color theme for visual identification:</p>
+<p><strong>Available Colors</strong>:</p>
+<ul>
+<li><code>blue</code> - Default mode (calm, general use)</li>
+<li><code>green</code> - Development/productivity (focused work)</li>
+<li><code>purple</code> - Media/creative (entertainment)</li>
+<li><code>red</code> - Emergency/system (critical functions)</li>
+<li><code>yellow</code> - Testing/debug (temporary mappings)</li>
+<li><code>white</code> - Neutral (fallback)</li>
+</ul>
+<p><strong>How Colors Work</strong>:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Default"
+color = "blue"  # All pads in this mode default to blue when idle
+</code></pre>
+<p>When using the <code>reactive</code> lighting scheme:</p>
+<ul>
+<li>Idle pads show the mode's base color at dim brightness</li>
+<li>Pressed pads light up with velocity-based colors (green/yellow/red)</li>
+<li>Released pads fade back to the mode's base color</li>
+</ul>
+<p>When using static patterns (rainbow, wave, etc.):</p>
+<ul>
+<li>The mode color is used as the primary theme color</li>
+<li>Pattern variations are tinted with the mode color</li>
+</ul>
+<h2 id="global-vs-mode-specific-mappings"><a class="header" href="#global-vs-mode-specific-mappings">Global vs Mode-Specific Mappings</a></h2>
+<p>MIDIMon supports two types of mappings:</p>
+<h3 id="mode-specific-mappings"><a class="header" href="#mode-specific-mappings">Mode-Specific Mappings</a></h3>
+<p>Defined inside <code>[[modes.mappings]]</code>, these only work when that mode is active:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Media"
+color = "purple"
+
+[[modes.mappings]]
+description = "Play/Pause"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = []
+</code></pre>
+<p>This Play/Pause mapping only works in Media mode.</p>
+<h3 id="global-mappings"><a class="header" href="#global-mappings">Global Mappings</a></h3>
+<p>Defined in <code>[[global_mappings]]</code> at the top level, these work in ALL modes:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Emergency exit"
+[global_mappings.trigger]
+type = "LongPress"
+note = 0
+hold_duration_ms = 3000
+[global_mappings.action]
+type = "Shell"
+command = "killall midimon"
+
+[[global_mappings]]
+description = "Volume up (always available)"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "Clockwise"
+[global_mappings.action]
+type = "VolumeControl"
+operation = "Up"
+</code></pre>
+<p><strong>Use Cases for Global Mappings</strong>:</p>
+<ul>
+<li>Emergency shutdown (long press escape)</li>
+<li>Volume control (encoder always controls volume)</li>
+<li>Mode switching (dedicated mode-change buttons)</li>
+<li>System-wide shortcuts (screenshots, lock screen)</li>
+</ul>
+<p><strong>Priority Order</strong>:</p>
+<ol>
+<li>Mode-specific mappings are checked first</li>
+<li>If no match, global mappings are checked</li>
+<li>If still no match, the event is ignored</li>
+</ol>
+<p>This means mode-specific mappings can "override" global ones by using the same trigger.</p>
+<h2 id="switching-between-modes"><a class="header" href="#switching-between-modes">Switching Between Modes</a></h2>
+<p>There are three ways to switch modes:</p>
+<h3 id="1-encoder-rotation"><a class="header" href="#1-encoder-rotation">1. Encoder Rotation</a></h3>
+<p>The most common method - use your encoder as a mode selector:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Next mode (encoder clockwise)"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "Clockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = "next"
+
+[[global_mappings]]
+description = "Previous mode (encoder counter-clockwise)"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "CounterClockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = "previous"
+</code></pre>
+<p>This creates a circular mode selector:</p>
+<ul>
+<li>Turn clockwise: Default → Developer → Media → Default...</li>
+<li>Turn counter-clockwise: Default → Media → Developer → Default...</li>
+</ul>
+<h3 id="2-dedicated-mode-buttons"><a class="header" href="#2-dedicated-mode-buttons">2. Dedicated Mode Buttons</a></h3>
+<p>Assign specific pads to jump directly to modes:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Jump to Developer mode"
+[global_mappings.trigger]
+type = "Note"
+note = 15  # Top-right pad
+[global_mappings.action]
+type = "ModeChange"
+mode = "Developer"
+
+[[global_mappings]]
+description = "Jump to Media mode"
+[global_mappings.trigger]
+type = "Note"
+note = 11  # Another pad
+[global_mappings.action]
+type = "ModeChange"
+mode = "Media"
+</code></pre>
+<h3 id="3-chord-based-mode-switching"><a class="header" href="#3-chord-based-mode-switching">3. Chord-Based Mode Switching</a></h3>
+<p>Use pad combinations for advanced mode switching:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Secret admin mode (pads 0+1+2 together)"
+[global_mappings.trigger]
+type = "NoteChord"
+notes = [0, 1, 2]
+chord_timeout_ms = 100
+[global_mappings.action]
+type = "ModeChange"
+mode = "Admin"
+</code></pre>
+<p><strong>ModeChange Action Parameters</strong>:</p>
+<ul>
+<li><code>mode = "next"</code> - Cycle to next mode</li>
+<li><code>mode = "previous"</code> - Cycle to previous mode</li>
+<li><code>mode = "Default"</code> - Jump to specific mode by name (case-sensitive)</li>
+<li><code>mode = 0</code> - Jump to mode by index (0-based)</li>
+</ul>
+<h2 id="practical-mode-examples"><a class="header" href="#practical-mode-examples">Practical Mode Examples</a></h2>
+<h3 id="example-1-three-mode-general-setup"><a class="header" href="#example-1-three-mode-general-setup">Example 1: Three-Mode General Setup</a></h3>
+<pre><code class="language-toml"># Mode 0: Default (General Productivity)
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+description = "Copy"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Paste"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Switch to next app"
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+[modes.mappings.action]
+type = "Keystroke"
+keys = "tab"
+modifiers = ["cmd"]
+
+# Mode 1: Developer (Coding Tools)
+[[modes]]
+name = "Developer"
+color = "green"
+
+[[modes.mappings]]
+description = "Run tests"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Shell"
+command = "cargo test"
+
+[[modes.mappings]]
+description = "Build release"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Shell"
+command = "cargo build --release"
+
+[[modes.mappings]]
+description = "Open terminal"
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+[modes.mappings.action]
+type = "Launch"
+app = "Terminal"
+
+# Mode 2: Media (Audio/Video Control)
+[[modes]]
+name = "Media"
+color = "purple"
+
+[[modes.mappings]]
+description = "Play/Pause"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = []
+
+[[modes.mappings]]
+description = "Next track"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Keystroke"
+keys = "right"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Screenshot"
+[modes.mappings.trigger]
+type = "Note"
+note = 14
+[modes.mappings.action]
+type = "Keystroke"
+keys = "4"
+modifiers = ["cmd", "shift"]
+
+# Global: Mode switching and volume
+[[global_mappings]]
+description = "Next mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "Clockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = "next"
+
+[[global_mappings]]
+description = "Previous mode"
+[global_mappings.trigger]
+type = "EncoderTurn"
+direction = "CounterClockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = "previous"
+</code></pre>
+<h3 id="example-2-context-aware-developer-modes"><a class="header" href="#example-2-context-aware-developer-modes">Example 2: Context-Aware Developer Modes</a></h3>
+<pre><code class="language-toml"># General development
+[[modes]]
+name = "Dev-General"
+color = "green"
+
+[[modes.mappings]]
+description = "Save all"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Keystroke"
+keys = "s"
+modifiers = ["cmd", "alt"]
+
+# Rust-specific
+[[modes]]
+name = "Dev-Rust"
+color = "green"
+
+[[modes.mappings]]
+description = "cargo check"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Shell"
+command = "cargo check"
+
+[[modes.mappings]]
+description = "cargo fmt"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Shell"
+command = "cargo fmt"
+
+# Python-specific
+[[modes]]
+name = "Dev-Python"
+color = "green"
+
+[[modes.mappings]]
+description = "pytest"
+[modes.mappings.trigger]
+type = "Note"
+note = 12
+[modes.mappings.action]
+type = "Shell"
+command = "pytest"
+
+[[modes.mappings]]
+description = "black format"
+[modes.mappings.trigger]
+type = "Note"
+note = 13
+[modes.mappings.action]
+type = "Shell"
+command = "black ."
+</code></pre>
+<h3 id="example-3-velocity-sensitive-multi-mode"><a class="header" href="#example-3-velocity-sensitive-multi-mode">Example 3: Velocity-Sensitive Multi-Mode</a></h3>
+<p>Combine modes with velocity detection for even more control:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Advanced"
+color = "yellow"
+
+# Soft press: Small increase
+[[modes.mappings]]
+description = "Small volume up"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 12
+min_velocity = 0
+max_velocity = 40
+[modes.mappings.action]
+type = "Shell"
+command = "osascript -e 'set volume output volume (output volume of (get volume settings) + 5)'"
+
+# Hard press: Large increase
+[[modes.mappings]]
+description = "Large volume up"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 12
+min_velocity = 81
+max_velocity = 127
+[modes.mappings.action]
+type = "Shell"
+command = "osascript -e 'set volume output volume (output volume of (get volume settings) + 20)'"
+</code></pre>
+<h2 id="mode-design-best-practices"><a class="header" href="#mode-design-best-practices">Mode Design Best Practices</a></h2>
+<h3 id="1-use-descriptive-names"><a class="header" href="#1-use-descriptive-names">1. Use Descriptive Names</a></h3>
+<pre><code class="language-toml"># Good: Clear what the mode does
+[[modes]]
+name = "Media-Playback"
+
+# Bad: Ambiguous
+[[modes]]
+name = "Mode3"
+</code></pre>
+<h3 id="2-assign-consistent-color-themes"><a class="header" href="#2-assign-consistent-color-themes">2. Assign Consistent Color Themes</a></h3>
+<pre><code class="language-toml"># Productivity modes: Blue family
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes]]
+name = "Email"
+color = "blue"
+
+# Development modes: Green family
+[[modes]]
+name = "Developer"
+color = "green"
+
+[[modes]]
+name = "Testing"
+color = "green"
+
+# Creative modes: Purple/Magenta family
+[[modes]]
+name = "Media"
+color = "purple"
+
+[[modes]]
+name = "Design"
+color = "magenta"
+</code></pre>
+<h3 id="3-keep-mode-count-manageable"><a class="header" href="#3-keep-mode-count-manageable">3. Keep Mode Count Manageable</a></h3>
+<p><strong>Recommended</strong>: 3-5 modes for most users</p>
+<ul>
+<li>Too few modes: You'll run out of pads for all your functions</li>
+<li>Too many modes: You'll forget which mode you're in</li>
+</ul>
+<p><strong>Strategy</strong>: Group related functions into modes rather than creating a mode for every app.</p>
+<h3 id="4-reserve-global-mappings-for-critical-functions"><a class="header" href="#4-reserve-global-mappings-for-critical-functions">4. Reserve Global Mappings for Critical Functions</a></h3>
+<p>Only use <code>[[global_mappings]]</code> for:</p>
+<ul>
+<li>Mode switching itself</li>
+<li>Emergency shutdowns</li>
+<li>System-wide controls (volume, screen lock)</li>
+<li>Functions that should work regardless of mode</li>
+</ul>
+<h3 id="5-use-mode-colors-for-visual-feedback"><a class="header" href="#5-use-mode-colors-for-visual-feedback">5. Use Mode Colors for Visual Feedback</a></h3>
+<p>If your device supports LED feedback:</p>
+<ul>
+<li>Test each mode and verify the color matches the function</li>
+<li>Use calming colors (blue, green) for frequent modes</li>
+<li>Use attention-grabbing colors (red, yellow) for special modes</li>
+</ul>
+<h3 id="6-document-your-modes"><a class="header" href="#6-document-your-modes">6. Document Your Modes</a></h3>
+<p>Add descriptions to help remember your layout:</p>
+<pre><code class="language-toml">[[modes]]
+name = "Developer"
+color = "green"
+# Description comments help future you remember the layout:
+# Pad 0-3: Git commands (status, add, commit, push)
+# Pad 4-7: Build commands (check, test, build, run)
+# Pad 8-11: IDE shortcuts (format, refactor, debug, terminal)
+# Pad 12-15: Project navigation (files, search, grep, docs)
+
+[[modes.mappings]]
+description = "Git status"
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+[modes.mappings.action]
+type = "Shell"
+command = "git status"
+</code></pre>
+<h2 id="advanced-mode-techniques"><a class="header" href="#advanced-mode-techniques">Advanced Mode Techniques</a></h2>
+<h3 id="mode-specific-timing-adjustments"><a class="header" href="#mode-specific-timing-adjustments">Mode-Specific Timing Adjustments</a></h3>
+<p>Override advanced settings per mode:</p>
+<pre><code class="language-toml">[advanced_settings]
+chord_timeout_ms = 100
+double_tap_timeout_ms = 300
+hold_threshold_ms = 2000
+
+[[modes]]
+name = "Gaming"
+color = "red"
+# Gaming mode needs faster response
+# (Note: Per-mode advanced settings not yet implemented,
+#  but this is the planned syntax)
+</code></pre>
+<h3 id="conditional-mode-switching"><a class="header" href="#conditional-mode-switching">Conditional Mode Switching</a></h3>
+<p>Combine with Conditional actions for smart mode switching:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Auto-switch to Dev mode if VS Code is active"
+[global_mappings.trigger]
+type = "Note"
+note = 15
+[global_mappings.action]
+type = "Conditional"
+condition = "ActiveApp"
+value = "Visual Studio Code"
+then_action = { type = "ModeChange", mode = "Developer" }
+else_action = { type = "ModeChange", mode = "Default" }
+</code></pre>
+<h3 id="mode-sequences"><a class="header" href="#mode-sequences">Mode Sequences</a></h3>
+<p>Chain mode changes with other actions:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Open Spotify and switch to Media mode"
+[modes.mappings.trigger]
+type = "Note"
+note = 15
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { type = "Launch", app = "Spotify" },
+    { type = "Delay", duration_ms = 1000 },
+    { type = "ModeChange", mode = "Media" }
+]
+</code></pre>
+<h2 id="troubleshooting-modes"><a class="header" href="#troubleshooting-modes">Troubleshooting Modes</a></h2>
+<h3 id="mode-not-switching"><a class="header" href="#mode-not-switching">Mode Not Switching</a></h3>
+<p><strong>Symptoms</strong>: Encoder turns but mode doesn't change</p>
+<p><strong>Checks</strong>:</p>
+<ul>
+<li>Verify <code>[[global_mappings]]</code> contains ModeChange actions</li>
+<li>Check encoder is mapped correctly (use <code>cargo run --bin midi_diagnostic 2</code>)</li>
+<li>Ensure mode names are spelled exactly as defined</li>
+<li>Look for console output confirming mode changes</li>
+</ul>
+<p><strong>Debug</strong>:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+# Look for: "Mode changed: Default -&gt; Developer"
+</code></pre>
+<h3 id="mappings-not-working-in-mode"><a class="header" href="#mappings-not-working-in-mode">Mappings Not Working in Mode</a></h3>
+<p><strong>Symptoms</strong>: Pad press does nothing in a specific mode</p>
+<p><strong>Checks</strong>:</p>
+<ul>
+<li>Verify you're in the correct mode (check console output)</li>
+<li>Confirm note numbers match (use <code>cargo run --bin pad_mapper</code>)</li>
+<li>Check <code>[[modes.mappings]]</code> is properly nested under the mode</li>
+<li>Ensure TOML syntax is valid</li>
+</ul>
+<p><strong>Test</strong>:</p>
+<pre><code class="language-bash"># Add a simple test mapping to verify mode is active
+[[modes.mappings]]
+description = "Test mode active"
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+[modes.mappings.action]
+type = "Shell"
+command = "echo 'Mode working!' | tee /dev/tty"
+</code></pre>
+<h3 id="conflicting-mappings"><a class="header" href="#conflicting-mappings">Conflicting Mappings</a></h3>
+<p><strong>Symptoms</strong>: Unexpected action triggers</p>
+<p><strong>Checks</strong>:</p>
+<ul>
+<li>Global mappings override mode mappings if using same trigger</li>
+<li>Multiple modes might have similar triggers</li>
+<li>Check for copy-paste errors in note numbers</li>
+</ul>
+<p><strong>Solution</strong>: Use unique note numbers for each function, or intentionally use the priority system:</p>
+<pre><code class="language-toml"># Global: Emergency stop (works everywhere)
+[[global_mappings]]
+[global_mappings.trigger]
+type = "LongPress"
+note = 0
+
+# Mode: Normal pad 0 function (only when not held)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+</code></pre>
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="first-mapping.html">First Mapping Tutorial</a> - Learn basic mapping syntax</li>
+<li><a href="../configuration/overview.html">Configuration Overview</a> - Complete config.toml structure</li>
+<li><a href="../reference/actions.html">Actions Reference</a> - All available actions including ModeChange</li>
+<li><a href="../LED_SYSTEM.html">LED System</a> - How mode colors work with LED feedback</li>
+</ul>
+<hr />
+<p><strong>Last Updated</strong>: November 11, 2025
+<strong>Implementation Status</strong>: Fully functional in current release</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../getting-started/midi-learn.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../guides/daemon.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../getting-started/midi-learn.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../guides/daemon.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

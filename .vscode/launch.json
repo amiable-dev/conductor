@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug Main",
+      "cargo": {
+        "args": ["build", "--bin=midimon"],
+        "filter": {
+          "name": "midimon",
+          "kind": "bin"
+        }
+      },
+      "args": ["2"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "DEBUG": "1"
+      }
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug MIDI Diagnostic",
+      "cargo": {
+        "args": ["build", "--bin=midi_diagnostic"],
+        "filter": {
+          "name": "midi_diagnostic",
+          "kind": "bin"
+        }
+      },
+      "args": ["2"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Run Tests",
+      "cargo": {
+        "args": ["test", "--no-run", "--all"],
+        "filter": {
+          "name": "midimon",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

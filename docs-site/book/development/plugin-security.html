@@ -1,0 +1,766 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Plugin Security - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/development/plugin-security.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="plugin-security"><a class="header" href="#plugin-security">Plugin Security</a></h1>
+<p><strong>Since:</strong> v2.7
+<strong>Status:</strong> Production-ready</p>
+<p>MIDIMon provides enterprise-grade security for WASM plugins through cryptographic signatures, resource limiting, and filesystem sandboxing.</p>
+<h2 id="security-architecture"><a class="header" href="#security-architecture">Security Architecture</a></h2>
+<pre><code>┌─────────────────────────────────────────────────┐
+│  Security Layers                                │
+│                                                 │
+│  ┌───────────────────────────────────────────┐ │
+│  │  Layer 1: Cryptographic Verification     │ │
+│  │  - Ed25519 digital signatures             │ │
+│  │  - SHA-256 integrity checking             │ │
+│  │  - Trust management                       │ │
+│  └───────────────────────────────────────────┘ │
+│                                                 │
+│  ┌───────────────────────────────────────────┐ │
+│  │  Layer 2: Resource Limiting               │ │
+│  │  - CPU fuel metering (100M instructions)  │ │
+│  │  - Memory limits (128 MB)                 │ │
+│  │  - Table growth limits                    │ │
+│  └───────────────────────────────────────────┘ │
+│                                                 │
+│  ┌───────────────────────────────────────────┐ │
+│  │  Layer 3: Filesystem Sandboxing           │ │
+│  │  - Directory preopening (WASI)            │ │
+│  │  - Path validation                        │ │
+│  │  - No escape from sandbox                 │ │
+│  └───────────────────────────────────────────┘ │
+│                                                 │
+│  ┌───────────────────────────────────────────┐ │
+│  │  Layer 4: Capability System               │ │
+│  │  - Explicit permission model              │ │
+│  │  - Risk-based approval                    │ │
+│  │  - Revocable grants                       │ │
+│  └───────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="plugin-signing"><a class="header" href="#plugin-signing">Plugin Signing</a></h2>
+<h3 id="overview"><a class="header" href="#overview">Overview</a></h3>
+<p>Plugin signing uses <strong>Ed25519 digital signatures</strong> to ensure:</p>
+<ul>
+<li><strong>Authenticity</strong>: Plugin comes from claimed developer</li>
+<li><strong>Integrity</strong>: Plugin hasn't been tampered with</li>
+<li><strong>Non-repudiation</strong>: Developer cannot deny signing</li>
+</ul>
+<h3 id="cli-tool-midimon-sign"><a class="header" href="#cli-tool-midimon-sign">CLI Tool: midimon-sign</a></h3>
+<h4 id="installation"><a class="header" href="#installation">Installation</a></h4>
+<pre><code class="language-bash"># Build with signing support
+cargo build --package midimon-daemon \
+  --bin midimon-sign \
+  --features plugin-signing \
+  --release
+</code></pre>
+<p>Binary location: <code>target/release/midimon-sign</code></p>
+<h3 id="signing-workflow"><a class="header" href="#signing-workflow">Signing Workflow</a></h3>
+<h4 id="1-generate-keypair"><a class="header" href="#1-generate-keypair">1. Generate Keypair</a></h4>
+<pre><code class="language-bash">midimon-sign generate-key ~/.midimon/my-plugin-key
+</code></pre>
+<p><strong>Output:</strong></p>
+<ul>
+<li><code>~/.midimon/my-plugin-key.private</code> (32 bytes, keep secure!)</li>
+<li><code>~/.midimon/my-plugin-key.public</code> (hex-encoded)</li>
+<li>Public key displayed in terminal</li>
+</ul>
+<p><strong>Example output:</strong></p>
+<pre><code>Generating Ed25519 keypair...
+✓ Keypair generated successfully!
+
+Private key: /Users/you/.midimon/my-plugin-key.private
+Public key:  /Users/you/.midimon/my-plugin-key.public
+
+Public key (hex): 3dab8dbfaeb804085e879791d395d6afabe268535a2bc98ea70afa1edd291cca
+
+⚠️  Keep your private key secure and never share it!
+</code></pre>
+<h4 id="2-sign-plugin"><a class="header" href="#2-sign-plugin">2. Sign Plugin</a></h4>
+<pre><code class="language-bash">midimon-sign sign my_plugin.wasm ~/.midimon/my-plugin-key \
+  --name "Your Name" \
+  --email "you@example.com"
+</code></pre>
+<p><strong>Creates:</strong> <code>my_plugin.wasm.sig</code> (JSON signature metadata)</p>
+<p><strong>Example signature file:</strong></p>
+<pre><code class="language-json">{
+  "version": 1,
+  "algorithm": "Ed25519",
+  "plugin_hash": "a1b2c3d4...",
+  "plugin_size": 123456,
+  "public_key": "3dab8dbf...",
+  "signature": "9f8e7d6c...",
+  "signed_at": "2025-11-19T08:59:12Z",
+  "developer": {
+    "name": "Your Name",
+    "email": "you@example.com"
+  }
+}
+</code></pre>
+<h4 id="3-verify-signature"><a class="header" href="#3-verify-signature">3. Verify Signature</a></h4>
+<pre><code class="language-bash">midimon-sign verify my_plugin.wasm
+</code></pre>
+<p><strong>Example output:</strong></p>
+<pre><code>Verifying plugin: my_plugin.wasm
+Signature file: "my_plugin.wasm.sig"
+Trusted keys: 1
+
+Signature Details:
+  Version:     1
+  Algorithm:   Ed25519
+  Signed at:   2025-11-19T08:59:12Z
+  Developer:   Your Name &lt;you@example.com&gt;
+  Public key:  3dab8dbf...
+
+✓ Signature verified successfully!
+✓ Plugin signed by trusted key
+</code></pre>
+<h4 id="4-manage-trusted-keys"><a class="header" href="#4-manage-trusted-keys">4. Manage Trusted Keys</a></h4>
+<p><strong>Add trusted key:</strong></p>
+<pre><code class="language-bash">midimon-sign trust add 3dab8dbfaeb804085e879791d395d6afabe268535a2bc98ea70afa1edd291cca "Official Plugin"
+</code></pre>
+<p><strong>List trusted keys:</strong></p>
+<pre><code class="language-bash">midimon-sign trust list
+</code></pre>
+<p><strong>Remove trusted key:</strong></p>
+<pre><code class="language-bash">midimon-sign trust remove 3dab8dbf...
+</code></pre>
+<p><strong>Trusted keys file:</strong> <code>~/.config/midimon/trusted_keys.toml</code></p>
+<h2 id="trust-models"><a class="header" href="#trust-models">Trust Models</a></h2>
+<p>MIDIMon supports three trust levels:</p>
+<h3 id="level-1-unsigned-development"><a class="header" href="#level-1-unsigned-development">Level 1: Unsigned (Development)</a></h3>
+<p><strong>Use case:</strong> Development and testing</p>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-rust">let mut config = WasmConfig::default();
+config.require_signature = false;  // Default</code></pre>
+<p><strong>Behavior:</strong></p>
+<ul>
+<li>No signature required</li>
+<li>Plugin loads without verification</li>
+<li>Suitable for development only</li>
+</ul>
+<h3 id="level-2-self-signed"><a class="header" href="#level-2-self-signed">Level 2: Self-Signed</a></h3>
+<p><strong>Use case:</strong> Personal plugins, one-off scripts</p>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-rust">let mut config = WasmConfig::default();
+config.require_signature = true;
+config.allow_self_signed = true;</code></pre>
+<p><strong>Behavior:</strong></p>
+<ul>
+<li>Signature must be valid (cryptographic check)</li>
+<li>Any key accepted (no trust check)</li>
+<li>Ensures binary integrity</li>
+<li>Good for personal use</li>
+</ul>
+<h3 id="level-3-trusted-keys-production"><a class="header" href="#level-3-trusted-keys-production">Level 3: Trusted Keys (Production)</a></h3>
+<p><strong>Use case:</strong> Production deployments, marketplace plugins</p>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-rust">let mut config = WasmConfig::default();
+config.require_signature = true;
+config.allow_self_signed = false;  // Default</code></pre>
+<p><strong>Behavior:</strong></p>
+<ul>
+<li>Signature must be valid</li>
+<li>Public key must be in trusted list</li>
+<li>Full security model</li>
+<li>Recommended for production</li>
+</ul>
+<h2 id="security-best-practices"><a class="header" href="#security-best-practices">Security Best Practices</a></h2>
+<h3 id="for-plugin-developers"><a class="header" href="#for-plugin-developers">For Plugin Developers</a></h3>
+<ol>
+<li>
+<p><strong>Protect Private Keys</strong></p>
+<pre><code class="language-bash"># Set secure permissions
+chmod 600 ~/.midimon/my-plugin-key.private
+
+# Never commit to version control
+echo "*.private" &gt;&gt; .gitignore
+</code></pre>
+</li>
+<li>
+<p><strong>Sign Every Release</strong></p>
+<pre><code class="language-bash"># Include signing in your release script
+cargo build --target wasm32-wasip1 --release
+midimon-sign sign \
+  target/wasm32-wasip1/release/my_plugin.wasm \
+  ~/.midimon/my-key \
+  --name "Your Name" --email "you@example.com"
+</code></pre>
+</li>
+<li>
+<p><strong>Publish Public Key</strong></p>
+<ul>
+<li>Include in README</li>
+<li>Post on official website</li>
+<li>Add to plugin registry</li>
+</ul>
+</li>
+<li>
+<p><strong>Use Separate Keys per Project</strong></p>
+<pre><code class="language-bash"># One key per plugin project
+midimon-sign generate-key ~/.midimon/plugin-a-key
+midimon-sign generate-key ~/.midimon/plugin-b-key
+</code></pre>
+</li>
+</ol>
+<h3 id="for-end-users"><a class="header" href="#for-end-users">For End Users</a></h3>
+<ol>
+<li>
+<p><strong>Verify Before Trust</strong></p>
+<pre><code class="language-bash"># Always verify signature first
+midimon-sign verify downloaded_plugin.wasm
+
+# Check developer information
+# Only trust if matches expected developer
+</code></pre>
+</li>
+<li>
+<p><strong>Add Keys Carefully</strong></p>
+<pre><code class="language-bash"># Only add keys from verified sources
+# Check plugin author's website for official key
+midimon-sign trust add &lt;key&gt; "Official Project Name"
+</code></pre>
+</li>
+<li>
+<p><strong>Audit Trusted Keys</strong></p>
+<pre><code class="language-bash"># Regularly review trusted keys
+midimon-sign trust list
+
+# Remove unused keys
+midimon-sign trust remove &lt;key&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Use Strict Mode in Production</strong></p>
+<pre><code class="language-toml"># ~/.config/midimon/config.toml
+[wasm]
+require_signature = true
+allow_self_signed = false  # Strict mode
+</code></pre>
+</li>
+</ol>
+<h2 id="resource-limiting"><a class="header" href="#resource-limiting">Resource Limiting</a></h2>
+<h3 id="cpu-limits-fuel-metering"><a class="header" href="#cpu-limits-fuel-metering">CPU Limits (Fuel Metering)</a></h3>
+<p><strong>Default:</strong> 100,000,000 instructions (~100ms)</p>
+<p><strong>What it prevents:</strong></p>
+<ul>
+<li>Infinite loops</li>
+<li>Excessive CPU usage</li>
+<li>Denial of service</li>
+</ul>
+<p><strong>How it works:</strong></p>
+<pre><code>Every WASM instruction consumes 1 unit of fuel
+Plugin execution stops when fuel exhausted
+</code></pre>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-rust">let mut config = WasmConfig::default();
+config.max_fuel = 200_000_000;  // 200M instructions</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">// This would exceed fuel limit:
+#[no_mangle]
+pub extern "C" fn execute(...) -&gt; i32 {
+    loop {
+        // Infinite loop - blocked by fuel limit
+        std::thread::sleep(Duration::from_millis(1));
+    }
+}
+// MIDIMon automatically terminates after ~100ms</code></pre>
+<h3 id="memory-limits"><a class="header" href="#memory-limits">Memory Limits</a></h3>
+<p><strong>Default:</strong> 128 MB per plugin</p>
+<p><strong>What it prevents:</strong></p>
+<ul>
+<li>Memory exhaustion</li>
+<li>Out-of-memory crashes</li>
+<li>Resource hogging</li>
+</ul>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-rust">let mut config = WasmConfig::default();
+config.max_memory_bytes = 256 * 1024 * 1024;  // 256 MB</code></pre>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">#[no_mangle]
+pub extern "C" fn execute(...) -&gt; i32 {
+    // OK - 10 MB allocation
+    let buffer = vec![0u8; 10 * 1024 * 1024];
+
+    // BLOCKED - 200 MB exceeds limit
+    // let huge = vec![0u8; 200 * 1024 * 1024];
+    // ^ This allocation would fail
+
+    0
+}</code></pre>
+<h3 id="table-growth-limits"><a class="header" href="#table-growth-limits">Table Growth Limits</a></h3>
+<p><strong>Default:</strong> 10,000 elements</p>
+<p><strong>What it prevents:</strong></p>
+<ul>
+<li>Unbounded table allocation</li>
+<li>Memory exhaustion via tables</li>
+<li>DoS attacks</li>
+</ul>
+<p><strong>Configuration:</strong></p>
+<pre><code class="language-rust">let mut config = WasmConfig::default();
+config.max_table_elements = 20_000;</code></pre>
+<h2 id="filesystem-sandboxing"><a class="header" href="#filesystem-sandboxing">Filesystem Sandboxing</a></h2>
+<h3 id="directory-preopening"><a class="header" href="#directory-preopening">Directory Preopening</a></h3>
+<p>Plugins with <code>Filesystem</code> capability can only access a specific directory:</p>
+<p><strong>macOS:</strong></p>
+<pre><code>~/Library/Application Support/midimon/plugin-data/
+</code></pre>
+<p><strong>Linux:</strong></p>
+<pre><code>~/.local/share/midimon/plugin-data/
+</code></pre>
+<p><strong>Windows:</strong></p>
+<pre><code>%APPDATA%\midimon\plugin-data\
+</code></pre>
+<h3 id="whats-blocked"><a class="header" href="#whats-blocked">What's Blocked</a></h3>
+<pre><code class="language-rust">// ✅ ALLOWED - within sandbox
+std::fs::write("/my-data.json", data)?;
+std::fs::write("/subdir/file.txt", data)?;
+
+// ❌ BLOCKED - path traversal
+std::fs::write("/../../../etc/passwd", data)?;
+
+// ❌ BLOCKED - absolute path outside sandbox
+std::fs::write("/etc/passwd", data)?;
+
+// ❌ BLOCKED - home directory escape
+std::fs::write("~/other-file.txt", data)?;</code></pre>
+<h3 id="how-it-works"><a class="header" href="#how-it-works">How It Works</a></h3>
+<ol>
+<li><strong>WASI Preopening</strong>: MIDIMon pre-opens the plugin data directory</li>
+<li><strong>Path Mapping</strong>: All plugin paths mapped to sandbox root</li>
+<li><strong>Validation</strong>: WASI runtime blocks access outside preopened directories</li>
+<li><strong>No Escape</strong>: Path traversal attempts automatically blocked</li>
+</ol>
+<h2 id="capability-system"><a class="header" href="#capability-system">Capability System</a></h2>
+<h3 id="permission-model"><a class="header" href="#permission-model">Permission Model</a></h3>
+<p>Plugins must explicitly request capabilities:</p>
+<pre><code class="language-rust">// In plugin code
+#[no_mangle]
+pub extern "C" fn capabilities() -&gt; *const u8 {
+    let caps = vec!["Network", "Filesystem"];
+    let json = serde_json::to_string(&amp;caps).unwrap();
+    // ... return JSON
+}</code></pre>
+<h3 id="risk-levels"><a class="header" href="#risk-levels">Risk Levels</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Capability</th><th>Risk</th><th>Auto-Grant</th><th>Requires Approval</th></tr></thead><tbody>
+<tr><td>Network</td><td>🟢 Low</td><td>Yes</td><td>No</td></tr>
+<tr><td>Audio</td><td>🟢 Low</td><td>Yes</td><td>No</td></tr>
+<tr><td>Midi</td><td>🟢 Low</td><td>Yes</td><td>No</td></tr>
+<tr><td>Filesystem</td><td>🟡 Medium</td><td>No</td><td>Yes</td></tr>
+<tr><td>Subprocess</td><td>🔴 High</td><td>No</td><td>Yes + Warning</td></tr>
+<tr><td>SystemControl</td><td>🔴 High</td><td>No</td><td>Yes + Warning</td></tr>
+</tbody></table>
+</div>
+<h3 id="granting-capabilities"><a class="header" href="#granting-capabilities">Granting Capabilities</a></h3>
+<p><strong>Via GUI:</strong> Plugin Manager → Select Plugin → Grant Capability</p>
+<p><strong>Via Config:</strong></p>
+<pre><code class="language-toml">[plugins.my_plugin]
+granted_capabilities = ["Network", "Filesystem"]
+</code></pre>
+<h2 id="threat-model"><a class="header" href="#threat-model">Threat Model</a></h2>
+<h3 id="threats-mitigated"><a class="header" href="#threats-mitigated">Threats Mitigated</a></h3>
+<p>✅ <strong>Binary Tampering</strong></p>
+<ul>
+<li><strong>Mitigation:</strong> SHA-256 hash verification</li>
+<li><strong>Detection:</strong> Signature validation fails if binary modified</li>
+</ul>
+<p>✅ <strong>Malicious Plugin Injection</strong></p>
+<ul>
+<li><strong>Mitigation:</strong> Ed25519 signature verification</li>
+<li><strong>Detection:</strong> Invalid signature rejected</li>
+</ul>
+<p>✅ <strong>Man-in-the-Middle</strong></p>
+<ul>
+<li><strong>Mitigation:</strong> Cryptographic signatures</li>
+<li><strong>Detection:</strong> Signature doesn't match binary</li>
+</ul>
+<p>✅ <strong>Supply Chain Attacks</strong></p>
+<ul>
+<li><strong>Mitigation:</strong> Trusted key model</li>
+<li><strong>Detection:</strong> Untrusted keys rejected</li>
+</ul>
+<p>✅ <strong>Resource Exhaustion (DoS)</strong></p>
+<ul>
+<li><strong>Mitigation:</strong> Fuel metering, memory limits</li>
+<li><strong>Detection:</strong> Automatic termination</li>
+</ul>
+<p>✅ <strong>Filesystem Access</strong></p>
+<ul>
+<li><strong>Mitigation:</strong> Directory sandboxing</li>
+<li><strong>Detection:</strong> WASI blocks access</li>
+</ul>
+<p>✅ <strong>Privilege Escalation</strong></p>
+<ul>
+<li><strong>Mitigation:</strong> Capability system</li>
+<li><strong>Detection:</strong> Capability checks</li>
+</ul>
+<h3 id="threats-not-mitigated"><a class="header" href="#threats-not-mitigated">Threats NOT Mitigated</a></h3>
+<p>⚠️ <strong>Side-Channel Attacks</strong></p>
+<ul>
+<li>Timing attacks possible</li>
+<li>Mitigation: Careful crypto implementation</li>
+</ul>
+<p>⚠️ <strong>Social Engineering</strong></p>
+<ul>
+<li>User could trust malicious key</li>
+<li>Mitigation: User education</li>
+</ul>
+<p>⚠️ <strong>Key Compromise</strong></p>
+<ul>
+<li>Stolen private key can sign malicious plugins</li>
+<li>Mitigation: Hardware security keys, key rotation</li>
+</ul>
+<h2 id="security-checklist"><a class="header" href="#security-checklist">Security Checklist</a></h2>
+<h3 id="for-plugin-developers-1"><a class="header" href="#for-plugin-developers-1">For Plugin Developers</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Generate unique keypair for project</li>
+<li><input disabled="" type="checkbox"/>
+Protect private key (chmod 600, never commit)</li>
+<li><input disabled="" type="checkbox"/>
+Sign every release</li>
+<li><input disabled="" type="checkbox"/>
+Publish public key on official channels</li>
+<li><input disabled="" type="checkbox"/>
+Request minimum necessary capabilities</li>
+<li><input disabled="" type="checkbox"/>
+Include security disclosure policy</li>
+<li><input disabled="" type="checkbox"/>
+Test with strict mode enabled</li>
+<li><input disabled="" type="checkbox"/>
+Document all security considerations</li>
+</ul>
+<h3 id="for-end-users-1"><a class="header" href="#for-end-users-1">For End Users</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Only download plugins from trusted sources</li>
+<li><input disabled="" type="checkbox"/>
+Always verify signatures before use</li>
+<li><input disabled="" type="checkbox"/>
+Check developer information matches expected</li>
+<li><input disabled="" type="checkbox"/>
+Only add keys from verified sources</li>
+<li><input disabled="" type="checkbox"/>
+Enable strict mode in production</li>
+<li><input disabled="" type="checkbox"/>
+Regularly audit trusted keys</li>
+<li><input disabled="" type="checkbox"/>
+Review capability requests</li>
+<li><input disabled="" type="checkbox"/>
+Keep MIDIMon updated</li>
+</ul>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="signature-verification-failed"><a class="header" href="#signature-verification-failed">Signature Verification Failed</a></h3>
+<p><strong>Check signature exists:</strong></p>
+<pre><code class="language-bash">ls -la my_plugin.wasm.sig
+</code></pre>
+<p><strong>Verify signature manually:</strong></p>
+<pre><code class="language-bash">midimon-sign verify my_plugin.wasm
+</code></pre>
+<p><strong>Common causes:</strong></p>
+<ul>
+<li>Binary modified after signing</li>
+<li>Signature file missing</li>
+<li>Wrong public key used</li>
+<li>Corrupted signature file</li>
+</ul>
+<h3 id="key-not-trusted"><a class="header" href="#key-not-trusted">Key Not Trusted</a></h3>
+<p><strong>List trusted keys:</strong></p>
+<pre><code class="language-bash">midimon-sign trust list
+</code></pre>
+<p><strong>Add key:</strong></p>
+<pre><code class="language-bash">midimon-sign trust add &lt;public-key&gt; "Plugin Name"
+</code></pre>
+<p><strong>Verify key matches:</strong></p>
+<pre><code class="language-bash"># Compare key in signature vs. expected
+cat my_plugin.wasm.sig | jq '.public_key'
+</code></pre>
+<h3 id="out-of-fuel"><a class="header" href="#out-of-fuel">Out of Fuel</a></h3>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Plugin terminates mid-execution</li>
+<li>"fuel exhausted" error</li>
+</ul>
+<p><strong>Solutions:</strong></p>
+<pre><code class="language-rust">// Increase fuel limit
+let mut config = WasmConfig::default();
+config.max_fuel = 200_000_000;
+
+// Or optimize plugin code
+// - Reduce loop iterations
+// - Move heavy work to init()
+// - Use lazy initialization</code></pre>
+<h2 id="advanced-topics"><a class="header" href="#advanced-topics">Advanced Topics</a></h2>
+<h3 id="hardware-security-keys"><a class="header" href="#hardware-security-keys">Hardware Security Keys</a></h3>
+<p>For maximum security, use hardware keys (YubiKey, etc.):</p>
+<pre><code class="language-bash"># Generate key on hardware device
+# (Implementation depends on HSM/hardware)
+
+# Sign using hardware key
+midimon-sign sign my_plugin.wasm \
+  --hardware-key /dev/yubikey \
+  --name "Your Name" --email "you@example.com"
+</code></pre>
+<h3 id="key-rotation"><a class="header" href="#key-rotation">Key Rotation</a></h3>
+<pre><code class="language-bash"># Generate new key
+midimon-sign generate-key ~/.midimon/my-plugin-key-v2
+
+# Sign with new key
+midimon-sign sign my_plugin.wasm ~/.midimon/my-plugin-key-v2 \
+  --name "Your Name" --email "you@example.com"
+
+# Announce rotation to users
+# Include both old and new public keys in transition period
+</code></pre>
+<h3 id="multi-signature"><a class="header" href="#multi-signature">Multi-Signature</a></h3>
+<p>For critical plugins, require multiple signatures:</p>
+<pre><code class="language-bash"># Sign with first key
+midimon-sign sign my_plugin.wasm ~/.midimon/key1 \
+  --name "Developer 1" --email "dev1@example.com"
+
+# Co-sign with second key
+midimon-sign cosign my_plugin.wasm ~/.midimon/key2 \
+  --name "Developer 2" --email "dev2@example.com"
+
+# Verify requires both signatures
+</code></pre>
+<h2 id="further-reading"><a class="header" href="#further-reading">Further Reading</a></h2>
+<ul>
+<li><a href="https://tools.ietf.org/html/rfc8032">Ed25519 Specification (RFC 8032)</a></li>
+<li><a href="https://github.com/WebAssembly/WASI/blob/main/docs/WASI-security-model.md">WASI Security Model</a></li>
+<li><a href="https://webassembly.org/docs/security/">WebAssembly Security</a></li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html">Cryptographic Signing Best Practices</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../development/wasm-plugin-development.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../development/plugin-examples.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../development/wasm-plugin-development.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../development/plugin-examples.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

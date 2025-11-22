@@ -1,0 +1,29 @@
+
+[device]
+name = "Mikro"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+description = "Spotlight Search"
+[modes.mappings.trigger]
+type = "Note"
+note = 60
+velocity_min = 1
+[modes.mappings.action]
+type = "Keystroke"
+keys = "space"
+modifiers = ["cmd"]
+
+[[global_mappings]]
+description = "Global Action"
+[global_mappings.trigger]
+type = "Note"
+note = 0
+[global_mappings.action]
+type = "Keystroke"
+keys = "escape"
+modifiers = []

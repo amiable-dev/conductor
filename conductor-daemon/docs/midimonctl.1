@@ -1,0 +1,246 @@
+.TH MIDIMONCTL 1 "2025-01" "MIDIMon v1.0.0" "User Commands"
+.SH NAME
+midimonctl \- Control the MIDIMon daemon
+.SH SYNOPSIS
+.B midimonctl
+[\fB\-v\fR|\fB\-\-verbose\fR]
+[\fB\-j\fR|\fB\-\-json\fR]
+.I COMMAND
+[\fIARGS\fR]
+.SH DESCRIPTION
+.B midimonctl
+is a command-line utility for controlling the MIDIMon daemon. It communicates with the daemon via Unix domain sockets (IPC) to query status, reload configuration, and manage daemon lifecycle.
+
+All commands support both human-readable colored output and machine-readable JSON output for scripting.
+.SH OPTIONS
+.TP
+.BR \-v ", " \-\-verbose
+Enable verbose output with debug logging
+.TP
+.BR \-j ", " \-\-json
+Output results in JSON format (for scripting)
+.TP
+.BR \-h ", " \-\-help
+Print help information
+.TP
+.BR \-V ", " \-\-version
+Print version information
+.SH COMMANDS
+.TP
+.B status
+Query daemon status including state, current mode, uptime, events processed, and reload performance statistics.
+
+Output includes:
+.RS
+.IP \[bu] 2
+Daemon state (Running/Reloading/Degraded)
+.IP \[bu]
+Current mode name
+.IP \[bu]
+Configuration file path
+.IP \[bu]
+Uptime (days, hours, minutes, seconds)
+.IP \[bu]
+Total events processed
+.IP \[bu]
+Total config reloads
+.IP \[bu]
+Reload performance (last/average/fastest/slowest in ms)
+.IP \[bu]
+Performance grade (A-F)
+.RE
+
+.TP
+.B reload
+Request immediate configuration reload. The daemon will reload config.toml, recompile mappings, and perform an atomic swap without interrupting event processing.
+
+Output includes:
+.RS
+.IP \[bu] 2
+Reload duration in milliseconds
+.IP \[bu]
+Performance grade (A: <20ms, B: 21-50ms, C: 51-100ms, D: 101-200ms, F: >200ms)
+.IP \[bu]
+Number of modes loaded
+.IP \[bu]
+Number of mappings loaded
+.RE
+
+.TP
+.B stop
+Gracefully stop the daemon. All MIDI connections will be closed, state will be persisted, and the daemon will exit cleanly.
+
+.TP
+.B validate [\fB\-c\fR|\fB\-\-config\fR \fIPATH\fR]
+Validate a configuration file without loading it. If no path is provided, validates the daemon's current configuration.
+
+Output includes:
+.RS
+.IP \[bu] 2
+Validation result (valid/invalid)
+.IP \[bu]
+Number of modes found
+.IP \[bu]
+Number of mappings found
+.IP \[bu]
+Error details if invalid
+.RE
+
+.TP
+.B ping
+Test connectivity to the daemon and measure IPC latency. Returns immediately with round-trip time.
+
+.SH EXIT STATUS
+.TP
+.B 0
+Success
+.TP
+.B 1
+Command failed or daemon not responding
+.SH FILES
+.TP
+.I /tmp/midimon.sock
+Unix domain socket for IPC (macOS/Linux)
+.SH EXAMPLES
+.TP
+Check daemon status with colored output:
+.nf
+midimonctl status
+.fi
+
+.TP
+Check status in JSON format for scripting:
+.nf
+midimonctl --json status | jq .data.state
+.fi
+
+.TP
+Reload configuration:
+.nf
+midimonctl reload
+.fi
+
+.TP
+Validate a new config before applying:
+.nf
+midimonctl validate --config ~/new-config.toml
+.fi
+
+.TP
+Test daemon connectivity:
+.nf
+midimonctl ping
+.fi
+
+.TP
+Stop the daemon:
+.nf
+midimonctl stop
+.fi
+
+.TP
+Monitor reload performance in a loop:
+.nf
+watch -n 1 'midimonctl --json status | jq .data.reload_stats'
+.fi
+
+.SH PERFORMANCE GRADING
+Config reload performance is graded on a scale of A-F:
+
+.TP
+.B Grade A (<20ms)
+Excellent - Imperceptible to users
+.TP
+.B Grade B (21-50ms)
+Good - Target performance, still very fast
+.TP
+.B Grade C (51-100ms)
+Acceptable - Noticeable but tolerable
+.TP
+.B Grade D (101-200ms)
+Poor - Investigate optimization opportunities
+.TP
+.B Grade F (>200ms)
+Unacceptable - Indicates configuration or system issues
+
+The target grade is B (under 50ms). Current implementation typically achieves Grade A (0-10ms).
+.SH INTEGRATION
+.SS Systemd Integration
+Monitor daemon status in systemd:
+.nf
+[Unit]
+Description=MIDIMon Daemon
+
+[Service]
+ExecStart=/usr/local/bin/midimon
+ExecReload=/usr/local/bin/midimonctl reload
+ExecStop=/usr/local/bin/midimonctl stop
+
+[Install]
+WantedBy=default.target
+.fi
+
+.SS Shell Aliases
+Add convenience aliases to ~/.bashrc or ~/.zshrc:
+.nf
+alias mm='midimonctl'
+alias mmr='midimonctl reload'
+alias mms='midimonctl status'
+alias mmp='midimonctl ping'
+.fi
+
+.SS Scripting Examples
+Automated config reload on file change:
+.nf
+fswatch -o ~/.config/midimon/config.toml | \\
+  xargs -n1 -I{} midimonctl reload
+.fi
+
+Check if daemon is running:
+.nf
+if midimonctl ping &>/dev/null; then
+  echo "Daemon is running"
+else
+  echo "Daemon is not responding"
+  exit 1
+fi
+.fi
+
+Parse JSON output in scripts:
+.nf
+uptime=$(midimonctl --json status | jq -r .data.uptime_secs)
+echo "Daemon uptime: ${uptime}s"
+.fi
+
+.SH DIAGNOSTICS
+.TP
+.B Connection Refused
+Daemon is not running. Start with \fBmidimon\fR or check service status.
+
+.TP
+.B Permission Denied
+IPC socket permissions issue. Check /tmp/midimon.sock ownership.
+
+.TP
+.B Timeout
+Daemon is unresponsive. Check logs at ~/.local/share/midimon/logs/midimon.log
+
+.TP
+.B Invalid Response
+IPC protocol mismatch. Ensure midimonctl and midimon versions match.
+
+.SH BUGS
+Report bugs at: https://github.com/amiable/midimon/issues
+
+.SH AUTHOR
+Written by Amiable (Christopher Joseph)
+
+.SH COPYRIGHT
+Copyright 2025 Amiable. Licensed under MIT License.
+
+.SH SEE ALSO
+.BR midimon (1),
+.BR systemctl (1),
+.BR launchctl (1)
+
+Full documentation: https://github.com/amiable/midimon

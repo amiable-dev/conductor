@@ -1,0 +1,1546 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CLI Commands - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/reference/cli-commands.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="cli-commands-reference"><a class="header" href="#cli-commands-reference">CLI Commands Reference</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>MIDIMon provides a daemon service, control utility, and several diagnostic tools, all accessible via the command line. This reference covers all available commands, their options, and usage examples.</p>
+<p><strong>v1.0.0+</strong> introduces daemon architecture with background service and hot-reload capabilities.</p>
+<h2 id="daemon-service-midimon"><a class="header" href="#daemon-service-midimon">Daemon Service: midimon</a></h2>
+<p>The primary MIDIMon daemon service (v1.0.0+). Runs as a background process with config hot-reload.</p>
+<h3 id="basic-syntax"><a class="header" href="#basic-syntax">Basic Syntax</a></h3>
+<pre><code class="language-bash"># Start daemon (via cargo)
+cargo run --release --bin midimon [PORT] [OPTIONS]
+
+# Start daemon (release binary)
+./target/release/midimon [PORT] [OPTIONS]
+
+# Or use systemd/launchd (see Installation)
+systemctl --user start midimon  # Linux
+launchctl load ~/Library/LaunchAgents/com.amiable.midimon.plist  # macOS
+</code></pre>
+<h3 id="daemon-features-v100"><a class="header" href="#daemon-features-v100">Daemon Features (v1.0.0+)</a></h3>
+<ul>
+<li><strong>Background Service</strong>: Runs continuously in the background</li>
+<li><strong>Config Hot-Reload</strong>: Reload configuration without restart (0-8ms latency)</li>
+<li><strong>State Persistence</strong>: Saves state on shutdown, restores on startup</li>
+<li><strong>IPC Control</strong>: Control via <code>midimonctl</code> utility</li>
+<li><strong>Auto-Recovery</strong>: Graceful error handling and device reconnection</li>
+</ul>
+<h3 id="arguments"><a class="header" href="#arguments">Arguments</a></h3>
+<h4 id="port-required-in-some-cases"><a class="header" href="#port-required-in-some-cases">PORT (Required in some cases)</a></h4>
+<p>The MIDI input port number to connect to.</p>
+<p><strong>Finding available ports</strong>:</p>
+<pre><code class="language-bash"># List all MIDI ports
+cargo run --release
+
+# Or
+./target/release/midimon
+</code></pre>
+<p>Output:</p>
+<pre><code>Available MIDI input ports:
+0: USB MIDI Device
+1: IAC Driver Bus 1
+2: Maschine Mikro MK3 - Input
+3: Digital Keyboard
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<pre><code class="language-bash"># Connect to port 2 (Maschine Mikro MK3)
+cargo run --release 2
+
+# Connect to port 0
+cargo run --release 0
+</code></pre>
+<p><strong>Note</strong>: If <code>auto_connect = true</code> in <code>config.toml</code>, the port argument is optional and MIDIMon will connect to the first available port.</p>
+<h3 id="options"><a class="header" href="#options">Options</a></h3>
+<h4 id="--led---lighting"><a class="header" href="#--led---lighting">--led, --lighting <SCHEME></a></h4>
+<p>Select LED lighting scheme (for devices with LED support).</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --release 2 --led &lt;SCHEME&gt;
+# or
+cargo run --release 2 --lighting &lt;SCHEME&gt;
+</code></pre>
+<p><strong>Available schemes</strong>:</p>
+<ul>
+<li><code>reactive</code> (default) - Velocity-based colors, fade out after release</li>
+<li><code>rainbow</code> - Static rainbow gradient</li>
+<li><code>breathing</code> - Breathing effect (all pads)</li>
+<li><code>pulse</code> - Pulsing effect</li>
+<li><code>wave</code> - Wave pattern with brightness gradient</li>
+<li><code>sparkle</code> - Random twinkling LEDs</li>
+<li><code>vumeter</code> - VU meter style gradient (green → yellow → red)</li>
+<li><code>spiral</code> - Spiral/diagonal pattern</li>
+<li><code>static</code> - Static single color</li>
+<li><code>off</code> - LEDs disabled</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-bash"># Reactive mode (velocity-sensitive)
+cargo run --release 2 --led reactive
+
+# Rainbow gradient
+cargo run --release 2 --led rainbow
+
+# Breathing effect
+cargo run --release 2 --lighting breathing
+
+# Turn off LEDs
+cargo run --release 2 --led off
+</code></pre>
+<p><strong>LED Behavior by Scheme</strong>:</p>
+<p><strong>reactive</strong>:</p>
+<ul>
+<li>Soft press (velocity &lt; 50): Green Dim</li>
+<li>Medium press (50 ≤ velocity &lt; 100): Yellow Normal</li>
+<li>Hard press (velocity ≥ 100): Red Bright</li>
+<li>Fades out 1 second after release</li>
+</ul>
+<p><strong>rainbow</strong>:</p>
+<ul>
+<li>Static rainbow gradient across all pads</li>
+<li>No animation (constant colors)</li>
+</ul>
+<p><strong>sparkle</strong>:</p>
+<ul>
+<li>Random white LEDs</li>
+<li>20% probability per pad per frame</li>
+<li>Updates every 100ms</li>
+</ul>
+<p><strong>vumeter</strong>:</p>
+<ul>
+<li>Green (bottom rows)</li>
+<li>Yellow/Orange (middle)</li>
+<li>Red (top)</li>
+</ul>
+<p><strong>wave</strong>:</p>
+<ul>
+<li>Blue with varying brightness</li>
+<li>Creates wave effect</li>
+</ul>
+<h4 id="--profile--p"><a class="header" href="#--profile--p">--profile, -p <PATH></a></h4>
+<p>Load a Native Instruments Controller Editor profile (.ncmm3 file).</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --release 2 --profile &lt;PATH&gt;
+# or
+cargo run --release 2 -p &lt;PATH&gt;
+</code></pre>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-bash"># Relative path
+cargo run --release 2 --profile my-profile.ncmm3
+
+# Absolute path
+cargo run --release 2 --profile ~/Downloads/base-template-ni-mikro-mk3.ncmm3
+
+# macOS default location
+cargo run --release 2 --profile "$HOME/Documents/Native Instruments/Controller Editor/Profiles/my-profile.ncmm3"
+</code></pre>
+<p><strong>What profiles do</strong>:</p>
+<ul>
+<li>Map physical pad positions to MIDI note numbers</li>
+<li>Support 8 pad pages (A-H) per profile</li>
+<li>Enable correct LED feedback for custom layouts</li>
+<li>Allow seamless integration with NI Controller Editor</li>
+</ul>
+<p><strong>Creating profiles</strong>:</p>
+<ol>
+<li>Open Native Instruments Controller Editor</li>
+<li>Select "Maschine Mikro MK3"</li>
+<li>Edit pad pages (A-H)</li>
+<li>Assign MIDI notes to each pad</li>
+<li>Save as <code>.ncmm3</code> file</li>
+<li>Use with <code>--profile</code> flag</li>
+</ol>
+<p>See <a href="../DEVICE_PROFILES.html">Device Profiles Documentation</a> for complete guide.</p>
+<h4 id="--pad-page"><a class="header" href="#--pad-page">--pad-page <PAGE></a></h4>
+<p>Force a specific pad page when using a profile (instead of auto-detection).</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --release 2 --profile &lt;PATH&gt; --pad-page &lt;PAGE&gt;
+</code></pre>
+<p><strong>Valid pages</strong>: A, B, C, D, E, F, G, H (case-insensitive)</p>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-bash"># Force page A
+cargo run --release 2 --profile my-profile.ncmm3 --pad-page A
+
+# Force page H
+cargo run --release 2 --profile my-profile.ncmm3 --pad-page h
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Auto-detection not working correctly</li>
+<li>Want to lock to a specific page</li>
+<li>Testing specific page mappings</li>
+<li>Profile has identical notes across multiple pages</li>
+</ul>
+<p><strong>Default behavior</strong> (without <code>--pad-page</code>):</p>
+<ul>
+<li>Auto-detect active page from incoming MIDI notes</li>
+<li>Switch pages automatically when notes from different page detected</li>
+</ul>
+<h4 id="--config--c"><a class="header" href="#--config--c">--config, -c <PATH></a></h4>
+<p>Specify custom configuration file location.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --release 2 --config &lt;PATH&gt;
+# or
+cargo run --release 2 -c &lt;PATH&gt;
+</code></pre>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-bash"># Use alternative config
+cargo run --release 2 --config config-dev.toml
+
+# Full path
+cargo run --release 2 --config /etc/midimon/config.toml
+</code></pre>
+<p><strong>Default</strong>: <code>./config.toml</code> (current directory)</p>
+<h4 id="--help--h"><a class="header" href="#--help--h">--help, -h</a></h4>
+<p>Display help message with all available options.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --release -- --help
+# or
+./target/release/midimon --help
+</code></pre>
+<p>Note the <code>--</code> separator when using <code>cargo run</code>.</p>
+<h4 id="--version--v"><a class="header" href="#--version--v">--version, -v</a></h4>
+<p>Display MIDIMon version.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --release -- --version
+# or
+./target/release/midimon --version
+</code></pre>
+<h3 id="environment-variables"><a class="header" href="#environment-variables">Environment Variables</a></h3>
+<h4 id="debug1"><a class="header" href="#debug1">DEBUG=1</a></h4>
+<p>Enable verbose debug logging.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+<p><strong>Output includes</strong>:</p>
+<ul>
+<li>MIDI event details (note on/off, velocity, channel)</li>
+<li>HID connection status</li>
+<li>LED updates (buffer contents)</li>
+<li>Event processing (velocity detection, long press, chords)</li>
+<li>Mapping matches and action execution</li>
+<li>Mode changes</li>
+<li>Error details</li>
+</ul>
+<p><strong>Example debug output</strong>:</p>
+<pre><code>[DEBUG] Connected to MIDI port 2: Maschine Mikro MK3 - Input
+[DEBUG] HID device opened successfully
+[DEBUG] LED controller initialized
+[DEBUG] Loaded config with 3 modes, 24 mappings
+[DEBUG] Starting in mode 0: Default
+
+[MIDI] NoteOn ch:0 note:12 vel:87
+[DEBUG] Processed: Note(12) with velocity Medium
+[DEBUG] Matched mapping: "Copy text" (mode: Default)
+[DEBUG] Executing action: Keystroke(keys: "c", modifiers: ["cmd"])
+[DEBUG] LED update: pad 0 -&gt; color 7 (Green) brightness 2
+[MIDI] NoteOff ch:0 note:12 vel:0
+[DEBUG] LED fade: pad 0 cleared after 1000ms
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Troubleshooting mapping issues</li>
+<li>Debugging note number mismatches</li>
+<li>Verifying LED control</li>
+<li>Understanding event processing</li>
+<li>Investigating performance issues</li>
+</ul>
+<h4 id="rust_log"><a class="header" href="#rust_log">RUST_LOG</a></h4>
+<p>Control Rust logging levels (for development).</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">RUST_LOG=debug cargo run --release 2
+RUST_LOG=trace cargo run --release 2
+RUST_LOG=info cargo run --release 2
+</code></pre>
+<p><strong>Levels</strong>:</p>
+<ul>
+<li><code>error</code> - Only errors</li>
+<li><code>warn</code> - Warnings and errors</li>
+<li><code>info</code> - General information (default)</li>
+<li><code>debug</code> - Debug information</li>
+<li><code>trace</code> - Very verbose</li>
+</ul>
+<p><strong>Filter by module</strong>:</p>
+<pre><code class="language-bash"># Only log MIDI events
+RUST_LOG=midimon::midi=debug cargo run --release 2
+
+# Multiple modules
+RUST_LOG=midimon::event_processor=debug,midimon::mappings=trace cargo run --release 2
+</code></pre>
+<h3 id="complete-usage-examples"><a class="header" href="#complete-usage-examples">Complete Usage Examples</a></h3>
+<h4 id="example-1-basic-usage"><a class="header" href="#example-1-basic-usage">Example 1: Basic Usage</a></h4>
+<pre><code class="language-bash"># List ports
+cargo run --release
+
+# Connect to port 2 with default settings
+cargo run --release 2
+</code></pre>
+<h4 id="example-2-with-led-lighting"><a class="header" href="#example-2-with-led-lighting">Example 2: With LED Lighting</a></h4>
+<pre><code class="language-bash"># Reactive mode (default)
+cargo run --release 2 --led reactive
+
+# Rainbow gradient
+cargo run --release 2 --led rainbow
+
+# Sparkle effect
+cargo run --release 2 --led sparkle
+</code></pre>
+<h4 id="example-3-with-profile"><a class="header" href="#example-3-with-profile">Example 3: With Profile</a></h4>
+<pre><code class="language-bash"># Auto-detect page
+cargo run --release 2 --profile my-profile.ncmm3
+
+# Force specific page
+cargo run --release 2 --profile my-profile.ncmm3 --pad-page H
+
+# With LED scheme
+cargo run --release 2 --profile my-profile.ncmm3 --led reactive
+</code></pre>
+<h4 id="example-4-debug-mode"><a class="header" href="#example-4-debug-mode">Example 4: Debug Mode</a></h4>
+<pre><code class="language-bash"># Enable debug output
+DEBUG=1 cargo run --release 2
+
+# With all options
+DEBUG=1 cargo run --release 2 --profile my-profile.ncmm3 --led reactive
+</code></pre>
+<h4 id="example-5-custom-config"><a class="header" href="#example-5-custom-config">Example 5: Custom Config</a></h4>
+<pre><code class="language-bash"># Use development config
+cargo run --release 2 --config config-dev.toml
+
+# Use config from different directory
+cargo run --release 2 --config ~/midimon-configs/work.toml
+</code></pre>
+<h4 id="example-6-production-binary"><a class="header" href="#example-6-production-binary">Example 6: Production Binary</a></h4>
+<pre><code class="language-bash"># Build release
+cargo build --release
+
+# Run with all options
+./target/release/midimon 2 \
+    --profile ~/Documents/NI/my-profile.ncmm3 \
+    --led reactive \
+    --config ~/midimon-configs/production.toml
+</code></pre>
+<h2 id="daemon-control-midimonctl"><a class="header" href="#daemon-control-midimonctl">Daemon Control: midimonctl</a></h2>
+<p><strong>New in v1.0.0</strong> - Control and monitor the MIDIMon daemon service.</p>
+<h3 id="basic-syntax-1"><a class="header" href="#basic-syntax-1">Basic Syntax</a></h3>
+<pre><code class="language-bash"># Via cargo
+cargo run --release --bin midimonctl &lt;COMMAND&gt; [OPTIONS]
+
+# Release binary
+./target/release/midimonctl &lt;COMMAND&gt; [OPTIONS]
+</code></pre>
+<h3 id="commands"><a class="header" href="#commands">Commands</a></h3>
+<h4 id="status"><a class="header" href="#status">status</a></h4>
+<p>Display daemon status, device info, and performance metrics.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl status [--json]
+</code></pre>
+<p><strong>Output</strong> (human-readable):</p>
+<pre><code>MIDIMon Daemon Status
+=====================
+
+Lifecycle State: Running
+Uptime: 2h 34m 17s
+
+Device
+------
+Connected: Yes
+Name: Maschine Mikro MK3 - Input
+Port: 2
+Last Event: 3s ago
+
+Configuration
+------------
+Modes: 3 (Default, Development, Media)
+Global Mappings: 12
+Mode Mappings: 24 (8 per mode)
+Config File: /Users/you/.config/midimon/config.toml
+Last Reload: 15m ago
+
+Performance Metrics
+------------------
+Config Reloads: 7
+Average Reload Time: 3ms
+Last Reload Time: 2ms
+Performance Grade: Excellent
+
+IPC Latency: &lt;1ms
+</code></pre>
+<p><strong>JSON Output</strong> (<code>--json</code>):</p>
+<pre><code class="language-bash">midimonctl status --json
+</code></pre>
+<pre><code class="language-json">{
+  "success": true,
+  "data": {
+    "lifecycle_state": "Running",
+    "uptime_secs": 9257,
+    "device": {
+      "connected": true,
+      "name": "Maschine Mikro MK3 - Input",
+      "port": 2,
+      "last_event_at": 1699900000
+    },
+    "config": {
+      "modes": 3,
+      "global_mappings": 12,
+      "mode_mappings": 24
+    },
+    "performance": {
+      "reload_count": 7,
+      "avg_reload_ms": 3,
+      "last_reload_ms": 2,
+      "grade": "Excellent"
+    }
+  }
+}
+</code></pre>
+<h4 id="reload"><a class="header" href="#reload">reload</a></h4>
+<p>Trigger configuration hot-reload without restarting the daemon.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl reload [--json]
+</code></pre>
+<p><strong>Features</strong>:</p>
+<ul>
+<li><strong>Zero Downtime</strong>: No interruption to MIDI processing</li>
+<li><strong>Fast</strong>: 0-8ms reload latency (typically &lt;3ms)</li>
+<li><strong>Atomic</strong>: All-or-nothing config swap</li>
+<li><strong>Validated</strong>: Config checked before reload</li>
+</ul>
+<p><strong>Output</strong>:</p>
+<pre><code>✓ Configuration reloaded successfully
+
+Reload completed in 2ms
+Modes: 3 (Default, Development, Media)
+Global mappings: 12
+Mode mappings: 24
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>After editing <code>config.toml</code></li>
+<li>Testing new mappings</li>
+<li>Switching between config profiles</li>
+<li>Live development workflow</li>
+</ul>
+<p><strong>Example workflow</strong>:</p>
+<pre><code class="language-bash"># 1. Edit config
+vim ~/.config/midimon/config.toml
+
+# 2. Reload daemon
+midimonctl reload
+
+# 3. Test changes immediately (no restart needed!)
+</code></pre>
+<h4 id="validate"><a class="header" href="#validate">validate</a></h4>
+<p>Validate configuration file syntax without reloading.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl validate [--json]
+</code></pre>
+<p><strong>Output</strong> (valid config):</p>
+<pre><code>✓ Configuration is valid
+
+Modes: 3
+Global mappings: 12
+Total mappings: 36
+</code></pre>
+<p><strong>Output</strong> (invalid config):</p>
+<pre><code>✗ Configuration validation failed
+
+Error: Invalid trigger type 'NoteTap' at line 42
+Expected one of: Note, VelocityRange, LongPress, DoubleTap,
+                 NoteChord, EncoderTurn, Aftertouch, PitchBend, CC
+
+Suggestion: Did you mean 'DoubleTap'?
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Before committing config changes</li>
+<li>CI/CD validation</li>
+<li>Debugging config syntax errors</li>
+<li>Pre-flight checks</li>
+</ul>
+<h4 id="ping"><a class="header" href="#ping">ping</a></h4>
+<p>Health check with latency measurement.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl ping [--json]
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>✓ Daemon is responsive
+Latency: 0.4ms
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Verify daemon is running</li>
+<li>Check IPC communication</li>
+<li>Monitor system responsiveness</li>
+<li>Health checks in scripts</li>
+</ul>
+<h4 id="shutdown"><a class="header" href="#shutdown">shutdown</a></h4>
+<p>Gracefully shut down the <strong>running daemon process</strong> via IPC.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl shutdown [--json]
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>✓ Daemon stopped successfully
+
+Uptime: 2h 34m 17s
+State saved successfully
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ul>
+<li>Sends IPC <code>Stop</code> command to running daemon</li>
+<li>Daemon saves state and exits gracefully</li>
+<li>Closes MIDI/HID connections cleanly</li>
+<li>Persists device state to disk</li>
+</ul>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li><strong>Daemon is running</strong> and you want to stop it</li>
+<li>Quick shutdown during development</li>
+<li>When you know daemon is responsive</li>
+</ul>
+<p><strong>Requirements</strong>:</p>
+<ul>
+<li>Daemon must be running</li>
+<li>IPC socket must be accessible</li>
+<li>No LaunchAgent/systemd interaction</li>
+</ul>
+<h4 id="stop"><a class="header" href="#stop">stop</a></h4>
+<p>Stop the <strong>LaunchAgent/systemd service</strong> (tries graceful shutdown first).</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl stop [--json] [--force]
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>Stopping MIDIMon service...
+  Attempting graceful shutdown via IPC...
+✓ Service stopped successfully
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li><strong>First</strong>: Attempts graceful IPC shutdown (same as <code>shutdown</code> command)</li>
+<li><strong>Waits</strong>: 500ms for daemon to exit</li>
+<li><strong>Then</strong>: Unloads LaunchAgent (macOS) or stops systemd service (Linux)</li>
+</ol>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li><strong>Service is installed</strong> via <code>midimonctl install</code></li>
+<li>Need to stop the background service</li>
+<li>Daemon may or may not be responsive</li>
+<li>Want to ensure service is fully stopped</li>
+</ul>
+<p><strong>Requirements</strong>:</p>
+<ul>
+<li>Service must be installed (via <code>midimonctl install</code>)</li>
+<li>macOS: LaunchAgent plist exists</li>
+<li>Linux: systemd unit exists</li>
+</ul>
+<p><strong>Options</strong>:</p>
+<ul>
+<li><code>--force</code>: Skip graceful shutdown, immediately unload service</li>
+</ul>
+<h3 id="choosing-between-shutdown-and-stop"><a class="header" href="#choosing-between-shutdown-and-stop">Choosing Between shutdown and stop</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Scenario</th><th>Use Command</th><th>Why</th></tr></thead><tbody>
+<tr><td>Daemon running in foreground</td><td><code>shutdown</code></td><td>Faster, direct IPC</td></tr>
+<tr><td>Daemon started manually (not service)</td><td><code>shutdown</code></td><td>No service to unload</td></tr>
+<tr><td>Service installed and running</td><td><code>stop</code></td><td>Ensures service unloaded</td></tr>
+<tr><td>Daemon not responding</td><td><code>stop --force</code></td><td>Bypasses IPC, forces unload</td></tr>
+<tr><td>Development workflow</td><td><code>shutdown</code></td><td>Quick restarts</td></tr>
+<tr><td>Production/installed service</td><td><code>stop</code></td><td>Proper service management</td></tr>
+</tbody></table>
+</div>
+<p><strong>Decision tree</strong>:</p>
+<pre><code>Is daemon installed as a service?
+├─ No → Use `shutdown`
+└─ Yes
+   ├─ Is daemon responsive?
+   │  ├─ Yes → Use `stop` (graceful)
+   │  └─ No → Use `stop --force`
+   └─ Running in foreground for testing? → Use `shutdown`
+</code></pre>
+<h3 id="device-management-commands"><a class="header" href="#device-management-commands">Device Management Commands</a></h3>
+<h4 id="list-devices"><a class="header" href="#list-devices">list-devices</a></h4>
+<p>List all available MIDI input devices.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl list-devices [--json]
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>Available MIDI Devices
+──────────────────────────────────────────────────
+  [0] USB MIDI Device
+  [1] IAC Driver Bus 1 (connected)
+  [2] Maschine Mikro MK3 - Input
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Find available MIDI ports</li>
+<li>Check which device is currently connected</li>
+<li>Troubleshoot device connectivity</li>
+</ul>
+<h4 id="set-device"><a class="header" href="#set-device">set-device</a></h4>
+<p>Switch the daemon to a different MIDI device without restart.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl set-device &lt;PORT&gt; [--json]
+</code></pre>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-bash"># Switch to port 2
+midimonctl set-device 2
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>✓ Switched to device at port 2
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Switch between MIDI devices on the fly</li>
+<li>Test different controllers</li>
+<li>Recover from device disconnection</li>
+</ul>
+<h4 id="get-device"><a class="header" href="#get-device">get-device</a></h4>
+<p>Show information about the currently connected MIDI device.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl get-device [--json]
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>Current MIDI Device
+──────────────────────────────────────────────────
+Status:     Connected
+Name:       Maschine Mikro MK3 - Input
+Port:       2
+Last Event: 3s ago
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Verify which device is active</li>
+<li>Check connection status</li>
+<li>Debug event reception issues</li>
+</ul>
+<h3 id="service-management-commands"><a class="header" href="#service-management-commands">Service Management Commands</a></h3>
+<p><strong>Note</strong>: Service management commands are currently macOS-only (using LaunchAgent).</p>
+<h4 id="understanding-launchagent-behavior"><a class="header" href="#understanding-launchagent-behavior">Understanding LaunchAgent Behavior</a></h4>
+<p>The MIDIMon LaunchAgent plist has <code>RunAtLoad=true</code>, which affects command behavior:</p>
+<p><strong>Key insight</strong>: <code>launchctl load</code> = load plist + start daemon immediately</p>
+<div class="table-wrapper"><table><thead><tr><th>Command</th><th>launchctl operation</th><th>Starts daemon?</th><th>Auto-start on login?</th></tr></thead><tbody>
+<tr><td><code>install</code></td><td><code>load</code></td><td>✓ Yes</td><td>✗ No</td></tr>
+<tr><td><code>start</code></td><td><code>load</code></td><td>✓ Yes</td><td>✗ No</td></tr>
+<tr><td><code>enable</code></td><td><code>load -w</code></td><td>✓ Yes</td><td>✓ Yes</td></tr>
+<tr><td><code>stop</code></td><td><code>unload</code></td><td>✗ Stops</td><td>✗ No</td></tr>
+<tr><td><code>disable</code></td><td><code>unload -w</code></td><td>✗ Stops</td><td>✗ No</td></tr>
+</tbody></table>
+</div>
+<p><strong>Common patterns</strong>:</p>
+<ul>
+<li><strong>Quick setup</strong>: <code>install</code> → daemon runs but won't auto-start on reboot</li>
+<li><strong>Production setup</strong>: <code>install</code> then <code>enable</code> → daemon runs now AND on every login</li>
+<li><strong>One-step production</strong>: <code>enable</code> (if already installed) → starts + enables auto-start</li>
+<li><strong>Temporary disable</strong>: <code>stop</code> → stops now but will auto-start on next login (if enabled)</li>
+<li><strong>Complete disable</strong>: <code>disable</code> → stops now AND prevents auto-start</li>
+</ul>
+<h4 id="install"><a class="header" href="#install">install</a></h4>
+<p>Install MIDIMon as a LaunchAgent service that starts automatically on login.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl install [--install-binary] [--force] [--json]
+</code></pre>
+<p><strong>Options</strong>:</p>
+<ul>
+<li><code>--install-binary</code>: Copy daemon binary to <code>/usr/local/bin/midimon</code></li>
+<li><code>--force</code>: Reinstall even if already installed</li>
+</ul>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Generates LaunchAgent plist from template</li>
+<li>Copies plist to <code>~/Library/LaunchAgents/com.amiable.midimon.plist</code></li>
+<li>Optionally installs binary to <code>/usr/local/bin</code> (requires sudo)</li>
+<li>Loads service with <code>launchctl</code></li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>Installing MIDIMon service...
+  ✓ Generated plist
+  ✓ Installed to ~/Library/LaunchAgents/com.amiable.midimon.plist
+  ✓ Loaded service
+
+✓ MIDIMon service installed successfully
+
+Next steps:
+  • Start: midimonctl start
+  • Enable auto-start: midimonctl enable
+  • Check status: midimonctl service-status
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>First-time setup for background service</li>
+<li>Setting up production deployment</li>
+<li>Enable auto-start on login</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-bash"># Basic install (daemon must already be built)
+midimonctl install
+
+# Install and copy binary to system location
+sudo midimonctl install --install-binary
+
+# Force reinstall
+midimonctl install --force
+</code></pre>
+<h4 id="uninstall"><a class="header" href="#uninstall">uninstall</a></h4>
+<p>Remove MIDIMon service from LaunchAgent.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl uninstall [--remove-binary] [--remove-logs] [--json]
+</code></pre>
+<p><strong>Options</strong>:</p>
+<ul>
+<li><code>--remove-binary</code>: Also delete <code>/usr/local/bin/midimon</code></li>
+<li><code>--remove-logs</code>: Delete log files</li>
+</ul>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Stops service if running</li>
+<li>Removes LaunchAgent plist</li>
+<li>Optionally removes binary and logs</li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>Uninstalling MIDIMon service...
+  ✓ Stopped service
+  ✓ Removed plist: ~/Library/LaunchAgents/com.amiable.midimon.plist
+
+✓ MIDIMon service uninstalled successfully
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Removing MIDIMon completely</li>
+<li>Clean uninstall before upgrade</li>
+<li>Troubleshooting installation issues</li>
+</ul>
+<h4 id="start"><a class="header" href="#start">start</a></h4>
+<p>Start the LaunchAgent service.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl start [--wait &lt;SECONDS&gt;] [--json]
+</code></pre>
+<p><strong>Options</strong>:</p>
+<ul>
+<li><code>--wait &lt;SECONDS&gt;</code>: Wait up to N seconds for daemon to be ready (default: 5)</li>
+</ul>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Loads service with <code>launchctl load</code></li>
+<li>Waits for daemon to respond to IPC</li>
+<li>Verifies daemon is running</li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>Starting MIDIMon service...
+Waiting for daemon to be ready... ✓
+✓ Service started successfully
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Start service after install</li>
+<li>Start service after stop</li>
+<li>Verify service starts correctly</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-bash"># Start and wait up to 10 seconds
+midimonctl start --wait 10
+</code></pre>
+<h4 id="restart"><a class="header" href="#restart">restart</a></h4>
+<p>Restart the LaunchAgent service (stop + start).</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl restart [--wait &lt;SECONDS&gt;] [--json]
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Gracefully stops service</li>
+<li>Waits 500ms</li>
+<li>Starts service</li>
+<li>Waits for daemon to be ready</li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>Restarting MIDIMon service...
+Stopping MIDIMon service...
+✓ Service stopped successfully
+Starting MIDIMon service...
+✓ Service started successfully
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Apply config changes that need full restart</li>
+<li>Recover from errors</li>
+<li>Test service lifecycle</li>
+</ul>
+<h4 id="enable"><a class="header" href="#enable">enable</a></h4>
+<p>Enable auto-start on login AND start the daemon immediately.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl enable [--json]
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li><strong>Loads service</strong> with <code>launchctl load -w</code> flag</li>
+<li><strong>Starts daemon immediately</strong> (because plist has <code>RunAtLoad=true</code>)</li>
+<li><strong>Enables auto-start</strong> on next login (persists across reboots)</li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>✓ Service enabled (will start on login)
+</code></pre>
+<p><strong>Note</strong>: This is equivalent to <code>start</code> + making it persistent across reboots.</p>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li><strong>One-step setup</strong>: Enable and start in single command</li>
+<li>Production deployment (start now + auto-start on reboot)</li>
+<li>After <code>disable</code> to re-enable everything</li>
+</ul>
+<p><strong>Alternative</strong>: If you only want to enable auto-start WITHOUT starting now, use <code>start</code> to load the service first, then the <code>-w</code> flag will be set.</p>
+<h4 id="disable"><a class="header" href="#disable">disable</a></h4>
+<p>Disable auto-start on login AND stop the daemon immediately.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl disable [--json]
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li><strong>Unloads service</strong> with <code>launchctl unload -w</code> flag</li>
+<li><strong>Stops daemon immediately</strong></li>
+<li><strong>Disables auto-start</strong> on next login</li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>✓ Service disabled (will not start on login)
+</code></pre>
+<p><strong>Note</strong>: This is equivalent to <code>stop</code> + preventing auto-start on reboot.</p>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li><strong>Complete shutdown</strong>: Stop now + prevent auto-start</li>
+<li>Temporarily disable background service</li>
+<li>Development workflow</li>
+<li>Before uninstall</li>
+</ul>
+<h4 id="service-status"><a class="header" href="#service-status">service-status</a></h4>
+<p>Show detailed service installation and runtime status.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">midimonctl service-status [--json]
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>MIDIMon Service Status
+──────────────────────────────────────────────────
+Status:          Installed and Loaded
+Service Label:   com.amiable.midimon
+Plist:           ~/Library/LaunchAgents/com.amiable.midimon.plist ✓
+Binary:          /usr/local/bin/midimon ✓
+
+Service is loaded (enabled)
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Verify service is installed correctly</li>
+<li>Check if auto-start is enabled</li>
+<li>Troubleshoot service issues</li>
+<li>Audit service configuration</li>
+</ul>
+<h3 id="global-options"><a class="header" href="#global-options">Global Options</a></h3>
+<h4 id="--json"><a class="header" href="#--json">--json</a></h4>
+<p>Output in JSON format (for scripting/automation).</p>
+<p><strong>Available for</strong>: All commands</p>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-bash"># Parse with jq
+midimonctl status --json | jq '.data.device.connected'
+# Output: true
+
+# Check if reload succeeded
+if midimonctl reload --json | jq -e '.success'; then
+    echo "Reload successful"
+fi
+</code></pre>
+<h3 id="usage-examples"><a class="header" href="#usage-examples">Usage Examples</a></h3>
+<h4 id="example-1-first-time-service-setup-production"><a class="header" href="#example-1-first-time-service-setup-production">Example 1: First-Time Service Setup (Production)</a></h4>
+<pre><code class="language-bash"># Build daemon
+cargo build --release --bin midimon
+
+# Install as LaunchAgent service (starts immediately)
+midimonctl install
+
+# Verify running
+midimonctl status
+
+# Enable auto-start on login (also starts if not running)
+# Since install already started it, this just enables persistence
+midimonctl enable
+
+# Check service details
+midimonctl service-status
+</code></pre>
+<p><strong>Alternative (simpler)</strong>:</p>
+<pre><code class="language-bash"># Build daemon
+cargo build --release --bin midimon
+
+# One-step: Install service
+midimonctl install
+
+# One-step: Enable auto-start (if you want persistence across reboots)
+midimonctl enable
+</code></pre>
+<p><strong>Simplest production setup</strong>:</p>
+<pre><code class="language-bash">cargo build --release --bin midimon
+midimonctl install --install-binary  # Copies to /usr/local/bin
+midimonctl enable                     # Starts + enables auto-start
+</code></pre>
+<h4 id="example-2-development-workflow"><a class="header" href="#example-2-development-workflow">Example 2: Development Workflow</a></h4>
+<pre><code class="language-bash"># Start daemon in foreground for testing
+cargo run --release --bin midimon 2 --foreground
+
+# In another terminal...
+
+# Check status
+midimonctl status
+
+# Edit config
+vim config.toml
+
+# Hot-reload changes (zero downtime!)
+midimonctl reload
+
+# Test changes immediately
+
+# Switch to different MIDI device
+midimonctl list-devices
+midimonctl set-device 1
+
+# Stop when done
+midimonctl shutdown
+</code></pre>
+<h4 id="example-3-service-management-workflow"><a class="header" href="#example-3-service-management-workflow">Example 3: Service Management Workflow</a></h4>
+<pre><code class="language-bash"># Check if service is installed
+midimonctl service-status
+
+# Start service if not running
+midimonctl start
+
+# Check which MIDI device is active
+midimonctl get-device
+
+# Switch to different device without restart
+midimonctl set-device 2
+
+# Restart service (apply changes that need full restart)
+midimonctl restart
+
+# Disable auto-start temporarily
+midimonctl disable
+
+# Stop service
+midimonctl stop
+</code></pre>
+<h4 id="example-4-production-monitoring"><a class="header" href="#example-4-production-monitoring">Example 4: Production Monitoring</a></h4>
+<pre><code class="language-bash">#!/bin/bash
+# monitor.sh - Health check script
+
+# Check daemon health
+if ! midimonctl ping --json | jq -e '.success'; then
+    echo "Daemon not responding, restarting..."
+    midimonctl restart
+fi
+
+# Get performance metrics
+RELOAD_MS=$(midimonctl status --json | jq '.data.reload_stats.avg_reload_ms')
+if [ "$RELOAD_MS" -gt 50 ]; then
+    echo "Warning: Average reload time ${RELOAD_MS}ms (expected &lt;50ms)"
+fi
+
+# Check MIDI device connectivity
+CONNECTED=$(midimonctl get-device --json | jq '.data.device.connected')
+if [ "$CONNECTED" != "true" ]; then
+    echo "MIDI device disconnected!"
+    # Try to reconnect
+    midimonctl list-devices
+fi
+</code></pre>
+<h4 id="example-5-configuration-management"><a class="header" href="#example-5-configuration-management">Example 5: Configuration Management</a></h4>
+<pre><code class="language-bash"># Validate before deploy
+if ! midimonctl validate --json | jq -e '.success'; then
+    echo "Config validation failed"
+    exit 1
+fi
+
+# Backup current config
+cp ~/.config/midimon/config.toml ~/.config/midimon/config.toml.backup
+
+# Deploy new config
+cp config-v2.toml ~/.config/midimon/config.toml
+
+# Apply changes (hot reload)
+midimonctl reload
+
+# Verify successful reload
+midimonctl status
+
+# If issues, rollback
+# cp ~/.config/midimon/config.toml.backup ~/.config/midimon/config.toml
+# midimonctl reload
+</code></pre>
+<h4 id="example-6-automated-testing"><a class="header" href="#example-6-automated-testing">Example 6: Automated Testing</a></h4>
+<pre><code class="language-bash">#!/bin/bash
+# test-config.sh
+
+# Validate syntax
+if ! midimonctl validate --json | jq -e '.data.valid'; then
+    echo "Config validation failed"
+    exit 1
+fi
+
+# Reload daemon
+if ! midimonctl reload --json | jq -e '.success'; then
+    echo "Reload failed"
+    exit 1
+fi
+
+# Check reload performance
+LATENCY=$(midimonctl status --json | jq '.data.reload_stats.last_reload_ms')
+if [ "$LATENCY" -gt 10 ]; then
+    echo "Warning: Reload took ${LATENCY}ms (expected &lt;10ms)"
+fi
+
+# Verify device connection
+CONNECTED=$(midimonctl get-device --json | jq '.data.device.connected')
+if [ "$CONNECTED" != "true" ]; then
+    echo "Error: MIDI device not connected"
+    exit 1
+fi
+
+echo "✓ All checks passed"
+</code></pre>
+<h4 id="example-7-complete-uninstall"><a class="header" href="#example-7-complete-uninstall">Example 7: Complete Uninstall</a></h4>
+<pre><code class="language-bash"># Stop service
+midimonctl stop
+
+# Disable auto-start
+midimonctl disable
+
+# Uninstall service (with cleanup)
+midimonctl uninstall --remove-binary --remove-logs
+
+# Verify removal
+midimonctl service-status
+</code></pre>
+<h2 id="diagnostic-tools"><a class="header" href="#diagnostic-tools">Diagnostic Tools</a></h2>
+<p>MIDIMon includes several diagnostic utilities for debugging and configuration.</p>
+<h3 id="midi_diagnostic"><a class="header" href="#midi_diagnostic">midi_diagnostic</a></h3>
+<p>Visualize all incoming MIDI events in real-time.</p>
+<p><strong>Purpose</strong>: Debug MIDI connectivity, view raw MIDI data, verify device is sending events.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin midi_diagnostic [PORT]
+</code></pre>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-bash"># Connect to port 2
+cargo run --bin midi_diagnostic 2
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>Connected to MIDI port 2: Maschine Mikro MK3 - Input
+Listening for MIDI events... (Ctrl+C to exit)
+
+[NoteOn]  ch:0 note:12 vel:87
+[NoteOff] ch:0 note:12 vel:0
+[NoteOn]  ch:0 note:13 vel:45
+[NoteOff] ch:0 note:13 vel:0
+[CC]      ch:0 cc:1 value:64
+[PitchBend] ch:0 value:8192
+</code></pre>
+<p><strong>Event types shown</strong>:</p>
+<ul>
+<li><code>NoteOn</code> - Pad/key pressed</li>
+<li><code>NoteOff</code> - Pad/key released</li>
+<li><code>CC</code> - Control Change (knobs, sliders)</li>
+<li><code>PitchBend</code> - Touch strip, pitch wheel</li>
+<li><code>Aftertouch</code> - Pressure sensitivity</li>
+<li><code>ProgramChange</code> - Program/patch change</li>
+</ul>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Verify MIDI device is connected</li>
+<li>Find note numbers for pads/keys</li>
+<li>Debug why mappings aren't triggering</li>
+<li>Check velocity ranges</li>
+<li>Verify CC numbers for encoders/knobs</li>
+</ul>
+<p><strong>Press Ctrl+C to exit.</strong></p>
+<h3 id="led_diagnostic"><a class="header" href="#led_diagnostic">led_diagnostic</a></h3>
+<p>Test LED functionality and HID connection.</p>
+<p><strong>Purpose</strong>: Verify HID access, test LED control, debug LED issues.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin led_diagnostic
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Attempts to open HID device</li>
+<li>Displays connection status</li>
+<li>Tests individual LED control</li>
+<li>Cycles through all pads with different colors</li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>LED Diagnostic Tool
+==================
+
+Searching for Maschine Mikro MK3...
+✓ Device found: Maschine Mikro MK3 (17cc:1600)
+✓ HID device opened successfully
+
+Testing LED control...
+- Lighting pad 0 (Red Bright)
+- Lighting pad 1 (Green Bright)
+- Lighting pad 2 (Blue Bright)
+...
+- Clearing all pads
+
+✓ LED diagnostic complete
+</code></pre>
+<p><strong>Error output</strong> (if HID not accessible):</p>
+<pre><code>✗ Failed to open HID device
+  Possible causes:
+  - Device not connected
+  - Input Monitoring permission not granted
+  - Native Instruments drivers not installed
+
+  Solutions:
+  1. Check USB connection
+  2. Grant Input Monitoring permission (System Settings → Privacy &amp; Security)
+  3. Install NI drivers via Native Access
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>LEDs not working in main application</li>
+<li>Verify HID access before running midimon</li>
+<li>Test after granting permissions</li>
+<li>Debug LED coordinate mapping issues</li>
+</ul>
+<h3 id="led_tester"><a class="header" href="#led_tester">led_tester</a></h3>
+<p>Interactive LED testing tool.</p>
+<p><strong>Purpose</strong>: Manual control of individual LEDs for testing and debugging.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin led_tester
+</code></pre>
+<p><strong>Interactive mode</strong>:</p>
+<pre><code>LED Tester - Interactive Mode
+==============================
+
+Commands:
+  on &lt;pad&gt; &lt;color&gt; &lt;brightness&gt;  - Turn on LED
+  off &lt;pad&gt;                      - Turn off LED
+  all &lt;color&gt; &lt;brightness&gt;       - Set all LEDs
+  clear                          - Clear all LEDs
+  rainbow                        - Show rainbow pattern
+  test                           - Cycle through all pads
+  quit                           - Exit
+
+&gt; on 0 red 3
+✓ Pad 0: Red Bright
+
+&gt; all blue 2
+✓ All pads: Blue Normal
+
+&gt; rainbow
+✓ Rainbow pattern displayed
+
+&gt; quit
+</code></pre>
+<p><strong>Colors</strong>: red, orange, yellow, green, blue, purple, magenta, white</p>
+<p><strong>Brightness</strong>: 0 (off), 1 (dim), 2 (normal), 3 (bright)</p>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Test specific pad LEDs</li>
+<li>Verify coordinate mapping</li>
+<li>Experiment with colors and brightness</li>
+<li>Debug LED patterns</li>
+</ul>
+<h3 id="pad_mapper"><a class="header" href="#pad_mapper">pad_mapper</a></h3>
+<p>Find MIDI note numbers for physical pads.</p>
+<p><strong>Purpose</strong>: Discover note numbers to use in <code>config.toml</code>.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin pad_mapper [PORT]
+</code></pre>
+<p><strong>Example</strong>:</p>
+<pre><code class="language-bash">cargo run --bin pad_mapper 2
+</code></pre>
+<p><strong>Usage</strong>:</p>
+<ol>
+<li>Run the tool</li>
+<li>Press each pad on your controller</li>
+<li>Write down the note number displayed</li>
+<li>Use those numbers in your config</li>
+</ol>
+<p><strong>Output</strong>:</p>
+<pre><code>Pad Mapper - Press pads to see note numbers
+============================================
+Connected to port 2: Maschine Mikro MK3 - Input
+
+Press pads... (Ctrl+C to exit)
+
+Pad pressed: Note 12 (velocity: 87)
+Pad pressed: Note 13 (velocity: 64)
+Pad pressed: Note 14 (velocity: 103)
+Pad pressed: Note 15 (velocity: 52)
+</code></pre>
+<p><strong>Tips</strong>:</p>
+<ul>
+<li>Press pads in order (bottom-left to top-right)</li>
+<li>Draw a grid on paper and write down note numbers</li>
+<li>Use this data to update <code>config.toml</code></li>
+</ul>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Setting up a new device</li>
+<li>Creating initial config</li>
+<li>Mapping custom devices</li>
+<li>Verifying profile note numbers</li>
+</ul>
+<h3 id="test_midi"><a class="header" href="#test_midi">test_midi</a></h3>
+<p>Test MIDI port connectivity and enumerate devices.</p>
+<p><strong>Purpose</strong>: Quick MIDI connectivity test, list all available ports.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin test_midi
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>MIDI Port Test
+==============
+
+Available input ports:
+0: USB MIDI Device
+1: IAC Driver Bus 1
+2: Maschine Mikro MK3 - Input
+3: Digital Keyboard
+
+Available output ports:
+0: USB MIDI Device
+1: IAC Driver Bus 1
+2: Maschine Mikro MK3 - Output
+
+Testing port 2 (input)...
+✓ Successfully opened port: Maschine Mikro MK3 - Input
+
+Press a pad to test... (5 second timeout)
+✓ Received MIDI event: NoteOn ch:0 note:12 vel:87
+
+Connection test: PASSED
+</code></pre>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Verify MIDI device detected</li>
+<li>Check port numbers before running midimon</li>
+<li>Debug connectivity issues</li>
+<li>Confirm MIDI cable is working</li>
+</ul>
+<h2 id="command-quick-reference"><a class="header" href="#command-quick-reference">Command Quick Reference</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Command</th><th>Purpose</th><th>Example</th></tr></thead><tbody>
+<tr><td><strong>Daemon Service (v1.0.0+)</strong></td><td></td><td></td></tr>
+<tr><td><code>midimon [PORT]</code></td><td>Start daemon service</td><td><code>cargo run --release --bin midimon 2</code></td></tr>
+<tr><td><code>--led &lt;SCHEME&gt;</code></td><td>Set LED scheme</td><td><code>midimon 2 --led rainbow</code></td></tr>
+<tr><td><code>--profile &lt;PATH&gt;</code></td><td>Load profile</td><td><code>midimon 2 --profile my.ncmm3</code></td></tr>
+<tr><td><code>--pad-page &lt;PAGE&gt;</code></td><td>Force pad page</td><td><code>midimon 2 --pad-page H</code></td></tr>
+<tr><td><code>--config &lt;PATH&gt;</code></td><td>Custom config</td><td><code>midimon 2 --config dev.toml</code></td></tr>
+<tr><td><strong>Daemon Control (v1.0.0+)</strong></td><td></td><td></td></tr>
+<tr><td><code>midimonctl status</code></td><td>Show daemon status</td><td><code>midimonctl status</code></td></tr>
+<tr><td><code>midimonctl reload</code></td><td>Hot-reload config</td><td><code>midimonctl reload</code></td></tr>
+<tr><td><code>midimonctl validate</code></td><td>Validate config</td><td><code>midimonctl validate</code></td></tr>
+<tr><td><code>midimonctl ping</code></td><td>Health check</td><td><code>midimonctl ping</code></td></tr>
+<tr><td><code>midimonctl shutdown</code></td><td>Stop daemon (IPC)</td><td><code>midimonctl shutdown</code></td></tr>
+<tr><td><code>midimonctl stop</code></td><td>Stop service (LaunchAgent)</td><td><code>midimonctl stop --force</code></td></tr>
+<tr><td><strong>Device Management</strong></td><td></td><td></td></tr>
+<tr><td><code>midimonctl list-devices</code></td><td>List MIDI devices</td><td><code>midimonctl list-devices</code></td></tr>
+<tr><td><code>midimonctl set-device</code></td><td>Switch MIDI device</td><td><code>midimonctl set-device 2</code></td></tr>
+<tr><td><code>midimonctl get-device</code></td><td>Show current device</td><td><code>midimonctl get-device</code></td></tr>
+<tr><td><strong>Service Management (macOS)</strong></td><td></td><td></td></tr>
+<tr><td><code>midimonctl install</code></td><td>Install LaunchAgent</td><td><code>midimonctl install --install-binary</code></td></tr>
+<tr><td><code>midimonctl uninstall</code></td><td>Remove service</td><td><code>midimonctl uninstall --remove-logs</code></td></tr>
+<tr><td><code>midimonctl start</code></td><td>Start service</td><td><code>midimonctl start --wait 10</code></td></tr>
+<tr><td><code>midimonctl restart</code></td><td>Restart service</td><td><code>midimonctl restart</code></td></tr>
+<tr><td><code>midimonctl enable</code></td><td>Enable auto-start</td><td><code>midimonctl enable</code></td></tr>
+<tr><td><code>midimonctl disable</code></td><td>Disable auto-start</td><td><code>midimonctl disable</code></td></tr>
+<tr><td><code>midimonctl service-status</code></td><td>Service status</td><td><code>midimonctl service-status</code></td></tr>
+<tr><td><strong>Global Options</strong></td><td></td><td></td></tr>
+<tr><td><code>--json</code></td><td>JSON output</td><td><code>midimonctl status --json</code></td></tr>
+<tr><td><strong>Diagnostic Tools</strong></td><td></td><td></td></tr>
+<tr><td><code>DEBUG=1</code></td><td>Enable debug log</td><td><code>DEBUG=1 midimon 2</code></td></tr>
+<tr><td><code>midi_diagnostic</code></td><td>View MIDI events</td><td><code>cargo run --bin midi_diagnostic 2</code></td></tr>
+<tr><td><code>led_diagnostic</code></td><td>Test LEDs</td><td><code>cargo run --bin led_diagnostic</code></td></tr>
+<tr><td><code>led_tester</code></td><td>Interactive LED test</td><td><code>cargo run --bin led_tester</code></td></tr>
+<tr><td><code>pad_mapper</code></td><td>Find note numbers</td><td><code>cargo run --bin pad_mapper 2</code></td></tr>
+<tr><td><code>test_midi</code></td><td>Test MIDI ports</td><td><code>cargo run --bin test_midi</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="common-workflows"><a class="header" href="#common-workflows">Common Workflows</a></h2>
+<h3 id="first-time-setup"><a class="header" href="#first-time-setup">First-Time Setup</a></h3>
+<pre><code class="language-bash"># 1. List available ports
+cargo run --release
+
+# 2. Test connectivity
+cargo run --bin test_midi
+
+# 3. Map pads to note numbers
+cargo run --bin pad_mapper 2
+
+# 4. Run with basic settings
+cargo run --release 2
+
+# 5. Test LEDs
+cargo run --release 2 --led rainbow
+</code></pre>
+<h3 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h3>
+<pre><code class="language-bash"># 1. Check MIDI events are received
+cargo run --bin midi_diagnostic 2
+
+# 2. Enable debug logging
+DEBUG=1 cargo run --release 2
+
+# 3. Test LED control
+cargo run --bin led_diagnostic
+
+# 4. Verify port numbers
+cargo run --bin test_midi
+</code></pre>
+<h3 id="production-use"><a class="header" href="#production-use">Production Use</a></h3>
+<pre><code class="language-bash"># Build optimized binary
+cargo build --release
+
+# Run with all options
+./target/release/midimon 2 \
+    --profile ~/profiles/work.ncmm3 \
+    --led reactive \
+    --config ~/configs/production.toml
+
+# Or use shell script
+#!/bin/bash
+DEBUG=0 ./target/release/midimon 2 \
+    --profile "$HOME/Documents/NI/my-profile.ncmm3" \
+    --led reactive \
+    &gt; /tmp/midimon.log 2&gt;&amp;1 &amp;
+</code></pre>
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="../installation/macos.html">macOS Installation</a> - Platform-specific setup</li>
+<li><a href="../installation/building.html">Building Guide</a> - Build from source</li>
+<li><a href="../troubleshooting/diagnostics.html">Diagnostics Guide</a> - Detailed troubleshooting</li>
+<li><a href="../configuration/overview.html">Configuration Overview</a> - Config file structure</li>
+</ul>
+<hr />
+<p><strong>Last Updated</strong>: November 14, 2025
+<strong>Binary Version</strong>: 1.0.0</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../reference/led-system.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../reference/config-schema.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../reference/led-system.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../reference/config-schema.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

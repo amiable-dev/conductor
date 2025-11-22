@@ -1,0 +1,229 @@
+# MIDIMon Configuration Template
+# Device: Microsoft Xbox Controller (Xbox 360, Xbox One, Xbox Series X|S)
+# Template Version: 1.0.0
+# Gamepad Support: v3.0
+
+[device]
+name = "Xbox Controller"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50
+double_tap_timeout_ms = 300
+hold_threshold_ms = 1000
+
+# ========== Mode 1: Desktop Navigation ==========
+[[modes]]
+name = "Desktop"
+color = "blue"
+
+# Face buttons (South/East/West/North: A/B/X/Y)
+[[modes.mappings]]
+description = "A button: Enter/Confirm"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # A button (South)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Return"
+
+[[modes.mappings]]
+description = "B button: Escape/Cancel"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129  # B button (East)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Escape"
+
+[[modes.mappings]]
+description = "X button: Copy"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130  # X button (West)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Y button: Paste"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131  # Y button (North)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd"]
+
+# D-Pad for arrow keys
+[[modes.mappings]]
+description = "D-Pad Up: Arrow Up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+[[modes.mappings]]
+description = "D-Pad Down: Arrow Down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+
+[[modes.mappings]]
+description = "D-Pad Left: Arrow Left"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+
+[[modes.mappings]]
+description = "D-Pad Right: Arrow Right"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+
+# Shoulder buttons (LB/RB)
+[[modes.mappings]]
+description = "LB: Previous tab"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136  # LB (L1)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["cmd", "shift"]
+
+[[modes.mappings]]
+description = "RB: Next tab"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137  # RB (R1)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+modifiers = ["cmd"]
+
+# ========== Mode 2: Media Control ==========
+[[modes]]
+name = "Media"
+color = "purple"
+
+# Face buttons for media playback
+[[modes.mappings]]
+description = "A button: Play/Pause"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Keystroke"
+keys = "PlayPause"
+
+[[modes.mappings]]
+description = "X button: Previous Track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Previous"
+
+[[modes.mappings]]
+description = "Y button: Next Track"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Next"
+
+# D-Pad for volume
+[[modes.mappings]]
+description = "D-Pad Up: Volume Up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "D-Pad Down: Volume Down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+[[modes.mappings]]
+description = "B button: Mute"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Mute"
+
+# Analog triggers for fine volume control
+[[modes.mappings]]
+description = "Right Trigger: Volume Up (analog)"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 133  # RT
+threshold = 64
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "Left Trigger: Volume Down (analog)"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 132  # LT
+threshold = 64
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+# ========== Global Mappings ==========
+[[global_mappings]]
+description = "Xbox button: Spotlight Search"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 142  # Guide/Home button
+[global_mappings.action]
+type = "Keystroke"
+keys = "Space"
+modifiers = ["cmd"]
+
+[[global_mappings]]
+description = "View button: Screenshot"
+[global_mappings.trigger]
+type = "GamepadButton"
+button = 141  # Select/Back button
+[global_mappings.action]
+type = "Keystroke"
+keys = "3"
+modifiers = ["cmd", "shift"]
+
+# Button chord for mode switching
+[[global_mappings]]
+description = "LB+RB: Switch mode"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 137]  # LB + RB
+timeout_ms = 50
+[global_mappings.action]
+type = "ModeChange"
+mode = "Media"

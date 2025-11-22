@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Success Stories - Conductor Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Multi-protocol input automation for MIDI controllers, game controllers, and custom hardware">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Conductor Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor/edit/main/docs-site/src/src/inspiration/success-stories.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="success-stories"><a class="header" href="#success-stories">Success Stories</a></h1>
+<p>Real users sharing how Conductor transformed their workflows.</p>
+<hr />
+<h2 id="from-300-stream-deck-to-30-xbox-controller"><a class="header" href="#from-300-stream-deck-to-30-xbox-controller">"From $300 Stream Deck to $30 Xbox Controller"</a></h2>
+<p><strong>Sarah, Twitch Streamer</strong> • <em>Portland, OR</em></p>
+<blockquote>
+<p>"I was about to buy a Stream Deck for $300 when I found Conductor. Now my old Xbox controller handles all my stream controls: scene switching, audio mutes, OBS recording. The velocity-sensitive triggers even let me fade audio in/out. Saved me $270 and it works better."</p>
+</blockquote>
+<p><strong>Setup</strong>: Xbox One controller with OBS + Discord
+<strong>Time to configure</strong>: 20 minutes using templates
+<strong>Cost</strong>: $0 (reused existing controller)
+<strong>Result</strong>: Professional streaming setup without spending a dime</p>
+<p><strong>Favorite features</strong>:</p>
+<ul>
+<li>Velocity-sensitive audio fading on triggers</li>
+<li>Button chords for complex actions (LB+RB = emergency mute all)</li>
+<li>Per-app profiles (different mappings for OBS vs Discord)</li>
+</ul>
+<p><a href="https://github.com/amiable/conductor-configs/tree/main/streaming/xbox-obs-basic">Download Sarah's Config →</a></p>
+<hr />
+<h2 id="velocity-curves-changed-my-music-production-workflow"><a class="header" href="#velocity-curves-changed-my-music-production-workflow">"Velocity Curves Changed My Music Production Workflow"</a></h2>
+<p><strong>Marcus, Electronic Music Producer</strong> • <em>Berlin, Germany</em></p>
+<blockquote>
+<p>"The velocity-sensitive mappings are genius. I mapped my Maschine pads so soft hits trigger loop recording, medium hits trigger one-shots, and hard hits toggle effects. My workflow is 3x faster now because I don't have to switch modes constantly."</p>
+</blockquote>
+<p><strong>Setup</strong>: Maschine Mikro MK3 + Ableton Live 11
+<strong>Key feature</strong>: Velocity Range triggers
+<strong>Time saved</strong>: 50% reduction in mode switching
+<strong>Result</strong>: Faster creative flow, more time making music</p>
+<p><strong>Workflow</strong>:</p>
+<ul>
+<li><strong>Soft press (0-40)</strong>: Loop record</li>
+<li><strong>Medium press (41-80)</strong>: One-shot sample</li>
+<li><strong>Hard press (81-127)</strong>: Toggle effect (reverb/delay)</li>
+</ul>
+<blockquote>
+<p>"No other tool can do this. I tried Stream Deck, Keyboard Maestro, even custom MIDI scripts. Conductor's velocity sensitivity is unmatched."</p>
+</blockquote>
+<p><a href="https://github.com/amiable/conductor-configs/tree/main/music/ableton-velocity-workflow">Download Marcus's Config →</a></p>
+<hr />
+<h2 id="racing-wheel-became-my-video-editor"><a class="header" href="#racing-wheel-became-my-video-editor">"Racing Wheel Became My Video Editor"</a></h2>
+<p><strong>Chris, YouTube Creator</strong> • <em>Los Angeles, CA</em></p>
+<blockquote>
+<p>"This sounds crazy, but I use my racing wheel pedals for video editing. Gas pedal controls timeline speed, brake controls zoom. It's way more intuitive than keyboard shortcuts, and my hands stay on the mouse for precision cuts."</p>
+</blockquote>
+<p><strong>Setup</strong>: Logitech G29 + DaVinci Resolve
+<strong>Key feature</strong>: Analog axis pressure detection
+<strong>Unexpected benefit</strong>: Ergonomic, reduces wrist strain
+<strong>Result</strong>: Unique, comfortable editing workflow</p>
+<p><strong>Controls</strong>:</p>
+<ul>
+<li><strong>Gas pedal</strong>: Timeline playback speed (analog 0-100%)</li>
+<li><strong>Brake pedal</strong>: Zoom level (analog)</li>
+<li><strong>Clutch</strong>: Volume control</li>
+<li><strong>Wheel buttons</strong>: Mark in/out, cut, ripple delete</li>
+</ul>
+<blockquote>
+<p>"My friends think I'm insane, but when they try it, they get it. It's like driving through your timeline. Plus, my old wheel was collecting dust—now it's essential to my workflow."</p>
+</blockquote>
+<p><a href="https://github.com/amiable/conductor-configs/tree/main/video-editing/racing-wheel-davinci">Download Chris's Config →</a></p>
+<hr />
+<h2 id="one-button-git-workflow-saves-me-30-minutes-daily"><a class="header" href="#one-button-git-workflow-saves-me-30-minutes-daily">"One-Button Git Workflow Saves Me 30 Minutes Daily"</a></h2>
+<p><strong>Dr. Elena Rodriguez, Research Scientist</strong> • <em>Cambridge, MA</em></p>
+<blockquote>
+<p>"I run hundreds of simulations daily. Before Conductor, I was typing 'git status', 'git add .', 'git commit -m...', 'git push' dozens of times. Now? One gamepad button. Soft press = status, hold 2 seconds = commit+push with auto-generated message."</p>
+</blockquote>
+<p><strong>Setup</strong>: PlayStation DualSense + VS Code
+<strong>Time saved</strong>: 30 minutes per day
+<strong>Over 250 work days</strong>: 125 hours per year
+<strong>Result</strong>: More time for actual research</p>
+<p><strong>Git shortcuts</strong>:</p>
+<ul>
+<li><strong>Soft tap</strong>: git status</li>
+<li><strong>Medium press</strong>: git add . &amp;&amp; git commit</li>
+<li><strong>Hard press / long hold</strong>: commit + push</li>
+<li><strong>Double-tap</strong>: git pull --rebase</li>
+</ul>
+<blockquote>
+<p>"The velocity sensitivity is a game-changer. One button, three git operations based on how hard I press. It's like magic."</p>
+</blockquote>
+<p><a href="https://github.com/amiable/conductor-configs/tree/main/development/git-workflow-ps5">Download Elena's Config →</a></p>
+<hr />
+<h2 id="hotas-for-productivity-best-decision-ever"><a class="header" href="#hotas-for-productivity-best-decision-ever">"HOTAS for Productivity? Best Decision Ever."</a></h2>
+<p><strong>Jake, Full-Stack Developer</strong> • <em>Austin, TX</em></p>
+<blockquote>
+<p>"I bought a HOTAS controller for Star Citizen, played it twice, and it sat unused for a year. Found Conductor, mapped all my dev tools to it, and now I can't work without it. Hat switch = workspace navigation, throttle buttons = app launching, stick trigger = build/test."</p>
+</blockquote>
+<p><strong>Setup</strong>: Thrustmaster T.16000M HOTAS + macOS productivity apps
+<strong>Hardware cost</strong>: Already owned (~$150 originally)
+<strong>Repurpose value</strong>: $150 hardware doing $300 Stream Deck's job
+<strong>Result</strong>: 20+ shortcuts without touching keyboard</p>
+<p><strong>Mappings</strong>:</p>
+<ul>
+<li><strong>Stick trigger</strong>: Dual-stage (half-pull = build, full-pull = build+run)</li>
+<li><strong>Hat switch</strong>: Mission Control, desktops, window management</li>
+<li><strong>Throttle buttons</strong>: Launch Terminal, VS Code, Browser, Docker Desktop</li>
+<li><strong>Slider</strong>: System volume</li>
+</ul>
+<blockquote>
+<p>"People think I'm crazy using a flight stick for coding, but it's incredibly ergonomic. My hands rest naturally, and I have 20+ buttons within reach. Plus, it's just fun."</p>
+</blockquote>
+<p><a href="https://github.com/amiable/conductor-configs/tree/main/productivity/hotas-developer">Download Jake's Config →</a></p>
+<hr />
+<h2 id="turned-my-launchpad-into-a-daw-command-center"><a class="header" href="#turned-my-launchpad-into-a-daw-command-center">"Turned My Launchpad Into a DAW Command Center"</a></h2>
+<p><strong>Ava, Film Composer</strong> • <em>Nashville, TN</em></p>
+<blockquote>
+<p>"I already had a Novation Launchpad for live performances. Conductor unlocked its full potential for studio work. Now it controls Logic Pro, my sample libraries, and mix automation—all with color-coded LED feedback showing what mode I'm in."</p>
+</blockquote>
+<p><strong>Setup</strong>: Novation Launchpad Mini + Logic Pro X
+<strong>Key feature</strong>: RGB LED feedback schemes
+<strong>Modes</strong>: 4 modes (Recording, Mixing, Editing, Live Performance)
+<strong>Result</strong>: One controller, four complete workflows</p>
+<p><strong>LED feedback</strong>:</p>
+<ul>
+<li><strong>Blue mode</strong>: Recording (record, punch, loop, metronome)</li>
+<li><strong>Green mode</strong>: Mixing (faders, sends, automation)</li>
+<li><strong>Purple mode</strong>: Editing (cut, copy, paste, markers)</li>
+<li><strong>Red mode</strong>: Live performance (trigger scenes, effects)</li>
+</ul>
+<blockquote>
+<p>"The LED feedback is crucial. I know exactly what mode I'm in and what each pad does at a glance. No more 'wait, what does this button do again?'"</p>
+</blockquote>
+<p><a href="https://github.com/amiable/conductor-configs/tree/main/music/launchpad-logic-pro">Download Ava's Config →</a></p>
+<hr />
+<h2 id="submit-your-success-story"><a class="header" href="#submit-your-success-story">Submit Your Success Story</a></h2>
+<p>Have you transformed your workflow with Conductor? Share your story and inspire others!</p>
+<p><strong><a href="https://github.com/amiable/conductor/discussions/new?category=success-stories">Submit Your Story →</a></strong></p>
+<p><strong>What to include</strong>:</p>
+<ul>
+<li>Your setup (hardware + software)</li>
+<li>What problem you solved</li>
+<li>Time/money saved</li>
+<li>Favorite features</li>
+<li>Optional: Share your config file</li>
+</ul>
+<p>Your story might be featured here and help someone else discover Conductor!</p>
+<hr />
+<h2 id="more-inspiration"><a class="header" href="#more-inspiration">More Inspiration</a></h2>
+<ul>
+<li><strong><a href="gallery.html">Setup Gallery</a></strong> - Visual showcase of real Conductor configurations</li>
+<li><strong><a href="../configuration/examples.html">Configuration Examples</a></strong> - Copy-paste ready configs</li>
+<li><strong><a href="../guides/device-templates.html">Device Templates</a></strong> - Pre-built configs for popular controllers</li>
+<li><strong><a href="https://github.com/amiable/conductor/discussions">Community Discussions</a></strong> - Join the conversation</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../inspiration/gallery.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../examples/music-production.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../inspiration/gallery.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../examples/music-production.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

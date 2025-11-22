@@ -1,0 +1,509 @@
+# MIDIMon Configuration Template
+# Device: Flight Stick / Arcade Joystick
+# Template Version: 1.0.0
+# Gamepad Support: v3.0
+
+[device]
+name = "Flight Stick"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50
+double_tap_timeout_ms = 300
+hold_threshold_ms = 1000
+
+# ========== Mode 1: Flight Sim ==========
+[[modes]]
+name = "Flight Sim"
+color = "blue"
+
+# Trigger button (primary fire/action)
+[[modes.mappings]]
+description = "Trigger: Primary weapon/action"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # Primary trigger
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+
+[[modes.mappings]]
+description = "Trigger (hold): Sustained fire"
+[modes.mappings.trigger]
+type = "GamepadButtonHold"
+button = 128
+duration_ms = 1000
+[modes.mappings.action]
+type = "Keystroke"
+keys = "1"
+
+# Thumb buttons
+[[modes.mappings]]
+description = "Thumb button 1: Secondary weapon"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129
+[modes.mappings.action]
+type = "Keystroke"
+keys = "e"
+
+[[modes.mappings]]
+description = "Thumb button 2: Countermeasures"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+
+[[modes.mappings]]
+description = "Thumb button 3: Landing gear"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Keystroke"
+keys = "g"
+
+# Top buttons
+[[modes.mappings]]
+description = "Top button 1: Cycle weapon"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "w"
+
+[[modes.mappings]]
+description = "Top button 2: Target lock"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "t"
+
+# Base buttons
+[[modes.mappings]]
+description = "Base button 1: Engine power increase"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "="
+
+[[modes.mappings]]
+description = "Base button 2: Engine power decrease"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "-"
+
+[[modes.mappings]]
+description = "Base button 3: Afterburner"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Tab"
+
+[[modes.mappings]]
+description = "Base button 4: Brake"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137
+[modes.mappings.action]
+type = "Keystroke"
+keys = "b"
+
+# Hat switch for view control
+[[modes.mappings]]
+description = "Hat Up: Look up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 138  # Hat up
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+[[modes.mappings]]
+description = "Hat Down: Look down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 139  # Hat down
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+
+[[modes.mappings]]
+description = "Hat Left: Look left"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 140  # Hat left
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+
+[[modes.mappings]]
+description = "Hat Right: Look right"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 141  # Hat right
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+
+# Additional buttons
+[[modes.mappings]]
+description = "Button 12: Toggle HUD"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 142
+[modes.mappings.action]
+type = "Keystroke"
+keys = "h"
+
+[[modes.mappings]]
+description = "Button 13: Camera cycle"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 143
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+
+# Axis controls (X/Y for pitch/roll, Z for rudder, throttle axis)
+[[modes.mappings]]
+description = "Stick X-axis: Roll control"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 128  # X-axis
+direction = "Positive"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "d"
+
+[[modes.mappings]]
+description = "Stick X-axis: Roll control (negative)"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 128  # X-axis
+direction = "Negative"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "a"
+
+[[modes.mappings]]
+description = "Stick Y-axis: Pitch control"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 129  # Y-axis
+direction = "Positive"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "s"
+
+[[modes.mappings]]
+description = "Stick Y-axis: Pitch control (negative)"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 129  # Y-axis
+direction = "Negative"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "w"
+
+[[modes.mappings]]
+description = "Twist/Z-axis: Rudder right"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 130  # Z-axis (twist)
+direction = "Positive"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "e"
+
+[[modes.mappings]]
+description = "Twist/Z-axis: Rudder left"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 130  # Z-axis (twist)
+direction = "Negative"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "q"
+
+[[modes.mappings]]
+description = "Throttle axis: Increase throttle"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 131  # Throttle axis
+direction = "Positive"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "="
+
+# ========== Mode 2: Desktop ==========
+[[modes]]
+name = "Desktop"
+color = "green"
+
+# Trigger for mouse clicks
+[[modes.mappings]]
+description = "Trigger: Left click"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "MouseClick"
+button = "Left"
+
+[[modes.mappings]]
+description = "Thumb button 1: Right click"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129
+[modes.mappings.action]
+type = "MouseClick"
+button = "Right"
+
+# Thumb buttons for common actions
+[[modes.mappings]]
+description = "Thumb button 2: Copy"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Thumb button 3: Paste"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd"]
+
+# Top buttons for window management
+[[modes.mappings]]
+description = "Top button 1: Close window"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "w"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "Top button 2: New window"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "n"
+modifiers = ["cmd"]
+
+# Base buttons for desktop navigation
+[[modes.mappings]]
+description = "Base button 1: Mission Control"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+modifiers = ["ctrl"]
+
+[[modes.mappings]]
+description = "Base button 2: Application windows"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+modifiers = ["ctrl"]
+
+[[modes.mappings]]
+description = "Base button 3: Desktop left"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+modifiers = ["ctrl"]
+
+[[modes.mappings]]
+description = "Base button 4: Desktop right"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["ctrl"]
+
+# Hat switch for arrow keys
+[[modes.mappings]]
+description = "Hat Up: Arrow up"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 138
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+[[modes.mappings]]
+description = "Hat Down: Arrow down"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 139
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+
+[[modes.mappings]]
+description = "Hat Left: Arrow left"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 140
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+
+[[modes.mappings]]
+description = "Hat Right: Arrow right"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 141
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+
+# Additional buttons for media control
+[[modes.mappings]]
+description = "Button 12: Play/Pause"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 142
+[modes.mappings.action]
+type = "Keystroke"
+keys = "PlayPause"
+
+[[modes.mappings]]
+description = "Button 13: Mute"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 143
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Mute"
+
+# Stick axes for scrolling
+[[modes.mappings]]
+description = "Stick Y-axis: Scroll down"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 129  # Y-axis
+direction = "Positive"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"
+
+[[modes.mappings]]
+description = "Stick Y-axis: Scroll up"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 129  # Y-axis
+direction = "Negative"
+threshold = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+# Throttle axis for volume control
+[[modes.mappings]]
+description = "Throttle: Volume up"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 131  # Throttle axis
+direction = "Positive"
+threshold = 50
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+
+[[modes.mappings]]
+description = "Throttle: Volume down"
+[modes.mappings.trigger]
+type = "GamepadAxis"
+axis = 131  # Throttle axis
+direction = "Negative"
+threshold = 50
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Down"
+
+# ========== Global Mappings ==========
+[[global_mappings]]
+description = "Trigger double-tap: Emergency mode switch"
+[global_mappings.trigger]
+type = "GamepadButtonDoubleTap"
+button = 128
+timeout_ms = 300
+[global_mappings.action]
+type = "ModeChange"
+mode = "Desktop"
+
+[[global_mappings]]
+description = "Top button chord: Spotlight search"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [132, 133]  # Top button 1 + 2
+timeout_ms = 50
+[global_mappings.action]
+type = "Keystroke"
+keys = "Space"
+modifiers = ["cmd"]
+
+[[global_mappings]]
+description = "Base button chord: Screenshot"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [134, 135]  # Base button 1 + 2
+timeout_ms = 50
+[global_mappings.action]
+type = "Keystroke"
+keys = "3"
+modifiers = ["cmd", "shift"]
+
+[[global_mappings]]
+description = "Button 12 + 13 chord: Lock screen"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [142, 143]
+timeout_ms = 50
+[global_mappings.action]
+type = "Keystroke"
+keys = "q"
+modifiers = ["cmd", "ctrl"]

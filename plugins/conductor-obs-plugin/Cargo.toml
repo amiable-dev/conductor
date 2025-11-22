@@ -1,0 +1,20 @@
+[package]
+name = "conductor-obs-plugin"
+version = "0.1.0"
+edition = "2021"
+authors = ["Amiable Dev"]
+license = "MIT"
+description = "OBS Studio integration plugin for Conductor"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+conductor-core = { path = "../../conductor-core", features = ["plugin"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.40", features = ["full"] }
+anyhow = "1.0"
+
+# OBS WebSocket client
+obws = "0.11"

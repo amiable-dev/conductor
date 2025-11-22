@@ -1,0 +1,639 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Per-App Profiles - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/guides/per-app-profiles.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="per-app-profiles"><a class="header" href="#per-app-profiles">Per-App Profiles</a></h1>
+<p>Automatically switch configurations based on the frontmost application. Use different MIDI mappings for VS Code, Photoshop, Final Cut Pro, etc.</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Per-app profiles enable context-aware MIDI control:</p>
+<ul>
+<li><strong>Automatic switching</strong>: Profiles activate when you switch apps</li>
+<li><strong>App-specific mappings</strong>: Different buttons for different workflows</li>
+<li><strong>Manual override</strong>: Force a specific profile when needed</li>
+<li><strong>Profile inheritance</strong>: Share common mappings across profiles</li>
+</ul>
+<h2 id="getting-started"><a class="header" href="#getting-started">Getting Started</a></h2>
+<h3 id="1-enable-app-detection"><a class="header" href="#1-enable-app-detection">1. Enable App Detection</a></h3>
+<pre><code class="language-bash"># macOS: Grant Accessibility permissions
+# System Settings → Privacy &amp; Security → Accessibility → MIDIMon
+
+# Verify app detection is working
+midimonctl frontmost-app
+</code></pre>
+<h3 id="2-create-profiles"><a class="header" href="#2-create-profiles">2. Create Profiles</a></h3>
+<h4 id="via-gui"><a class="header" href="#via-gui">Via GUI</a></h4>
+<ol>
+<li>Open MIDIMon GUI</li>
+<li>Navigate to <strong>Devices</strong> tab</li>
+<li>Click <strong>🔄 Profiles</strong></li>
+<li>Click <strong>+ New Profile</strong></li>
+<li>Enter profile name (e.g., "vscode-profile")</li>
+<li>Configure mappings</li>
+<li>Save profile</li>
+</ol>
+<h4 id="via-config-file"><a class="header" href="#via-config-file">Via Config File</a></h4>
+<p>Create separate profile files in <code>~/.config/midimon/profiles/</code>:</p>
+<pre><code class="language-bash">~/.config/midimon/profiles/
+├── default.toml          # Fallback profile
+├── vscode.toml           # VS Code mappings
+├── photoshop.toml        # Photoshop mappings
+└── fcpx.toml             # Final Cut Pro mappings
+</code></pre>
+<h3 id="3-register-app-associations"><a class="header" href="#3-register-app-associations">3. Register App Associations</a></h3>
+<p>Map applications to profiles:</p>
+<h4 id="gui-method"><a class="header" href="#gui-method">GUI Method</a></h4>
+<ol>
+<li>In Profile Manager dialog</li>
+<li>Click <strong>Associate App</strong></li>
+<li>Select profile</li>
+<li>Choose application from list</li>
+<li>Click <strong>Save</strong></li>
+</ol>
+<h4 id="config-method"><a class="header" href="#config-method">Config Method</a></h4>
+<p>Edit <code>~/.config/midimon/app_profiles.toml</code>:</p>
+<pre><code class="language-toml">[app_associations]
+"Visual Studio Code" = "vscode"
+"Code" = "vscode"  # Alternative app name
+"Adobe Photoshop" = "photoshop"
+"Final Cut Pro" = "fcpx"
+</code></pre>
+<h2 id="profile-configuration"><a class="header" href="#profile-configuration">Profile Configuration</a></h2>
+<h3 id="profile-structure"><a class="header" href="#profile-structure">Profile Structure</a></h3>
+<p>Each profile is a complete MIDIMon configuration:</p>
+<pre><code class="language-toml"># profiles/vscode.toml
+
+[device]
+name = "Mikro"
+auto_connect = true
+
+[[modes]]
+name = "Coding"
+color = "blue"
+
+# Code navigation mappings
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+
+[modes.mappings.action]
+type = "Keystroke"
+modifiers = ["Ctrl"]
+keys = "P"  # Quick file open
+
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 37
+
+[modes.mappings.action]
+type = "Keystroke"
+modifiers = ["Ctrl", "Shift"]
+keys = "F"  # Find in files
+
+# Debug controls
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 38
+
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F5"  # Start debugging
+</code></pre>
+<h3 id="shared-mappings"><a class="header" href="#shared-mappings">Shared Mappings</a></h3>
+<p>Use global mappings that work across all profiles:</p>
+<pre><code class="language-toml"># In each profile, include common mappings
+[[global_mappings]]
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 7
+direction = "Clockwise"
+
+[global_mappings.action]
+type = "VolumeControl"
+action = "Up"
+</code></pre>
+<h2 id="app-detection"><a class="header" href="#app-detection">App Detection</a></h2>
+<h3 id="supported-platforms"><a class="header" href="#supported-platforms">Supported Platforms</a></h3>
+<ul>
+<li><strong>macOS</strong>: Full support via Accessibility API</li>
+<li><strong>Linux</strong>: Full support via X11/Wayland</li>
+<li><strong>Windows</strong>: Full support via Win32 API</li>
+</ul>
+<h3 id="app-name-matching"><a class="header" href="#app-name-matching">App Name Matching</a></h3>
+<p>MIDIMon matches application names flexibly:</p>
+<pre><code class="language-toml"># All of these will match Visual Studio Code
+"Visual Studio Code" = "vscode"
+"Code" = "vscode"
+"code" = "vscode"
+"VSCode" = "vscode"
+</code></pre>
+<h3 id="wildcards"><a class="header" href="#wildcards">Wildcards</a></h3>
+<p>Use wildcards for partial matching:</p>
+<pre><code class="language-toml">"*Adobe*" = "adobe-suite"  # Matches any Adobe app
+"Chrome*" = "browser"       # Matches Chrome variants
+</code></pre>
+<h2 id="profile-switching"><a class="header" href="#profile-switching">Profile Switching</a></h2>
+<h3 id="automatic-switching"><a class="header" href="#automatic-switching">Automatic Switching</a></h3>
+<p>When app detection is enabled:</p>
+<ol>
+<li>Focus changes to new application</li>
+<li>MIDIMon detects the frontmost app</li>
+<li>Looks up associated profile</li>
+<li>Loads and activates profile</li>
+<li>LED feedback shows profile change (optional)</li>
+</ol>
+<p>Switching latency: ~50ms</p>
+<h3 id="manual-override"><a class="header" href="#manual-override">Manual Override</a></h3>
+<p>Force a specific profile:</p>
+<h4 id="gui-method-1"><a class="header" href="#gui-method-1">GUI Method</a></h4>
+<ol>
+<li>Click <strong>🔄 Profiles</strong> button</li>
+<li>Select profile from list</li>
+<li>Click <strong>Activate</strong></li>
+</ol>
+<h4 id="cli-method"><a class="header" href="#cli-method">CLI Method</a></h4>
+<pre><code class="language-bash">midimonctl switch-profile vscode
+</code></pre>
+<h3 id="default-fallback"><a class="header" href="#default-fallback">Default Fallback</a></h3>
+<p>If no profile matches the current app, MIDIMon uses:</p>
+<ol>
+<li><code>default</code> profile (if exists)</li>
+<li>Main <code>config.toml</code></li>
+</ol>
+<h2 id="use-cases"><a class="header" href="#use-cases">Use Cases</a></h2>
+<h3 id="software-development"><a class="header" href="#software-development">Software Development</a></h3>
+<pre><code class="language-toml"># profiles/dev.toml
+# Buttons for common IDE actions
+
+[[modes.mappings]]
+# Run tests
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+modifiers = ["Ctrl"]
+keys = "T"
+
+[[modes.mappings]]
+# Git commit
+[modes.mappings.trigger]
+type = "Note"
+note = 37
+[modes.mappings.action]
+type = "Shell"
+command = "git commit"
+
+[[modes.mappings]]
+# Format code
+[modes.mappings.trigger]
+type = "Note"
+note = 38
+[modes.mappings.action]
+type = "Keystroke"
+modifiers = ["Shift", "Alt"]
+keys = "F"
+</code></pre>
+<h3 id="video-editing"><a class="header" href="#video-editing">Video Editing</a></h3>
+<pre><code class="language-toml"># profiles/video.toml
+# Timeline control and playback
+
+[[modes.mappings]]
+# Play/Pause
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Space"
+
+[[modes.mappings]]
+# Cut clip
+[modes.mappings.trigger]
+type = "Note"
+note = 37
+[modes.mappings.action]
+type = "Keystroke"
+modifiers = ["Cmd"]
+keys = "B"
+
+[[modes.mappings]]
+# Ripple delete
+[modes.mappings.trigger]
+type = "LongPress"
+note = 37
+duration_ms = 1000
+[modes.mappings.action]
+type = "Keystroke"
+modifiers = ["Shift"]
+keys = "Delete"
+</code></pre>
+<h3 id="photo-editing"><a class="header" href="#photo-editing">Photo Editing</a></h3>
+<pre><code class="language-toml"># profiles/photo.toml
+# Brush size, zoom, undo/redo
+
+[[modes.mappings]]
+# Increase brush size
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "Clockwise"
+[modes.mappings.action]
+type = "Keystroke"
+keys = "]"
+
+[[modes.mappings]]
+# Decrease brush size
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "CounterClockwise"
+[modes.mappings.action]
+type = "Keystroke"
+keys = "["
+
+[[modes.mappings]]
+# Undo
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+modifiers = ["Cmd"]
+keys = "Z"
+</code></pre>
+<h2 id="profile-management"><a class="header" href="#profile-management">Profile Management</a></h2>
+<h3 id="export-profiles"><a class="header" href="#export-profiles">Export Profiles</a></h3>
+<p>Share or back up profiles:</p>
+<h4 id="gui-method-2"><a class="header" href="#gui-method-2">GUI Method</a></h4>
+<ol>
+<li>Profile Manager → Select profile</li>
+<li>Click <strong>Export</strong></li>
+<li>Choose format (TOML/JSON)</li>
+<li>Save file</li>
+</ol>
+<h4 id="cli-method-1"><a class="header" href="#cli-method-1">CLI Method</a></h4>
+<pre><code class="language-bash">midimonctl export-profile vscode &gt; vscode-profile.toml
+</code></pre>
+<h3 id="import-profiles"><a class="header" href="#import-profiles">Import Profiles</a></h3>
+<p>Load profiles from files:</p>
+<h4 id="gui-method-3"><a class="header" href="#gui-method-3">GUI Method</a></h4>
+<ol>
+<li>Profile Manager → <strong>Import</strong></li>
+<li>Select file</li>
+<li>Choose name for imported profile</li>
+<li>Click <strong>Import</strong></li>
+</ol>
+<h4 id="cli-method-2"><a class="header" href="#cli-method-2">CLI Method</a></h4>
+<pre><code class="language-bash">midimonctl import-profile vscode-profile.toml
+</code></pre>
+<h3 id="profile-validation"><a class="header" href="#profile-validation">Profile Validation</a></h3>
+<p>Test profiles before activating:</p>
+<pre><code class="language-bash">midimonctl validate-profile vscode
+</code></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="app-not-detected"><a class="header" href="#app-not-detected">App Not Detected</a></h3>
+<ol>
+<li>
+<p><strong>Check permissions</strong>:</p>
+<ul>
+<li>macOS: Accessibility permissions granted</li>
+<li>Linux: Running with sufficient privileges</li>
+<li>Windows: No UAC blocking</li>
+</ul>
+</li>
+<li>
+<p><strong>Verify app name</strong>:</p>
+<pre><code class="language-bash">midimonctl frontmost-app
+</code></pre>
+</li>
+<li>
+<p><strong>Check association</strong>:</p>
+<ul>
+<li>Ensure app name in config matches actual name</li>
+<li>Use wildcards if app name varies</li>
+</ul>
+</li>
+</ol>
+<h3 id="profile-not-switching"><a class="header" href="#profile-not-switching">Profile Not Switching</a></h3>
+<ol>
+<li>
+<p><strong>Check app detection is enabled</strong>:</p>
+<pre><code class="language-bash">midimonctl status
+</code></pre>
+</li>
+<li>
+<p><strong>Verify profile exists</strong>:</p>
+<pre><code class="language-bash">ls ~/.config/midimon/profiles/
+</code></pre>
+</li>
+<li>
+<p><strong>Test manual switch</strong>:</p>
+<pre><code class="language-bash">midimonctl switch-profile vscode
+</code></pre>
+</li>
+<li>
+<p><strong>Check logs</strong>:</p>
+<pre><code class="language-bash">midimonctl logs | grep profile
+</code></pre>
+</li>
+</ol>
+<h3 id="wrong-profile-activates"><a class="header" href="#wrong-profile-activates">Wrong Profile Activates</a></h3>
+<ol>
+<li>Check association priority</li>
+<li>Verify no conflicting wildcards</li>
+<li>Review app name matching in logs</li>
+</ol>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ol>
+<li>
+<p><strong>Start with defaults</strong>: Create a base profile with common mappings</p>
+</li>
+<li>
+<p><strong>Use inheritance</strong>: Share global mappings across profiles</p>
+</li>
+<li>
+<p><strong>Test thoroughly</strong>: Verify each profile works in target app</p>
+</li>
+<li>
+<p><strong>Name clearly</strong>: Use descriptive profile names (e.g., "davinci-resolve" not "prof1")</p>
+</li>
+<li>
+<p><strong>Document mappings</strong>: Add comments in TOML files</p>
+</li>
+<li>
+<p><strong>Version control</strong>: Keep profiles in git for history</p>
+</li>
+<li>
+<p><strong>Export regularly</strong>: Back up working profiles</p>
+</li>
+<li>
+<p><strong>Share templates</strong>: Contribute profiles for popular apps</p>
+</li>
+</ol>
+<h2 id="advanced-features"><a class="header" href="#advanced-features">Advanced Features</a></h2>
+<h3 id="conditional-switching"><a class="header" href="#conditional-switching">Conditional Switching</a></h3>
+<p>Switch based on multiple criteria:</p>
+<pre><code class="language-toml">[switching_rules]
+# Only switch to fcpx profile if specific project is open
+[[switching_rules.conditions]]
+app = "Final Cut Pro"
+window_title = "*MyProject*"
+profile = "fcpx-myproject"
+</code></pre>
+<h3 id="profile-chains"><a class="header" href="#profile-chains">Profile Chains</a></h3>
+<p>Load multiple profiles in sequence:</p>
+<pre><code class="language-toml">[profile_chain]
+base = "default"
+overlay = "vscode"
+# Loads default, then overlays vscode-specific mappings
+</code></pre>
+<h3 id="hot-reload"><a class="header" href="#hot-reload">Hot Reload</a></h3>
+<p>Profiles support hot reload:</p>
+<ol>
+<li>Edit profile file</li>
+<li>Save changes</li>
+<li>Switch to different app and back</li>
+<li>Profile reloads automatically</li>
+</ol>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li>Learn about <a href="../getting-started/midi-learn.html">MIDI Learn</a> to quickly create profile mappings</li>
+<li>Set up <a href="./device-templates.html">device templates</a> for consistent layouts</li>
+<li>Use the <a href="./event-console.html">event console</a> to test profile mappings</li>
+<li>Explore <a href="./led-system.html">LED feedback</a> for visual profile indication</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../guides/device-templates.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../guides/led-system.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../guides/device-templates.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../guides/led-system.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

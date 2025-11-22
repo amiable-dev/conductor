@@ -1,0 +1,687 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Automation &amp; Power Users - Conductor Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Multi-protocol input automation for MIDI controllers, game controllers, and custom hardware">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Conductor Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor/edit/main/docs-site/src/src/examples/automation.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="automation--power-user-workflows"><a class="header" href="#automation--power-user-workflows">Automation &amp; Power User Workflows</a></h1>
+<p>Advanced productivity automation for form filling, app switching, window management, and repetitive task elimination.</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Conductor enables power users to automate complex workflows that traditional macro tools can't handle. Use velocity sensitivity for multi-function buttons, context-aware profiles for app-specific shortcuts, and sequences for multi-step automation.</p>
+<p><strong>What You'll Learn</strong>:</p>
+<ul>
+<li>Form automation (one-button form filling)</li>
+<li>App-specific macro sets with per-app profiles</li>
+<li>Window management and workspace automation</li>
+<li>Context-aware mappings (time-based, app-based)</li>
+<li>Advanced sequences and conditional actions</li>
+</ul>
+<hr />
+<h2 id="quick-start-one-button-form-filling"><a class="header" href="#quick-start-one-button-form-filling">Quick Start: One-Button Form Filling</a></h2>
+<p>Automatically fill web forms with saved data using a single button press.</p>
+<pre><code class="language-toml">[device]
+name = "Form Automation"
+auto_connect = true
+
+[[modes]]
+name = "Form Fill"
+color = "green"
+
+# Complete Form Fill (Name, Email, Phone, Address)
+[[modes.mappings]]
+description = "Pad 1: Fill Contact Form"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { Text = { text = "John Doe" } },
+    { Keystroke = { keys = "Tab" } },
+    { Text = { text = "john.doe@example.com" } },
+    { Keystroke = { keys = "Tab" } },
+    { Text = { text = "(555) 123-4567" } },
+    { Keystroke = { keys = "Tab" } },
+    { Text = { text = "123 Main St, City, ST 12345" } }
+]
+
+# Velocity-Sensitive Form Options
+[[modes.mappings]]
+description = "Pad 2 Soft: Fill Work Email"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 37
+min_velocity = 0
+max_velocity = 40
+[modes.mappings.action]
+type = "Text"
+text = "john.doe@company.com"
+
+[[modes.mappings]]
+description = "Pad 2 Hard: Fill Personal Email"
+[modes.mappings.trigger]
+type = "VelocityRange"
+note = 37
+min_velocity = 81
+max_velocity = 127
+[modes.mappings.action]
+type = "Text"
+text = "john.personal@gmail.com"
+</code></pre>
+<p><strong>Time Saved</strong>: 30-60 seconds per form × 10 forms/day = 5-10 minutes daily</p>
+<hr />
+<h2 id="per-app-profile-switching"><a class="header" href="#per-app-profile-switching">Per-App Profile Switching</a></h2>
+<p>Different mappings for different applications automatically.</p>
+<h3 id="browser-chromefirefox"><a class="header" href="#browser-chromefirefox">Browser (Chrome/Firefox)</a></h3>
+<pre><code class="language-toml"># Browser-Specific Profile
+[[modes.mappings]]
+description = "A Button: New Tab (Browser)"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    {
+        type = "AppActive",
+        app_name = "Google Chrome",
+        action = { Keystroke = { keys = "t", modifiers = ["cmd"] } }
+    },
+    {
+        type = "AppActive",
+        app_name = "Firefox",
+        action = { Keystroke = { keys = "t", modifiers = ["cmd"] } }
+    }
+]
+
+# Browser Navigation
+[[modes.mappings]]
+description = "D-Pad Left: Back"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+modifiers = ["cmd"]
+
+[[modes.mappings]]
+description = "D-Pad Right: Forward"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["cmd"]
+</code></pre>
+<h3 id="email-client-mailoutlook"><a class="header" href="#email-client-mailoutlook">Email Client (Mail/Outlook)</a></h3>
+<pre><code class="language-toml"># Email-Specific Actions
+[[modes.mappings]]
+description = "A: New Email (Mail.app)"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    {
+        type = "AppActive",
+        app_name = "Mail",
+        action = { Keystroke = { keys = "n", modifiers = ["cmd"] } }
+    }
+]
+
+# Quick Replies
+[[modes.mappings]]
+description = "Pad 1: Reply with Template"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Sequence"
+actions = [
+    { Keystroke = { keys = "r", modifiers = ["cmd"] } },  # Reply
+    { Delay = { duration_ms = 200 } },
+    { Text = { text = "Thanks for your email. I'll get back to you shortly.\n\nBest,\nJohn" } }
+]
+</code></pre>
+<hr />
+<h2 id="window-management-automation"><a class="header" href="#window-management-automation">Window Management Automation</a></h2>
+<p>Advanced workspace and window control.</p>
+<h3 id="macos-mission-control--spaces"><a class="header" href="#macos-mission-control--spaces">macOS Mission Control &amp; Spaces</a></h3>
+<pre><code class="language-toml">[[modes]]
+name = "Window Management"
+color = "cyan"
+
+# Workspace Navigation
+[[modes.mappings]]
+description = "D-Pad Left: Previous Desktop"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+modifiers = ["ctrl"]
+
+[[modes.mappings]]
+description = "D-Pad Right: Next Desktop"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 135
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["ctrl"]
+
+# Mission Control
+[[modes.mappings]]
+description = "D-Pad Up: Mission Control"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F3"
+
+# Show Desktop
+[[modes.mappings]]
+description = "D-Pad Down: Show Desktop"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 133
+[modes.mappings.action]
+type = "Keystroke"
+keys = "F11"
+
+# Window Snapping (requires Rectangle.app or similar)
+[[modes.mappings]]
+description = "LB: Snap Left Half"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 136
+[modes.mappings.action]
+type = "Keystroke"
+keys = "LeftArrow"
+modifiers = ["ctrl", "opt"]
+
+[[modes.mappings]]
+description = "RB: Snap Right Half"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 137
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["ctrl", "opt"]
+
+# Maximize
+[[modes.mappings]]
+description = "LB+RB: Maximize Window"
+[modes.mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 137]
+timeout_ms = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Return"
+modifiers = ["ctrl", "opt"]
+</code></pre>
+<hr />
+<h2 id="app-launcher-matrix"><a class="header" href="#app-launcher-matrix">App Launcher Matrix</a></h2>
+<p>Quick launch common apps with button grid.</p>
+<pre><code class="language-toml"># App Launching (Face Buttons)
+[[modes.mappings]]
+description = "A: Launch Browser"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Launch"
+application = "Google Chrome"
+
+[[modes.mappings]]
+description = "B: Launch Terminal"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 129
+[modes.mappings.action]
+type = "Launch"
+application = "Terminal"
+
+[[modes.mappings]]
+description = "X: Launch VS Code"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130
+[modes.mappings.action]
+type = "Launch"
+application = "Visual Studio Code"
+
+[[modes.mappings]]
+description = "Y: Launch Slack"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Launch"
+application = "Slack"
+
+# Chord Combinations for More Apps
+[[modes.mappings]]
+description = "LB+A: Launch Finder"
+[modes.mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 128]
+timeout_ms = 50
+[modes.mappings.action]
+type = "Launch"
+application = "Finder"
+
+[[modes.mappings]]
+description = "LB+B: Launch Spotify"
+[modes.mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 129]
+timeout_ms = 50
+[modes.mappings.action]
+type = "Launch"
+application = "Spotify"
+</code></pre>
+<hr />
+<h2 id="context-aware-automation"><a class="header" href="#context-aware-automation">Context-Aware Automation</a></h2>
+<h3 id="time-based-mappings"><a class="header" href="#time-based-mappings">Time-Based Mappings</a></h3>
+<pre><code class="language-toml"># Morning Routine (6am-9am)
+[[modes.mappings]]
+description = "Morning: Launch Email + Calendar"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    {
+        type = "TimeRange",
+        start_time = "06:00",
+        end_time = "09:00",
+        action = {
+            Sequence = {
+                actions = [
+                    { Launch = { application = "Mail" } },
+                    { Delay = { duration_ms = 500 } },
+                    { Launch = { application = "Calendar" } }
+                ]
+            }
+        }
+    }
+]
+
+# Evening Routine (6pm-11pm)
+[[modes.mappings]]
+description = "Evening: Launch Spotify + Dimming"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 131
+[modes.mappings.action]
+type = "Conditional"
+conditions = [
+    {
+        type = "TimeRange",
+        start_time = "18:00",
+        end_time = "23:00",
+        action = {
+            Sequence = {
+                actions = [
+                    { Launch = { application = "Spotify" } },
+                    { Shell = { command = "osascript -e 'tell app \"System Events\" to key code 107'" } }  # F14 for dimming
+                ]
+            }
+        }
+    }
+]
+</code></pre>
+<hr />
+<h2 id="clipboard-management"><a class="header" href="#clipboard-management">Clipboard Management</a></h2>
+<p>Advanced clipboard operations.</p>
+<pre><code class="language-toml"># Clipboard History (requires Alfred or Clipboard Manager)
+[[modes.mappings]]
+description = "LT: Paste from Clipboard History"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 132
+threshold = 64
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd", "shift"]  # Alfred clipboard history
+
+# Paste as Plain Text
+[[modes.mappings]]
+description = "RT: Paste Plain Text"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 133
+threshold = 64
+[modes.mappings.action]
+type = "Keystroke"
+keys = "v"
+modifiers = ["cmd", "shift", "opt"]
+</code></pre>
+<hr />
+<h2 id="system-automation"><a class="header" href="#system-automation">System Automation</a></h2>
+<h3 id="screenshot--screen-recording"><a class="header" href="#screenshot--screen-recording">Screenshot &amp; Screen Recording</a></h3>
+<pre><code class="language-toml"># Screenshots
+[[modes.mappings]]
+description = "Select: Full Screenshot"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 141
+[modes.mappings.action]
+type = "Keystroke"
+keys = "3"
+modifiers = ["cmd", "shift"]
+
+[[modes.mappings]]
+description = "Select (Hold): Selection Screenshot"
+[modes.mappings.trigger]
+type = "GamepadButtonHold"
+button = 141
+duration_ms = 1000
+[modes.mappings.action]
+type = "Keystroke"
+keys = "4"
+modifiers = ["cmd", "shift"]
+
+# Screen Recording
+[[modes.mappings]]
+description = "Start (Hold 2s): Start Recording"
+[modes.mappings.trigger]
+type = "GamepadButtonHold"
+button = 140
+duration_ms = 2000
+[modes.mappings.action]
+type = "Keystroke"
+keys = "5"
+modifiers = ["cmd", "shift"]
+</code></pre>
+<h3 id="lock-screen--sleep"><a class="header" href="#lock-screen--sleep">Lock Screen &amp; Sleep</a></h3>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "LB+RB+Start: Lock Screen"
+[modes.mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 137, 140]
+timeout_ms = 50
+[modes.mappings.action]
+type = "Keystroke"
+keys = "q"
+modifiers = ["ctrl", "cmd"]
+</code></pre>
+<hr />
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="text-not-typing-correctly"><a class="header" href="#text-not-typing-correctly">Text Not Typing Correctly</a></h3>
+<ul>
+<li><strong>Problem</strong>: Text actions type gibberish or incomplete</li>
+<li><strong>Solution</strong>: Add delays between Text and Keystroke actions (100-200ms)</li>
+<li><strong>Example</strong>: <code>{ Delay = { duration_ms = 150 } }</code></li>
+</ul>
+<h3 id="per-app-profiles-not-switching"><a class="header" href="#per-app-profiles-not-switching">Per-App Profiles Not Switching</a></h3>
+<ul>
+<li><strong>Problem</strong>: Same mappings work across all apps</li>
+<li><strong>Solution</strong>: Ensure app names match exactly (check Activity Monitor)</li>
+<li><strong>Case-Sensitive</strong>: "Google Chrome" ≠ "google chrome"</li>
+</ul>
+<h3 id="sequences-executing-out-of-order"><a class="header" href="#sequences-executing-out-of-order">Sequences Executing Out of Order</a></h3>
+<ul>
+<li><strong>Problem</strong>: Actions in Sequence trigger in wrong order</li>
+<li><strong>Solution</strong>: Increase delays between actions (try 200-300ms)</li>
+</ul>
+<hr />
+<h2 id="time-savings-calculator"><a class="header" href="#time-savings-calculator">Time Savings Calculator</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Task</th><th>Manual Time</th><th>Automated Time</th><th>Daily Frequency</th><th>Time Saved</th></tr></thead><tbody>
+<tr><td>Form filling</td><td>45s</td><td>2s</td><td>10×</td><td>7m 10s</td></tr>
+<tr><td>Email reply</td><td>60s</td><td>5s</td><td>15×</td><td>13m 45s</td></tr>
+<tr><td>App switching</td><td>5s</td><td>1s</td><td>50×</td><td>3m 20s</td></tr>
+<tr><td>Window management</td><td>8s</td><td>1s</td><td>30×</td><td>3m 30s</td></tr>
+<tr><td><strong>Total Daily</strong></td><td>-</td><td>-</td><td>-</td><td><strong>27m 45s</strong></td></tr>
+<tr><td><strong>Annual</strong></td><td>-</td><td>-</td><td>-</td><td><strong>115 hours</strong></td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li><strong><a href="developer-workflows.html">See Developer Workflows</a></strong> - Git automation</li>
+<li><strong><a href="streaming.html">See Streaming Examples</a></strong> - OBS automation</li>
+<li><strong><a href="../configuration/actions.html#sequence">Learn Sequences</a></strong> - Multi-step actions</li>
+<li><strong><a href="../configuration/conditionals.html">Explore Conditionals</a></strong> - Context-aware mappings</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../examples/video-editing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../examples/logic-pro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../examples/video-editing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../examples/logic-pro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

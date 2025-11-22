@@ -1,0 +1,20 @@
+[package]
+name = "conductor-spotify-plugin"
+version = "0.1.0"
+edition = "2021"
+authors = ["Amiable Dev"]
+license = "MIT"
+description = "Spotify integration plugin for Conductor"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+conductor-core = { path = "../../conductor-core", features = ["plugin"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.40", features = ["full"] }
+anyhow = "1.0"
+
+# Spotify Web API
+rspotify = { version = "0.13", default-features = false, features = ["client-reqwest", "reqwest-rustls-tls"] }

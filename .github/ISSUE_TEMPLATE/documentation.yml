@@ -1,0 +1,178 @@
+name: Documentation Improvement
+description: Suggest improvements or report issues with documentation
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Conductor's documentation! Clear docs are essential for a great user experience.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What kind of documentation needs improvement?
+      options:
+        - README
+        - Getting Started Guide
+        - Configuration Reference
+        - API Documentation (rustdoc)
+        - Troubleshooting Guide
+        - Device Compatibility
+        - Developer Setup (DEVELOPMENT.md)
+        - Contributing Guidelines
+        - Code Comments
+        - Examples / Tutorials
+        - Other (specify below)
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation located?
+      placeholder: "e.g., docs/getting-started.md, README.md line 42, src/mappings.rs:123"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What kind of documentation issue is this?
+      options:
+        - Missing / Not documented
+        - Incorrect / Outdated
+        - Unclear / Confusing
+        - Incomplete (needs more detail)
+        - Example needed
+        - Typo / Grammar
+        - Broken link
+        - Formatting issue
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Documentation
+      description: What does the current documentation say (if applicable)?
+      placeholder: |
+        Currently it says:
+        "..."
+      render: markdown
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's Wrong or Missing?
+      description: Explain the issue with the current documentation
+      placeholder: |
+        The problem is:
+        - It doesn't explain how to...
+        - The example doesn't work because...
+        - This is outdated since version...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: How should the documentation be improved?
+      placeholder: |
+        The documentation should:
+        - Add a section about...
+        - Update the example to show...
+        - Clarify that...
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example (if applicable)
+      description: Provide an example of what the improved documentation could look like
+      placeholder: |
+        ## New Section: How to...
+
+        Step 1: ...
+        Step 2: ...
+
+        ```toml
+        # Example config
+        ```
+      render: markdown
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Target Audience
+      description: Who is this documentation for?
+      options:
+        - End Users (getting started)
+        - End Users (advanced features)
+        - Contributors (code)
+        - Contributors (documentation)
+        - Maintainers
+        - All audiences
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: How important is this documentation fix?
+      options:
+        - Critical - Blocks users from using a key feature
+        - High - Causes significant confusion
+        - Medium - Noticeable but has workarounds
+        - Low - Minor improvement
+    validations:
+      required: true
+
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Willing to Contribute?
+      description: Would you like to submit a PR with the documentation fix?
+      options:
+        - "Yes - I can submit a PR"
+        - "Yes - With guidance on docs format"
+        - "Maybe - Depends on complexity"
+        - "No - Just reporting the issue"
+    validations:
+      required: true
+
+  - type: textarea
+    id: related
+    attributes:
+      label: Related Documentation
+      description: Links to related sections or resources
+      placeholder: |
+        - Related to: docs/...
+        - Similar to how X is documented: ...
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, or examples
+      placeholder: Additional information...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm before submitting
+      options:
+        - label: I have searched existing issues to ensure this hasn't been reported
+          required: true
+        - label: I have checked the latest version of the documentation
+          required: true
+        - label: I have provided a clear suggestion for improvement
+          required: true

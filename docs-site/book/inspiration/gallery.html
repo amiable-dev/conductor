@@ -1,0 +1,460 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Setup Gallery - Conductor Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Multi-protocol input automation for MIDI controllers, game controllers, and custom hardware">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Conductor Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor/edit/main/docs-site/src/src/inspiration/gallery.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="setup-gallery"><a class="header" href="#setup-gallery">Setup Gallery</a></h1>
+<p>Visual showcase of real Conductor configurations. Get inspired and download ready-to-use configs!</p>
+<hr />
+<h2 id="hybrid-midi--gamepad-setups"><a class="header" href="#hybrid-midi--gamepad-setups">Hybrid MIDI + Gamepad Setups</a></h2>
+<h3 id="music-producers-dream-desk"><a class="header" href="#music-producers-dream-desk">Music Producer's Dream Desk</a></h3>
+<p><strong>Hardware</strong>: Maschine Mikro MK3 (MIDI) + Xbox Series X Controller (Gamepad)
+<strong>Software</strong>: Ableton Live 11 + Splice + iZotope RX
+<strong>Cost</strong>: $0 additional (repurposed existing gear)</p>
+<p><strong>Setup Description</strong>:</p>
+<ul>
+<li><strong>MIDI pads (Maschine)</strong>: Velocity-sensitive recording, sample triggering</li>
+<li><strong>Xbox controller</strong>: DAW navigation, transport controls, mixer view switching</li>
+<li><strong>Hybrid workflow</strong>: Hands on MIDI for music, thumbs on gamepad for navigation</li>
+</ul>
+<p><strong>Key Features</strong>:</p>
+<ul>
+<li>Velocity Range triggers (soft/medium/hard on same pad)</li>
+<li>Per-app profiles (Ableton vs Splice different mappings)</li>
+<li>RGB LED feedback on Maschine (mode indicators)</li>
+</ul>
+<p><strong>Why This Works</strong>:</p>
+<blockquote>
+<p>"I keep my hands on the MIDI pads for recording, but use my thumbs on the Xbox controller for transport and navigation. No more reaching for the keyboard mid-performance."</p>
+</blockquote>
+<p><strong><a href="https://github.com/amiable/conductor-configs/tree/main/hybrid/producer-desk">Download Config →</a></strong></p>
+<hr />
+<h3 id="streaming-command-center"><a class="header" href="#streaming-command-center">Streaming Command Center</a></h3>
+<p><strong>Hardware</strong>: Launchpad Mini (MIDI) + PlayStation DualSense (Gamepad)
+<strong>Software</strong>: OBS Studio + Discord + Spotify
+<strong>Replaces</strong>: $300 Stream Deck</p>
+<p><strong>Setup Description</strong>:</p>
+<ul>
+<li><strong>Launchpad grid</strong>: Scene switching, source visibility, filter toggles (with LED feedback)</li>
+<li><strong>DualSense</strong>: Audio mixing, chat mute, music controls, emergency stop</li>
+<li><strong>Hybrid power</strong>: Visual grid + ergonomic controller</li>
+</ul>
+<p><strong>Key Features</strong>:</p>
+<ul>
+<li>LED feedback shows active scenes (green = live, red = muted, blue = preview)</li>
+<li>Velocity-sensitive audio fading on DualSense triggers</li>
+<li>Button chords (L1+R1 = mute all, L2+R2 = emergency offline)</li>
+</ul>
+<p><strong>Why This Works</strong>:</p>
+<blockquote>
+<p>"I have visual confirmation from the Launchpad LEDs for scene switching, and the DualSense triggers let me fade audio smoothly. Best of both worlds."</p>
+</blockquote>
+<p><strong><a href="https://github.com/amiable/conductor-configs/tree/main/hybrid/streaming-center">Download Config →</a></strong></p>
+<hr />
+<h2 id="gamepad-only-setups"><a class="header" href="#gamepad-only-setups">Gamepad-Only Setups</a></h2>
+<h3 id="budget-stream-deck-alternative-xbox-controller"><a class="header" href="#budget-stream-deck-alternative-xbox-controller">Budget Stream Deck Alternative (Xbox Controller)</a></h3>
+<p><strong>Hardware</strong>: Xbox One Controller
+<strong>Software</strong>: OBS Studio + Discord + Voicemeeter
+<strong>Cost</strong>: $0 (reused controller) vs $150-300 Stream Deck
+<strong>Savings</strong>: $150-300</p>
+<p><strong>Button Mapping</strong>:</p>
+<pre><code>Face Buttons:
+├─ A: Start/Stop Recording
+├─ B: Mute Microphone
+├─ X: Scene 1 (Gameplay)
+└─ Y: Scene 2 (Webcam)
+
+D-Pad:
+├─ Up: Increase Volume
+├─ Down: Decrease Volume
+├─ Left: Previous Track (Spotify)
+└─ Right: Next Track (Spotify)
+
+Shoulders:
+├─ LB: Switch to Discord
+├─ RB: Switch to OBS
+├─ LT (hold): Enable Push-to-Talk
+└─ RT (hold): Instant Replay (save last 30s)
+
+Menu Buttons:
+├─ Start: Emergency "Be Right Back" scene
+└─ Select: Screenshot
+</code></pre>
+<p><strong>Why This Works</strong>:</p>
+<blockquote>
+<p>"I was about to buy a Stream Deck. Then I realized my Xbox controller has 15+ buttons doing nothing. Configured Conductor in 20 minutes, saved $300."</p>
+</blockquote>
+<p><strong><a href="https://github.com/amiable/conductor-configs/tree/main/streaming/xbox-obs-basic">Download Config →</a></strong></p>
+<hr />
+<h3 id="developer-workflow-playstation-dualsense"><a class="header" href="#developer-workflow-playstation-dualsense">Developer Workflow (PlayStation DualSense)</a></h3>
+<p><strong>Hardware</strong>: PlayStation DualSense Controller
+<strong>Software</strong>: VS Code + Terminal + Docker Desktop + GitHub Desktop
+<strong>Focus</strong>: Git workflows, build automation, window management</p>
+<p><strong>Button Mapping</strong>:</p>
+<pre><code>Face Buttons:
+├─ Cross: Git Status
+├─ Circle: Git Add + Commit
+├─ Square: Build Project
+└─ Triangle: Run Tests
+
+D-Pad:
+├─ Up: Next Workspace
+├─ Down: Previous Workspace
+├─ Left: Previous Tab
+└─ Right: Next Tab
+
+Triggers (Velocity-Sensitive):
+├─ L2 (soft): Git Pull
+├─ L2 (hard): Git Pull --rebase
+├─ R2 (soft): Git Push
+└─ R2 (hard): Git Push --force-with-lease
+
+Shoulders:
+├─ L1: Launch Terminal
+├─ R1: Launch VS Code
+├─ L1+R1 (chord): Docker Compose Up
+└─ Touchpad Click: Launch GitHub Desktop
+</code></pre>
+<p><strong>Why This Works</strong>:</p>
+<blockquote>
+<p>"Velocity-sensitive git operations are incredible. Soft press = regular pull/push, hard press = force operations. One button, two functions."</p>
+</blockquote>
+<p><strong><a href="https://github.com/amiable/conductor-configs/tree/main/development/dualsense-vscode">Download Config →</a></strong></p>
+<hr />
+<h2 id="specialized-controllers"><a class="header" href="#specialized-controllers">Specialized Controllers</a></h2>
+<h3 id="racing-wheel-for-video-editing-logitech-g29"><a class="header" href="#racing-wheel-for-video-editing-logitech-g29">Racing Wheel for Video Editing (Logitech G29)</a></h3>
+<p><strong>Hardware</strong>: Logitech G29 Racing Wheel + Pedals + Shifter
+<strong>Software</strong>: DaVinci Resolve / Final Cut Pro
+<strong>Unique Factor</strong>: Analog pedal control for timeline/zoom</p>
+<p><strong>Control Mapping</strong>:</p>
+<pre><code>Pedals (Analog):
+├─ Gas: Timeline Playback Speed (0-100%)
+├─ Brake: Zoom Level (fine control)
+└─ Clutch: Master Volume
+
+Wheel Buttons:
+├─ Button 1-4: Mark In/Out, Add Marker, Set Clip
+├─ Button 5-8: Cut, Ripple Delete, Slip, Slide
+├─ D-Pad: Nudge Frame Left/Right, Track Up/Down
+└─ Paddle Shifters: Previous/Next Edit Point
+
+Wheel Rotation:
+└─ Scrub Timeline (analog precision)
+</code></pre>
+<p><strong>Why This Works</strong>:</p>
+<blockquote>
+<p>"Analog pedal control for timeline speed is game-changing. I can smoothly ramp from 10% to 200% playback, which is impossible with keyboard shortcuts. Plus, it's ergonomic—my feet are doing work my hands don't have to."</p>
+</blockquote>
+<p><strong><a href="https://github.com/amiable/conductor-configs/tree/main/video-editing/g29-davinci">Download Config →</a></strong></p>
+<hr />
+<h3 id="hotas-for-productivity-thrustmaster-t16000m"><a class="header" href="#hotas-for-productivity-thrustmaster-t16000m">HOTAS for Productivity (Thrustmaster T.16000M)</a></h3>
+<p><strong>Hardware</strong>: Thrustmaster T.16000M FCS HOTAS
+<strong>Software</strong>: macOS productivity apps (Terminal, VS Code, Docker, Postman)
+<strong>Repurpose Value</strong>: $150 gaming hardware → $300 productivity tool</p>
+<p><strong>Control Mapping</strong>:</p>
+<pre><code>Joystick:
+├─ Trigger (half-press): Build Project
+├─ Trigger (full-press): Build + Run
+├─ Thumb Button: Copy
+├─ Top Buttons: Paste, Undo, Redo
+├─ Hat Switch: Mission Control, Desktop 1-4
+└─ Pinkie Switch: Toggle Fullscreen
+
+Throttle:
+├─ Base Button 1-6: Launch Apps (Terminal, VS Code, Browser, etc.)
+├─ Throttle Hat: Window Snapping (Left/Right/Maximize)
+├─ Slider: System Volume
+└─ Rocker Switch: Previous/Next Tab
+</code></pre>
+<p><strong>Why This Works</strong>:</p>
+<blockquote>
+<p>"Dual-stage trigger for build operations is brilliant. Half-pull compiles, full-pull runs. Plus, having 20+ buttons within thumb reach is incredibly efficient."</p>
+</blockquote>
+<p><strong><a href="https://github.com/amiable/conductor-configs/tree/main/productivity/hotas-macos">Download Config →</a></strong></p>
+<hr />
+<h2 id="midi-only-setups"><a class="header" href="#midi-only-setups">MIDI-Only Setups</a></h2>
+<h3 id="logic-pro-command-center-launchpad-mini"><a class="header" href="#logic-pro-command-center-launchpad-mini">Logic Pro Command Center (Launchpad Mini)</a></h3>
+<p><strong>Hardware</strong>: Novation Launchpad Mini
+<strong>Software</strong>: Logic Pro X
+<strong>Focus</strong>: 4-mode workflow (Record, Mix, Edit, Perform)</p>
+<p><strong>Mode System</strong>:</p>
+<pre><code>Mode 1 (Blue): Recording
+├─ Row 1: Transport (Play, Stop, Record, Loop)
+├─ Row 2: Metronome, Click, Count-in, Pre-roll
+├─ Row 3-8: Track Record Arm (8 tracks)
+
+Mode 2 (Green): Mixing
+├─ Columns: 8-channel fader control (velocity = level)
+├─ Row 1: Mute 8 tracks
+├─ Row 2: Solo 8 tracks
+
+Mode 3 (Purple): Editing
+├─ Row 1: Cut, Copy, Paste, Delete, Undo, Redo
+├─ Row 2: Split, Join, Merge, Bounce
+├─ Row 3-8: Marker creation, loop region
+
+Mode 4 (Red): Live Performance
+├─ Grid: Trigger scenes, loops, one-shots
+├─ LED feedback: Green = playing, Red = stopped
+</code></pre>
+<p><strong>Why This Works</strong>:</p>
+<blockquote>
+<p>"RGB LED feedback is essential. I see what mode I'm in and what each pad does at a glance. Blue = recording mode, green = mixing, etc."</p>
+</blockquote>
+<p><strong><a href="https://github.com/amiable/conductor-configs/tree/main/music/launchpad-logic-pro">Download Config →</a></strong></p>
+<hr />
+<h2 id="share-your-setup"><a class="header" href="#share-your-setup">Share Your Setup</a></h2>
+<p>Have an interesting Conductor configuration? Share it with the community!</p>
+<p><strong><a href="https://github.com/amiable/conductor/discussions/new?category=show-and-tell">Submit Your Setup →</a></strong></p>
+<p>Include:</p>
+<ul>
+<li>Photos of your hardware setup</li>
+<li>Description of your workflow</li>
+<li>Config file (TOML)</li>
+<li>Why it works for you</li>
+</ul>
+<p><strong>Featured setups receive</strong>:</p>
+<ul>
+<li>Spot on this page</li>
+<li>Social media shoutout</li>
+<li>Entry in official config repository</li>
+</ul>
+<hr />
+<h2 id="more-resources"><a class="header" href="#more-resources">More Resources</a></h2>
+<ul>
+<li><strong><a href="success-stories.html">Success Stories</a></strong> - User testimonials and results</li>
+<li><strong><a href="../guides/device-templates.html">Device Templates</a></strong> - Pre-built configs for popular controllers</li>
+<li><strong><a href="../configuration/examples.html">Configuration Examples</a></strong> - Copy-paste ready configs</li>
+<li><strong><a href="https://github.com/amiable/conductor/discussions">Community Discussions</a></strong> - Ask questions, share ideas</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../tutorials/dynamic-workflows.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../inspiration/success-stories.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../tutorials/dynamic-workflows.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../inspiration/success-stories.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

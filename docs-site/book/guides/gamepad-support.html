@@ -1,0 +1,681 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Gamepad Support - Conductor Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Multi-protocol input automation for MIDI controllers, game controllers, and custom hardware">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Conductor Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor/edit/main/docs-site/src/src/guides/gamepad-support.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="gamepad-support-guide"><a class="header" href="#gamepad-support-guide">Gamepad Support Guide</a></h1>
+<p><strong>Version</strong>: 3.0
+<strong>Status</strong>: Stable
+<strong>Platforms</strong>: macOS, Linux, Windows</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Conductor v3.0 introduces full support for gamepad controllers, allowing you to use Xbox, PlayStation, Nintendo Switch Pro, and other SDL-compatible gamepads as macro input devices alongside MIDI controllers.</p>
+<h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<h3 id="1-connect-your-gamepad"><a class="header" href="#1-connect-your-gamepad">1. Connect Your Gamepad</a></h3>
+<ol>
+<li>Connect your gamepad via USB or Bluetooth</li>
+<li>Ensure it's recognized by your system</li>
+<li>Conductor will automatically detect compatible gamepads</li>
+</ol>
+<p><strong>Supported Controllers</strong>:</p>
+<ul>
+<li>Xbox 360, Xbox One, Xbox Series X|S</li>
+<li>PlayStation DualShock 4, DualSense (PS5)</li>
+<li>Nintendo Switch Pro Controller</li>
+<li>Any SDL2-compatible gamepad</li>
+</ul>
+<h3 id="2-choose-a-template"><a class="header" href="#2-choose-a-template">2. Choose a Template</a></h3>
+<p>The quickest way to get started is using a pre-configured template:</p>
+<p><strong>Via GUI</strong> (Recommended):</p>
+<ol>
+<li>Open Conductor GUI</li>
+<li>Navigate to "Device Templates"</li>
+<li>Filter by "Gamepad Controllers"</li>
+<li>Select your controller (Xbox, PlayStation, or Switch Pro)</li>
+<li>Click "Create Config"</li>
+</ol>
+<p><strong>Via Configuration File</strong>:
+Copy one of the example configs from <code>config/examples/</code>:</p>
+<ul>
+<li><code>gamepad-xbox-basic.toml</code> - Xbox controller template</li>
+<li>Or use the included device templates</li>
+</ul>
+<h3 id="3-start-using"><a class="header" href="#3-start-using">3. Start Using</a></h3>
+<pre><code class="language-bash"># Start Conductor daemon
+conductor --foreground
+
+# Your gamepad is now ready to trigger actions!
+</code></pre>
+<h2 id="configuration-reference"><a class="header" href="#configuration-reference">Configuration Reference</a></h2>
+<h3 id="basic-setup"><a class="header" href="#basic-setup">Basic Setup</a></h3>
+<pre><code class="language-toml">[device]
+name = "Gamepad"
+auto_connect = true
+
+[advanced_settings]
+chord_timeout_ms = 50          # Multi-button chord detection window
+double_tap_timeout_ms = 300    # Double-tap detection window
+hold_threshold_ms = 2000       # Long press threshold
+</code></pre>
+<h3 id="trigger-types"><a class="header" href="#trigger-types">Trigger Types</a></h3>
+<h4 id="1-gamepadbutton"><a class="header" href="#1-gamepadbutton">1. GamepadButton</a></h4>
+<p>Simple button press trigger.</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "A button: Confirm"
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # A button (Xbox) / Cross (PS) / B (Switch)
+[modes.mappings.action]
+type = "Keystroke"
+keys = "Return"
+</code></pre>
+<p><strong>Optional fields</strong>:</p>
+<ul>
+<li><code>velocity_min</code>: Minimum pressure (0-255)</li>
+</ul>
+<h4 id="2-gamepadbuttonchord"><a class="header" href="#2-gamepadbuttonchord">2. GamepadButtonChord</a></h4>
+<p>Multiple buttons pressed simultaneously.</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "A+B: Screenshot"
+[modes.mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [128, 129]  # A + B buttons
+timeout_ms = 50       # Buttons must be pressed within 50ms
+[modes.mappings.action]
+type = "Keystroke"
+keys = "3"
+modifiers = ["cmd", "shift"]
+</code></pre>
+<h4 id="3-gamepadanalogstick"><a class="header" href="#3-gamepadanalogstick">3. GamepadAnalogStick</a></h4>
+<p>Analog stick movement detection.</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Right stick right: Forward"
+[modes.mappings.trigger]
+type = "GamepadAnalogStick"
+axis = 130              # Right stick X-axis
+direction = "Clockwise" # Moving right
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["cmd"]
+</code></pre>
+<p><strong>Stick Axes</strong>:</p>
+<ul>
+<li><code>128</code>: Left stick X-axis</li>
+<li><code>129</code>: Left stick Y-axis</li>
+<li><code>130</code>: Right stick X-axis</li>
+<li><code>131</code>: Right stick Y-axis</li>
+</ul>
+<p><strong>Directions</strong>:</p>
+<ul>
+<li><code>"Clockwise"</code>: Right (X-axis) or Up (Y-axis)</li>
+<li><code>"CounterClockwise"</code>: Left (X-axis) or Down (Y-axis)</li>
+</ul>
+<p><strong>Dead Zone</strong>: Automatic 10% dead zone prevents false triggers</p>
+<h4 id="4-gamepadtrigger"><a class="header" href="#4-gamepadtrigger">4. GamepadTrigger</a></h4>
+<p>Analog trigger threshold detection (L2/R2, LT/RT, ZL/ZR).</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Right trigger: Volume up"
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 133   # Right trigger
+threshold = 128 # Half-pull (0-255 range)
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+</code></pre>
+<p><strong>Triggers</strong>:</p>
+<ul>
+<li><code>132</code>: Left trigger (L2, LT, ZL)</li>
+<li><code>133</code>: Right trigger (R2, RT, ZR)</li>
+</ul>
+<h2 id="button-id-reference"><a class="header" href="#button-id-reference">Button ID Reference</a></h2>
+<h3 id="standard-gamepad-layout"><a class="header" href="#standard-gamepad-layout">Standard Gamepad Layout</a></h3>
+<p>Conductor uses a unified button ID scheme across all gamepads:</p>
+<h4 id="face-buttons-128-131"><a class="header" href="#face-buttons-128-131">Face Buttons (128-131)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Xbox</th><th>PlayStation</th><th>Switch</th></tr></thead><tbody>
+<tr><td>128</td><td>A (South)</td><td>Cross</td><td>B</td></tr>
+<tr><td>129</td><td>B (East)</td><td>Circle</td><td>A</td></tr>
+<tr><td>130</td><td>X (West)</td><td>Square</td><td>Y</td></tr>
+<tr><td>131</td><td>Y (North)</td><td>Triangle</td><td>X</td></tr>
+</tbody></table>
+</div>
+<h4 id="d-pad-132-135"><a class="header" href="#d-pad-132-135">D-Pad (132-135)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Button</th></tr></thead><tbody>
+<tr><td>132</td><td>Up</td></tr>
+<tr><td>133</td><td>Down</td></tr>
+<tr><td>134</td><td>Left</td></tr>
+<tr><td>135</td><td>Right</td></tr>
+</tbody></table>
+</div>
+<h4 id="shoulder-buttons-136-137"><a class="header" href="#shoulder-buttons-136-137">Shoulder Buttons (136-137)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Xbox</th><th>PlayStation</th><th>Switch</th></tr></thead><tbody>
+<tr><td>136</td><td>LB (L1)</td><td>L1</td><td>L</td></tr>
+<tr><td>137</td><td>RB (R1)</td><td>R1</td><td>R</td></tr>
+</tbody></table>
+</div>
+<h4 id="stick-clicks-138-139"><a class="header" href="#stick-clicks-138-139">Stick Clicks (138-139)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Button</th></tr></thead><tbody>
+<tr><td>138</td><td>Left stick click (L3)</td></tr>
+<tr><td>139</td><td>Right stick click (R3)</td></tr>
+</tbody></table>
+</div>
+<h4 id="menu-buttons-140-142"><a class="header" href="#menu-buttons-140-142">Menu Buttons (140-142)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Xbox</th><th>PlayStation</th><th>Switch</th></tr></thead><tbody>
+<tr><td>140</td><td>Menu (Start)</td><td>Options</td><td>+ (Plus)</td></tr>
+<tr><td>141</td><td>View (Select)</td><td>Share/Create</td><td>- (Minus)</td></tr>
+<tr><td>142</td><td>Xbox button</td><td>PS button</td><td>Home</td></tr>
+</tbody></table>
+</div>
+<h4 id="trigger-buttons-digital-143-144"><a class="header" href="#trigger-buttons-digital-143-144">Trigger Buttons Digital (143-144)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Xbox</th><th>PlayStation</th><th>Switch</th></tr></thead><tbody>
+<tr><td>143</td><td>LT (digital)</td><td>L2 (digital)</td><td>ZL</td></tr>
+<tr><td>144</td><td>RT (digital)</td><td>R2 (digital)</td><td>ZR</td></tr>
+</tbody></table>
+</div>
+<h3 id="analog-axes"><a class="header" href="#analog-axes">Analog Axes</a></h3>
+<h4 id="stick-axes-128-131"><a class="header" href="#stick-axes-128-131">Stick Axes (128-131)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Control</th></tr></thead><tbody>
+<tr><td>128</td><td>Left stick X-axis</td></tr>
+<tr><td>129</td><td>Left stick Y-axis</td></tr>
+<tr><td>130</td><td>Right stick X-axis</td></tr>
+<tr><td>131</td><td>Right stick Y-axis</td></tr>
+</tbody></table>
+</div>
+<h4 id="trigger-axes-132-133"><a class="header" href="#trigger-axes-132-133">Trigger Axes (132-133)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Control</th></tr></thead><tbody>
+<tr><td>132</td><td>Left trigger analog</td></tr>
+<tr><td>133</td><td>Right trigger analog</td></tr>
+</tbody></table>
+</div>
+<p><strong>Value Range</strong>: 0-255 (128 = center for sticks)</p>
+<h2 id="advanced-features"><a class="header" href="#advanced-features">Advanced Features</a></h2>
+<h3 id="pattern-detection"><a class="header" href="#pattern-detection">Pattern Detection</a></h3>
+<p>Conductor automatically detects advanced button patterns:</p>
+<h4 id="double-tap"><a class="header" href="#double-tap">Double-Tap</a></h4>
+<p>Press the same button twice within 300ms.</p>
+<pre><code class="language-toml"># Automatically detected by MIDI Learn
+# Manual configuration:
+[modes.mappings.trigger]
+type = "DoubleTap"
+note = 128  # Button ID (reuses Note type)
+timeout_ms = 300
+</code></pre>
+<h4 id="long-press"><a class="header" href="#long-press">Long Press</a></h4>
+<p>Hold a button for 2+ seconds.</p>
+<pre><code class="language-toml"># Automatically detected by MIDI Learn
+# Manual configuration:
+[modes.mappings.trigger]
+type = "LongPress"
+note = 128  # Button ID (reuses Note type)
+duration_ms = 2000
+</code></pre>
+<h3 id="midi-learn-mode"><a class="header" href="#midi-learn-mode">MIDI Learn Mode</a></h3>
+<p>MIDI Learn now supports gamepad inputs:</p>
+<p><strong>Via GUI</strong>:</p>
+<ol>
+<li>Open Conductor GUI</li>
+<li>Click "Learn" next to any mapping</li>
+<li>Press a button or move a stick on your gamepad</li>
+<li>Conductor automatically generates the correct trigger config</li>
+</ol>
+<p><strong>Pattern Detection</strong>:</p>
+<ul>
+<li>Press button once → GamepadButton</li>
+<li>Press button twice quickly → DoubleTap</li>
+<li>Hold button → LongPress</li>
+<li>Press multiple buttons → GamepadButtonChord</li>
+<li>Move analog stick → GamepadAnalogStick</li>
+<li>Pull trigger → GamepadTrigger</li>
+</ul>
+<h3 id="mode-switching"><a class="header" href="#mode-switching">Mode Switching</a></h3>
+<p>Use button chords for mode switching:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "LB+RB: Switch to Media mode"
+[global_mappings.trigger]
+type = "GamepadButtonChord"
+buttons = [136, 137]  # LB + RB
+timeout_ms = 50
+[global_mappings.action]
+type = "ModeChange"
+mode = "Media"
+</code></pre>
+<h3 id="hybrid-midi--gamepad-setup"><a class="header" href="#hybrid-midi--gamepad-setup">Hybrid MIDI + Gamepad Setup</a></h3>
+<p>You can use MIDI controllers and gamepads simultaneously:</p>
+<pre><code class="language-toml">[device]
+name = "Maschine Mikro MK3"  # MIDI device name
+auto_connect = true
+
+# Gamepad is automatically detected
+# No additional configuration needed!
+
+# MIDI mappings (button IDs 0-127)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "Note"
+note = 36  # MIDI note
+
+# Gamepad mappings (button IDs 128-255)
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # Gamepad button
+</code></pre>
+<p><strong>Key Points</strong>:</p>
+<ul>
+<li>MIDI uses IDs 0-127</li>
+<li>Gamepad uses IDs 128-255</li>
+<li>No conflicts, works seamlessly together</li>
+</ul>
+<h2 id="common-use-cases"><a class="header" href="#common-use-cases">Common Use Cases</a></h2>
+<h3 id="desktop-navigation"><a class="header" href="#desktop-navigation">Desktop Navigation</a></h3>
+<pre><code class="language-toml">[[modes]]
+name = "Desktop"
+color = "blue"
+
+# Arrow keys on D-Pad
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 132  # D-Pad Up
+[modes.mappings.action]
+type = "Keystroke"
+keys = "UpArrow"
+
+# Copy/Paste on face buttons
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 130  # X button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+</code></pre>
+<h3 id="media-control"><a class="header" href="#media-control">Media Control</a></h3>
+<pre><code class="language-toml">[[modes]]
+name = "Media"
+color = "purple"
+
+# Play/Pause
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 128  # A button
+[modes.mappings.action]
+type = "Keystroke"
+keys = "PlayPause"
+
+# Volume control with triggers
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 133  # Right trigger
+threshold = 64
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"
+</code></pre>
+<h3 id="browser-control"><a class="header" href="#browser-control">Browser Control</a></h3>
+<pre><code class="language-toml"># Navigate with right stick
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "GamepadAnalogStick"
+axis = 130  # Right stick X
+direction = "Clockwise"
+[modes.mappings.action]
+type = "Keystroke"
+keys = "RightArrow"
+modifiers = ["cmd"]  # Forward in browser
+
+# Scroll with right stick Y
+[[modes.mappings]]
+[modes.mappings.trigger]
+type = "GamepadAnalogStick"
+axis = 131  # Right stick Y
+direction = "CounterClockwise"
+[modes.mappings.action]
+type = "Keystroke"
+keys = "DownArrow"  # Scroll down
+</code></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="gamepad-not-detected"><a class="header" href="#gamepad-not-detected">Gamepad Not Detected</a></h3>
+<p><strong>Check connection</strong>:</p>
+<pre><code class="language-bash"># List connected gamepads
+conductorctl status
+
+# Check system recognition
+# macOS: System Settings &gt; Game Controllers
+# Linux: ls /dev/input/js*
+# Windows: Devices and Printers
+</code></pre>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>Reconnect the gamepad</li>
+<li>Try USB instead of Bluetooth (or vice versa)</li>
+<li>Ensure drivers are installed (Windows)</li>
+<li>Check SDL2 compatibility</li>
+</ol>
+<h3 id="buttons-not-working"><a class="header" href="#buttons-not-working">Buttons Not Working</a></h3>
+<p><strong>Verify button mapping</strong>:</p>
+<ol>
+<li>Use MIDI Learn to discover the actual button ID</li>
+<li>Check that button IDs are in the 128-255 range</li>
+<li>Ensure no conflicting mappings exist</li>
+</ol>
+<p><strong>Common mistakes</strong>:</p>
+<ul>
+<li>Using MIDI note IDs (0-127) instead of gamepad IDs (128-255)</li>
+<li>Incorrect axis ID for analog sticks</li>
+<li>Dead zone preventing stick triggers</li>
+</ul>
+<h3 id="analog-stick-too-sensitive"><a class="header" href="#analog-stick-too-sensitive">Analog Stick Too Sensitive</a></h3>
+<p>Adjust the dead zone threshold by using button triggers instead:</p>
+<pre><code class="language-toml"># Instead of analog stick trigger
+# Use button-based threshold
+[modes.mappings.trigger]
+type = "GamepadButton"
+button = 134  # D-Pad left instead of stick
+</code></pre>
+<h3 id="trigger-not-firing"><a class="header" href="#trigger-not-firing">Trigger Not Firing</a></h3>
+<p><strong>Check threshold</strong>:</p>
+<ul>
+<li>Threshold too high: Lower the value (try 32, 64, 128)</li>
+<li>Threshold too low: Increase to prevent false triggers</li>
+</ul>
+<pre><code class="language-toml">[modes.mappings.trigger]
+type = "GamepadTrigger"
+trigger = 133
+threshold = 64  # Start with 25% pull
+</code></pre>
+<h3 id="button-chords-not-detected"><a class="header" href="#button-chords-not-detected">Button Chords Not Detected</a></h3>
+<p><strong>Adjust chord timeout</strong>:</p>
+<pre><code class="language-toml">[advanced_settings]
+chord_timeout_ms = 100  # Increase from 50ms
+</code></pre>
+<p><strong>Tips</strong>:</p>
+<ul>
+<li>Press buttons as simultaneously as possible</li>
+<li>Practice the timing</li>
+<li>Use MIDI Learn to test detection</li>
+</ul>
+<h2 id="performance-notes"><a class="header" href="#performance-notes">Performance Notes</a></h2>
+<h3 id="latency"><a class="header" href="#latency">Latency</a></h3>
+<ul>
+<li><strong>Input latency</strong>: &lt;1ms (1000Hz polling)</li>
+<li><strong>Event processing</strong>: &lt;1ms</li>
+<li><strong>Total latency</strong>: ~2-5ms (comparable to MIDI)</li>
+</ul>
+<h3 id="resource-usage"><a class="header" href="#resource-usage">Resource Usage</a></h3>
+<ul>
+<li><strong>CPU</strong>: &lt;1% (1ms polling intervals)</li>
+<li><strong>Memory</strong>: ~5-10MB additional</li>
+<li><strong>Battery</strong>: Minimal impact on wireless controllers</li>
+</ul>
+<h3 id="compatibility"><a class="header" href="#compatibility">Compatibility</a></h3>
+<ul>
+<li><strong>gilrs v0.10</strong>: Industry-standard gamepad library</li>
+<li><strong>SDL2 mappings</strong>: Supports 100+ controller types</li>
+<li><strong>Auto-detection</strong>: Works with most modern gamepads</li>
+</ul>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ol>
+<li><strong>Start with templates</strong>: Use official Xbox/PS/Switch templates</li>
+<li><strong>Use MIDI Learn</strong>: Let pattern detection configure triggers</li>
+<li><strong>Test incrementally</strong>: Add mappings one at a time</li>
+<li><strong>Document custom configs</strong>: Add descriptions to mappings</li>
+<li><strong>Use global mappings</strong>: Mode switches work everywhere</li>
+<li><strong>Backup configs</strong>: Save working configurations</li>
+</ol>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>Complete examples available in:</p>
+<ul>
+<li><code>config/examples/gamepad-xbox-basic.toml</code></li>
+<li>Device templates in Conductor GUI</li>
+<li>See <a href="../configuration/examples.html">Configuration Examples</a></li>
+</ul>
+<h2 id="further-reading"><a class="header" href="#further-reading">Further Reading</a></h2>
+<ul>
+<li><a href="../configuration/overview.html">Configuration Overview</a></li>
+<li><a href="../configuration/triggers.html">Trigger Types</a></li>
+<li><a href="../configuration/actions.html">Action Types</a></li>
+<li><a href="./midi-learn.html">MIDI Learn Guide</a></li>
+<li><a href="../troubleshooting/common-issues.html">Troubleshooting</a></li>
+</ul>
+<hr />
+<p><strong>Need Help?</strong></p>
+<ul>
+<li>GitHub Issues: https://github.com/amiable/conductor/issues</li>
+<li>Documentation: https://conductor.dev/docs</li>
+<li>Examples: <code>config/examples/</code></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../guides/device-templates.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../guides/per-app-profiles.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../guides/device-templates.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../guides/per-app-profiles.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

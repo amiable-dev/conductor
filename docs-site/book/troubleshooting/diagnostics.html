@@ -1,0 +1,1101 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Diagnostic Tools - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/troubleshooting/diagnostics.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="diagnostic-tools-and-procedures"><a class="header" href="#diagnostic-tools-and-procedures">Diagnostic Tools and Procedures</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>MIDIMon includes a comprehensive suite of diagnostic tools for debugging connectivity, event processing, LED control, and configuration issues. This guide covers each tool in detail and provides systematic troubleshooting procedures.</p>
+<h2 id="quick-diagnostic-checklist"><a class="header" href="#quick-diagnostic-checklist">Quick Diagnostic Checklist</a></h2>
+<p>Before diving deep, run through this quick checklist:</p>
+<pre><code class="language-bash"># 1. Check USB/MIDI connectivity
+cargo run --bin test_midi
+
+# 2. Verify MIDI events are received
+cargo run --bin midi_diagnostic 2
+
+# 3. Test LED/HID access
+cargo run --bin led_diagnostic
+
+# 4. Find note numbers
+cargo run --bin pad_mapper 2
+
+# 5. Enable debug logging
+DEBUG=1 cargo run --release 2
+</code></pre>
+<p>If all five succeed, the hardware and drivers are working correctly.</p>
+<h2 id="diagnostic-tool-reference"><a class="header" href="#diagnostic-tool-reference">Diagnostic Tool Reference</a></h2>
+<h3 id="1-test_midi---midi-port-testing"><a class="header" href="#1-test_midi---midi-port-testing">1. test_midi - MIDI Port Testing</a></h3>
+<p><strong>Purpose</strong>: Verify MIDI connectivity, enumerate all available ports, test basic MIDI communication.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin test_midi
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Lists all MIDI input ports</li>
+<li>Lists all MIDI output ports</li>
+<li>Attempts to open port 2 (default)</li>
+<li>Waits for a MIDI event (5-second timeout)</li>
+<li>Reports success or failure</li>
+</ol>
+<p><strong>Expected output</strong> (working):</p>
+<pre><code>MIDI Port Test
+==============
+
+Available input ports:
+0: USB MIDI Device
+1: IAC Driver Bus 1
+2: Maschine Mikro MK3 - Input
+3: Digital Keyboard
+
+Available output ports:
+0: USB MIDI Device
+1: IAC Driver Bus 1
+2: Maschine Mikro MK3 - Output
+
+Testing port 2 (input)...
+✓ Successfully opened port: Maschine Mikro MK3 - Input
+
+Waiting for MIDI event... (5 second timeout)
+✓ Received MIDI event: NoteOn ch:0 note:12 vel:87
+
+Connection test: PASSED
+All MIDI functionality working correctly.
+</code></pre>
+<p><strong>Error output</strong> (device not found):</p>
+<pre><code>Available input ports:
+0: IAC Driver Bus 1
+# Device missing!
+
+Testing port 2 (input)...
+✗ Error: Port index 2 out of range (only 1 ports available)
+
+Connection test: FAILED
+</code></pre>
+<p><strong>Interpreting results</strong>:</p>
+<ul>
+<li><strong>Device not listed</strong>: USB/driver issue (see <a href="common-issues.html#midi-device-not-found">Common Issues - MIDI Device Not Found</a>)</li>
+<li><strong>Timeout on event</strong>: Device connected but not sending data
+<ul>
+<li>Check device is in MIDI mode (not HID-only mode)</li>
+<li>Verify pads/keys are functional</li>
+<li>Try different port number</li>
+</ul>
+</li>
+<li><strong>"Permission denied"</strong>: User permission issue (Linux)
+<ul>
+<li>Add user to <code>audio</code> or <code>plugdev</code> group</li>
+<li>Check udev rules</li>
+</ul>
+</li>
+</ul>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>First step in any MIDI troubleshooting</li>
+<li>After connecting a new device</li>
+<li>After driver installation</li>
+<li>Verifying port numbers before running midimon</li>
+</ul>
+<h3 id="2-midi_diagnostic---midi-event-monitor"><a class="header" href="#2-midi_diagnostic---midi-event-monitor">2. midi_diagnostic - MIDI Event Monitor</a></h3>
+<p><strong>Purpose</strong>: Real-time visualization of all MIDI events for debugging event detection and mapping issues.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin midi_diagnostic &lt;PORT&gt;
+
+# Example
+cargo run --bin midi_diagnostic 2
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ul>
+<li>Opens specified MIDI port</li>
+<li>Listens for all MIDI events</li>
+<li>Displays events in human-readable format</li>
+<li>Shows channel, note/cc number, velocity/value</li>
+<li>Runs until Ctrl+C</li>
+</ul>
+<p><strong>Output format</strong>:</p>
+<pre><code>Connected to MIDI port 2: Maschine Mikro MK3 - Input
+Listening for MIDI events... (Ctrl+C to exit)
+
+[16:32:45] [NoteOn]  ch:0 note:12 vel:87
+[16:32:45] [NoteOff] ch:0 note:12 vel:0
+[16:32:46] [NoteOn]  ch:0 note:13 vel:64
+[16:32:46] [NoteOff] ch:0 note:13 vel:0
+[16:32:47] [CC]      ch:0 cc:1 value:64
+[16:32:48] [PitchBend] ch:0 value:8192
+[16:32:49] [Aftertouch] ch:0 note:12 pressure:48
+</code></pre>
+<p><strong>Event types shown</strong>:</p>
+<ul>
+<li>
+<p><strong>NoteOn</strong>: Note pressed</p>
+<ul>
+<li><code>ch</code>: MIDI channel (0-15)</li>
+<li><code>note</code>: Note number (0-127)</li>
+<li><code>vel</code>: Velocity (0-127)</li>
+</ul>
+</li>
+<li>
+<p><strong>NoteOff</strong>: Note released</p>
+<ul>
+<li><code>vel</code> is usually 0, some devices use release velocity</li>
+</ul>
+</li>
+<li>
+<p><strong>CC</strong> (Control Change): Knob, slider, encoder</p>
+<ul>
+<li><code>cc</code>: Controller number (0-127)</li>
+<li><code>value</code>: Value (0-127)</li>
+</ul>
+</li>
+<li>
+<p><strong>PitchBend</strong>: Touch strip, pitch wheel</p>
+<ul>
+<li><code>value</code>: Bend amount (0-16383, center=8192)</li>
+</ul>
+</li>
+<li>
+<p><strong>Aftertouch</strong>: Pressure sensitivity</p>
+<ul>
+<li><code>note</code>: Which note (if polyphonic)</li>
+<li><code>pressure</code>: Pressure value (0-127)</li>
+</ul>
+</li>
+<li>
+<p><strong>ProgramChange</strong>: Program/patch change</p>
+<ul>
+<li><code>program</code>: Program number (0-127)</li>
+</ul>
+</li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ol>
+<li>
+<p><strong>Verify MIDI events are being sent</strong>:</p>
+<pre><code class="language-bash">cargo run --bin midi_diagnostic 2
+# Press pads - you should see NoteOn/NoteOff events
+</code></pre>
+</li>
+<li>
+<p><strong>Find note numbers for config</strong>:</p>
+<pre><code class="language-bash">cargo run --bin midi_diagnostic 2
+# Press pad → note:12 → use 12 in config.toml
+</code></pre>
+</li>
+<li>
+<p><strong>Debug why mappings aren't triggering</strong>:</p>
+<pre><code class="language-bash"># Compare MIDI diagnostic output with config.toml
+# If you see note:25 but config has note:12, they don't match
+</code></pre>
+</li>
+<li>
+<p><strong>Verify velocity ranges</strong>:</p>
+<pre><code class="language-bash">cargo run --bin midi_diagnostic 2
+# Soft tap:  vel:32  (0-40 range)
+# Medium:    vel:68  (41-80 range)
+# Hard hit:  vel:105 (81-127 range)
+</code></pre>
+</li>
+<li>
+<p><strong>Check encoder/knob CC numbers</strong>:</p>
+<pre><code class="language-bash">cargo run --bin midi_diagnostic 2
+# Turn encoder → [CC] ch:0 cc:1 value:65
+# Use cc:1 in EncoderTurn trigger
+</code></pre>
+</li>
+</ol>
+<p><strong>Troubleshooting with midi_diagnostic</strong>:</p>
+<p><strong>Problem</strong>: No events appear when pressing pads</p>
+<p><strong>Solutions</strong>:</p>
+<ul>
+<li>Wrong port number (try 0, 1, 2, 3, etc.)</li>
+<li>Device not sending MIDI (check device settings)</li>
+<li>USB cable issue (try different cable)</li>
+<li>Driver issue (reinstall drivers)</li>
+</ul>
+<p><strong>Problem</strong>: Wrong note numbers appearing</p>
+<p><strong>Cause</strong>: Device is on different pad page or has custom profile</p>
+<p><strong>Solution</strong>: Either:</p>
+<ul>
+<li>Change device to expected page</li>
+<li>Update config.toml with actual note numbers</li>
+<li>Use <code>--profile</code> flag with correct profile</li>
+</ul>
+<p><strong>Problem</strong>: Events appear but with unexpected values</p>
+<p><strong>Example</strong>: Expecting ch:0 but seeing ch:1</p>
+<p><strong>Solution</strong>: Update trigger channel in config:</p>
+<pre><code class="language-toml">[trigger]
+type = "Note"
+note = 12
+channel = 1  # Add channel specification
+</code></pre>
+<h3 id="3-led_diagnostic---ledhid-testing"><a class="header" href="#3-led_diagnostic---ledhid-testing">3. led_diagnostic - LED/HID Testing</a></h3>
+<p><strong>Purpose</strong>: Test LED control and HID device access for troubleshooting lighting issues.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin led_diagnostic
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ol>
+<li>Searches for HID device (Maschine Mikro MK3)</li>
+<li>Attempts to open HID device</li>
+<li>Tests LED control by cycling through all pads</li>
+<li>Displays each step's success/failure</li>
+</ol>
+<p><strong>Expected output</strong> (working):</p>
+<pre><code>LED Diagnostic Tool
+==================
+
+Searching for Maschine Mikro MK3...
+✓ Device found: Maschine Mikro MK3 (VID:17cc PID:1600)
+  Serial: XXXXXXXX
+  Manufacturer: Native Instruments
+  Product: Maschine Mikro MK3
+
+Opening HID device...
+✓ HID device opened successfully
+✓ Device supports shared access
+
+Testing LED control...
+- Lighting pad 0 (Red Bright)... ✓
+- Lighting pad 1 (Orange Bright)... ✓
+- Lighting pad 2 (Yellow Bright)... ✓
+- Lighting pad 3 (Green Bright)... ✓
+- Lighting pad 4 (Blue Bright)... ✓
+- Lighting pad 5 (Purple Bright)... ✓
+[... continues for all 16 pads ...]
+
+Testing patterns...
+✓ Rainbow pattern
+✓ All pads lit (White)
+✓ All pads cleared
+
+LED Diagnostic: PASSED
+All LED functionality working correctly.
+</code></pre>
+<p><strong>Error output</strong> (permission denied - macOS):</p>
+<pre><code>Searching for Maschine Mikro MK3...
+✓ Device found: Maschine Mikro MK3 (VID:17cc PID:1600)
+
+Opening HID device...
+✗ Failed to open HID device
+  Error: Permission denied (os error 13)
+
+  Possible causes:
+  1. Input Monitoring permission not granted
+  2. Device already in exclusive use
+  3. Native Instruments drivers not installed
+
+  Solutions:
+  1. Grant Input Monitoring permission:
+     System Settings → Privacy &amp; Security → Input Monitoring
+     Enable Terminal or midimon
+
+  2. Close other applications using the device:
+     - Native Instruments Controller Editor
+     - Maschine software
+     - Other MIDI software
+
+  3. Install NI drivers:
+     Download Native Access and install Maschine drivers
+
+LED Diagnostic: FAILED
+</code></pre>
+<p><strong>Error output</strong> (device not found):</p>
+<pre><code>Searching for Maschine Mikro MK3...
+✗ Device not found
+
+Checked for:
+- Vendor ID: 0x17cc (Native Instruments)
+- Product ID: 0x1600 (Maschine Mikro MK3)
+
+Possible causes:
+1. Device not connected
+2. Wrong USB port or cable
+3. Device powered off
+4. HID driver not installed
+
+Solutions:
+1. Check USB connection:
+   system_profiler SPUSBDataType | grep -i mikro
+
+2. Try different USB port/cable
+
+3. Power cycle device (unplug, wait 10s, replug)
+
+LED Diagnostic: FAILED
+</code></pre>
+<p><strong>Interpreting results</strong>:</p>
+<ul>
+<li><strong>Device found, opened, LEDs working</strong>: All HID/LED functionality OK</li>
+<li><strong>Device found but won't open</strong>: Permission or driver issue</li>
+<li><strong>Device not found</strong>: USB/hardware issue</li>
+<li><strong>Opens but LEDs don't light</strong>: Coordinate mapping or hardware issue</li>
+</ul>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>LEDs not working in main application</li>
+<li>After granting Input Monitoring permission (verify it worked)</li>
+<li>After installing NI drivers (verify driver installation)</li>
+<li>Testing LED hardware functionality</li>
+<li>Before reporting LED bugs</li>
+</ul>
+<h3 id="4-led_tester---interactive-led-control"><a class="header" href="#4-led_tester---interactive-led-control">4. led_tester - Interactive LED Control</a></h3>
+<p><strong>Purpose</strong>: Manual control of individual LEDs for testing coordinate mapping and hardware.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin led_tester
+</code></pre>
+<p><strong>Interactive mode</strong>:</p>
+<pre><code>LED Tester - Interactive Mode
+==============================
+Device: Maschine Mikro MK3 (VID:17cc PID:1600)
+Status: Connected
+
+Commands:
+  on &lt;pad&gt; &lt;color&gt; &lt;brightness&gt;   Turn on specific LED
+  off &lt;pad&gt;                       Turn off specific LED
+  all &lt;color&gt; &lt;brightness&gt;        Set all LEDs
+  clear                           Clear all LEDs
+  rainbow                         Show rainbow pattern
+  test                            Cycle through all pads
+  coords                          Show pad coordinate mapping
+  help                            Show this help
+  quit                            Exit
+
+Pad numbers: 0-15
+Colors: red, orange, yellow, green, blue, purple, magenta, white
+Brightness: 0 (off), 1 (dim), 2 (normal), 3 (bright)
+
+&gt;
+</code></pre>
+<p><strong>Example session</strong>:</p>
+<pre><code>&gt; on 0 red 3
+✓ Pad 0: Red Bright
+
+&gt; on 1 green 2
+✓ Pad 1: Green Normal
+
+&gt; all blue 1
+✓ All pads: Blue Dim
+
+&gt; rainbow
+✓ Rainbow pattern displayed
+
+&gt; test
+Testing all pads (press Ctrl+C to stop)...
+Pad 0... Pad 1... Pad 2... [continues]
+
+&gt; coords
+Pad Coordinate Mapping:
+Pad Index -&gt; LED Position
+
+Physical Layout (bottom-up):
+12  13  14  15  &lt;- Top row
+ 8   9  10  11
+ 4   5   6   7
+ 0   1   2   3  &lt;- Bottom row
+
+LED Buffer (top-down):
+ 0   1   2   3  &lt;- Top (buffer 0-3)
+ 4   5   6   7
+ 8   9  10  11
+12  13  14  15  &lt;- Bottom (buffer 12-15)
+
+Mapping Table:
+  Pad  0 -&gt; LED 12    Pad  8 -&gt; LED  4
+  Pad  1 -&gt; LED 13    Pad  9 -&gt; LED  5
+  Pad  2 -&gt; LED 14    Pad 10 -&gt; LED  6
+  Pad  3 -&gt; LED 15    Pad 11 -&gt; LED  7
+  Pad  4 -&gt; LED  8    Pad 12 -&gt; LED  0
+  Pad  5 -&gt; LED  9    Pad 13 -&gt; LED  1
+  Pad  6 -&gt; LED 10    Pad 14 -&gt; LED  2
+  Pad  7 -&gt; LED 11    Pad 15 -&gt; LED  3
+
+&gt; clear
+✓ All LEDs cleared
+
+&gt; quit
+Goodbye!
+</code></pre>
+<p><strong>Use cases</strong>:</p>
+<ol>
+<li>
+<p><strong>Test individual pad LEDs</strong>:</p>
+<pre><code>&gt; on 0 white 3
+# Bottom-left pad should light up bright white
+</code></pre>
+</li>
+<li>
+<p><strong>Verify coordinate mapping</strong>:</p>
+<pre><code>&gt; coords
+# Shows physical layout vs LED buffer
+&gt; on 0 red 3
+# Verify bottom-left pad lights (should be LED buffer position 12)
+</code></pre>
+</li>
+<li>
+<p><strong>Test all colors</strong>:</p>
+<pre><code>&gt; on 0 red 3
+&gt; on 1 orange 3
+&gt; on 2 yellow 3
+&gt; on 3 green 3
+&gt; on 4 blue 3
+&gt; on 5 purple 3
+</code></pre>
+</li>
+<li>
+<p><strong>Brightness testing</strong>:</p>
+<pre><code>&gt; on 0 white 0   # Off
+&gt; on 0 white 1   # Dim
+&gt; on 0 white 2   # Normal
+&gt; on 0 white 3   # Bright
+</code></pre>
+</li>
+</ol>
+<p><strong>When to use</strong>:</p>
+<ul>
+<li>Debugging coordinate mapping issues</li>
+<li>Testing specific pad LEDs (identify dead LEDs)</li>
+<li>Understanding LED coordinate system</li>
+<li>Verifying color/brightness encoding</li>
+</ul>
+<h3 id="5-pad_mapper---note-number-discovery"><a class="header" href="#5-pad_mapper---note-number-discovery">5. pad_mapper - Note Number Discovery</a></h3>
+<p><strong>Purpose</strong>: Identify MIDI note numbers for physical pads to use in config.toml.</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">cargo run --bin pad_mapper &lt;PORT&gt;
+
+# Example
+cargo run --bin pad_mapper 2
+</code></pre>
+<p><strong>What it does</strong>:</p>
+<ul>
+<li>Opens MIDI port</li>
+<li>Listens for NoteOn events</li>
+<li>Displays note number and velocity for each press</li>
+<li>Continues until Ctrl+C</li>
+</ul>
+<p><strong>Output</strong>:</p>
+<pre><code>Pad Mapper - Find Note Numbers for Your Controller
+===================================================
+Connected to port 2: Maschine Mikro MK3 - Input
+
+Press pads in order (bottom-left to top-right) and write down note numbers.
+Ctrl+C to exit when done.
+
+Pad pressed: Note 12 (velocity: 87)
+Pad pressed: Note 13 (velocity: 64)
+Pad pressed: Note 14 (velocity: 92)
+Pad pressed: Note 15 (velocity: 73)
+Pad pressed: Note 8  (velocity: 55)
+Pad pressed: Note 9  (velocity: 81)
+[continues as you press pads...]
+</code></pre>
+<p><strong>Recommended workflow</strong>:</p>
+<ol>
+<li>
+<p><strong>Run pad_mapper</strong>:</p>
+<pre><code class="language-bash">cargo run --bin pad_mapper 2
+</code></pre>
+</li>
+<li>
+<p><strong>Draw a grid</strong> on paper:</p>
+<pre><code>[ ] [ ] [ ] [ ]  &lt;- Top row
+[ ] [ ] [ ] [ ]
+[ ] [ ] [ ] [ ]
+[ ] [ ] [ ] [ ]  &lt;- Bottom row
+</code></pre>
+</li>
+<li>
+<p><strong>Press each pad</strong> starting bottom-left, moving right:</p>
+<ul>
+<li>Press bottom-left → write down note number (e.g., 12)</li>
+<li>Press next pad right → write down note number (e.g., 13)</li>
+<li>Continue for all 16 pads</li>
+</ul>
+</li>
+<li>
+<p><strong>Result</strong>:</p>
+<pre><code>[12][13][14][15]  &lt;- Top row
+[ 8][ 9][10][11]
+[ 4][ 5][ 6][ 7]
+[ 0][ 1][ 2][ 3]  &lt;- Bottom row
+</code></pre>
+<p>Wait, those look wrong! That's because your device might be on a different page or have a custom profile. The numbers you write down are the ones to use in config.toml.</p>
+</li>
+<li>
+<p><strong>Update config.toml</strong> with actual note numbers:</p>
+<pre><code class="language-toml">[[modes.mappings]]
+description = "Bottom-left pad"
+[modes.mappings.trigger]
+type = "Note"
+note = 0  # Or whatever number you wrote down
+</code></pre>
+</li>
+</ol>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Initial setup of a new device</li>
+<li>Creating config.toml for the first time</li>
+<li>Verifying note numbers after changing device profile</li>
+<li>Debugging why specific pads don't work</li>
+</ul>
+<p><strong>Tips</strong>:</p>
+<ul>
+<li>Press pads gently and consistently (velocity affects detection)</li>
+<li>Write down numbers immediately (easy to forget)</li>
+<li>Take a photo of your paper grid for reference</li>
+<li>Some controllers send different notes on different "pages" or "banks"</li>
+</ul>
+<h2 id="advanced-debugging-with-debug1"><a class="header" href="#advanced-debugging-with-debug1">Advanced Debugging with DEBUG=1</a></h2>
+<p>Enable verbose debug logging to see internal event processing:</p>
+<p><strong>Syntax</strong>:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2
+</code></pre>
+<h3 id="debug-output-format"><a class="header" href="#debug-output-format">Debug Output Format</a></h3>
+<p><strong>MIDI Events</strong>:</p>
+<pre><code>[16:32:45.123] [MIDI] NoteOn ch:0 note:12 vel:87
+[16:32:45.124] [MIDI] NoteOff ch:0 note:12 vel:0
+</code></pre>
+<p><strong>Event Processing</strong>:</p>
+<pre><code>[DEBUG] Processing NoteOn: note=12 vel=87
+[DEBUG] Detected velocity range: Medium (41-80)
+[DEBUG] Stored note 12 in press tracker (time: 16:32:45.123)
+</code></pre>
+<p><strong>Mapping Engine</strong>:</p>
+<pre><code>[DEBUG] Checking 24 mappings in mode 'Default'
+[DEBUG] Matched mapping: "Copy text" (trigger: Note(12))
+[DEBUG] Compiled action: Keystroke { keys: "c", modifiers: ["cmd"] }
+</code></pre>
+<p><strong>Action Execution</strong>:</p>
+<pre><code>[DEBUG] Executing Keystroke action
+[DEBUG] Pressing key: C
+[DEBUG] Holding modifiers: [Cmd]
+[DEBUG] Releasing key: C
+✓ Action executed successfully (1.2ms)
+</code></pre>
+<p><strong>LED Updates</strong>:</p>
+<pre><code>[DEBUG] LED update request: pad=0 color=Green brightness=2
+[DEBUG] Mapped pad 0 -&gt; LED position 12
+[DEBUG] HID buffer: [80 00 00 ... 1D ... 00] (81 bytes)
+[DEBUG] HID write successful (4 bytes written)
+</code></pre>
+<p><strong>Mode Changes</strong>:</p>
+<pre><code>[DEBUG] Mode change requested: next
+[DEBUG] Current mode: 0 (Default)
+[DEBUG] Switching to mode: 1 (Developer)
+[INFO] Mode changed: Default -&gt; Developer
+</code></pre>
+<p><strong>Timers and State</strong>:</p>
+<pre><code>[DEBUG] Long press timer started: note=12 threshold=2000ms
+[DEBUG] Note released after 1523ms (threshold: 2000ms)
+[DEBUG] Long press NOT triggered (held too short)
+</code></pre>
+<pre><code>[DEBUG] Double-tap window started: note=12 timeout=300ms
+[DEBUG] Second tap detected within 287ms
+[DEBUG] Double-tap triggered: note=12
+</code></pre>
+<pre><code>[DEBUG] Chord detection: notes=[12, 13, 14] timeout=100ms
+[DEBUG] All notes pressed within 47ms
+[DEBUG] Chord triggered: [12, 13, 14]
+</code></pre>
+<h3 id="interpreting-debug-output"><a class="header" href="#interpreting-debug-output">Interpreting Debug Output</a></h3>
+<h4 id="problem-mapping-not-triggering"><a class="header" href="#problem-mapping-not-triggering">Problem: Mapping not triggering</a></h4>
+<p><strong>Look for</strong>:</p>
+<pre><code>[DEBUG] No mapping matched for event: Note(12)
+</code></pre>
+<p><strong>Possible causes</strong>:</p>
+<ul>
+<li>Note number mismatch (check pad_mapper output)</li>
+<li>Wrong mode (check current mode in debug output)</li>
+<li>Trigger conditions not met (velocity, timing)</li>
+</ul>
+<p><strong>Solution</strong>: Compare debug output with config.toml</p>
+<hr />
+<h4 id="problem-action-not-executing"><a class="header" href="#problem-action-not-executing">Problem: Action not executing</a></h4>
+<p><strong>Look for</strong>:</p>
+<pre><code>[DEBUG] Matched mapping: "Test"
+[ERROR] Failed to execute action: Command not found
+</code></pre>
+<p><strong>Cause</strong>: Action configuration error (e.g., invalid shell command)</p>
+<p><strong>Solution</strong>: Fix action in config.toml</p>
+<hr />
+<h4 id="problem-leds-not-updating"><a class="header" href="#problem-leds-not-updating">Problem: LEDs not updating</a></h4>
+<p><strong>Look for</strong>:</p>
+<pre><code>[DEBUG] LED update request: pad=0
+[ERROR] HID write failed: Device not open
+</code></pre>
+<p><strong>Cause</strong>: HID device not accessible</p>
+<p><strong>Solution</strong>: Check permissions, run led_diagnostic</p>
+<hr />
+<h2 id="usb-connection-verification"><a class="header" href="#usb-connection-verification">USB Connection Verification</a></h2>
+<h3 id="macos"><a class="header" href="#macos">macOS</a></h3>
+<p><strong>Check USB device enumeration</strong>:</p>
+<pre><code class="language-bash"># List all USB devices
+system_profiler SPUSBDataType
+
+# Filter for your device
+system_profiler SPUSBDataType | grep -i mikro
+
+# More detailed output
+system_profiler SPUSBDataType | grep -B 10 -A 10 "Mikro"
+</code></pre>
+<p><strong>Expected output</strong>:</p>
+<pre><code>Maschine Mikro MK3:
+  Product ID: 0x1600
+  Vendor ID: 0x17cc  (Native Instruments)
+  Version: 1.00
+  Serial Number: XXXXXXXX
+  Speed: Up to 12 Mb/s
+  Manufacturer: Native Instruments
+  Location ID: 0x14200000 / 5
+  Current Available (mA): 500
+  Current Required (mA): 100
+  Extra Operating Current (mA): 0
+</code></pre>
+<p><strong>Check for device disappearance</strong>:</p>
+<pre><code class="language-bash"># Monitor USB devices
+log stream --predicate 'eventMessage contains "USB"' --level info
+</code></pre>
+<p>Then plug/unplug device - you should see connection events.</p>
+<h3 id="linux"><a class="header" href="#linux">Linux</a></h3>
+<p><strong>Check USB devices</strong>:</p>
+<pre><code class="language-bash"># List USB devices
+lsusb
+
+# Filter for Native Instruments (VID: 17cc)
+lsusb | grep 17cc
+
+# Detailed info
+lsusb -v -d 17cc:1600
+</code></pre>
+<p><strong>Check dmesg for USB events</strong>:</p>
+<pre><code class="language-bash"># Show recent USB events
+dmesg | grep -i usb | tail -20
+
+# Monitor in real-time
+dmesg -w | grep -i usb
+</code></pre>
+<p><strong>Check ALSA MIDI</strong>:</p>
+<pre><code class="language-bash"># List ALSA MIDI devices
+aconnect -l
+
+# Or
+amidi -l
+</code></pre>
+<h3 id="windows"><a class="header" href="#windows">Windows</a></h3>
+<p><strong>Device Manager</strong>:</p>
+<ol>
+<li>Open Device Manager (Win+X → Device Manager)</li>
+<li>Expand "Sound, video and game controllers"</li>
+<li>Look for your MIDI device</li>
+<li>Right-click → Properties → Check status</li>
+</ol>
+<p><strong>Check MIDI devices via PowerShell</strong>:</p>
+<pre><code class="language-powershell">Get-PnpDevice -Class MEDIA | Format-Table -AutoSize
+</code></pre>
+<h2 id="interpreting-error-messages"><a class="header" href="#interpreting-error-messages">Interpreting Error Messages</a></h2>
+<h3 id="common-error-patterns"><a class="header" href="#common-error-patterns">Common Error Patterns</a></h3>
+<h4 id="no-midi-input-ports-available"><a class="header" href="#no-midi-input-ports-available">"No MIDI input ports available"</a></h4>
+<p><strong>Meaning</strong>: No MIDI devices detected at all</p>
+<p><strong>Debug steps</strong>:</p>
+<ol>
+<li><code>system_profiler SPUSBDataType | grep -i usb</code></li>
+<li><code>cargo run --bin test_midi</code></li>
+<li>Check USB connection</li>
+<li>Verify drivers installed</li>
+</ol>
+<hr />
+<h4 id="failed-to-open-hid-device"><a class="header" href="#failed-to-open-hid-device">"Failed to open HID device"</a></h4>
+<p><strong>Meaning</strong>: Device found but can't access HID interface</p>
+<p><strong>Debug steps</strong>:</p>
+<ol>
+<li>Check permissions (Input Monitoring on macOS)</li>
+<li><code>cargo run --bin led_diagnostic</code></li>
+<li>Close other applications using device</li>
+<li>Reinstall NI drivers</li>
+</ol>
+<hr />
+<h4 id="toml-parse-error-at-line-x"><a class="header" href="#toml-parse-error-at-line-x">"TOML parse error at line X"</a></h4>
+<p><strong>Meaning</strong>: Syntax error in config.toml</p>
+<p><strong>Debug steps</strong>:</p>
+<ol>
+<li>Open config.toml in editor</li>
+<li>Go to line X</li>
+<li>Check for:
+<ul>
+<li>Missing quotes</li>
+<li>Wrong brackets</li>
+<li>Typos in field names</li>
+</ul>
+</li>
+<li>Validate at https://www.toml-lint.com/</li>
+</ol>
+<hr />
+<h4 id="missing-field-type-in-trigger"><a class="header" href="#missing-field-type-in-trigger">"Missing field 'type' in trigger"</a></h4>
+<p><strong>Meaning</strong>: Invalid config structure</p>
+<p><strong>Debug steps</strong>:</p>
+<ol>
+<li>Find the mapping missing <code>type</code></li>
+<li>Add <code>type</code> field:
+<pre><code class="language-toml">[trigger]
+type = "Note"  # Add this
+note = 12
+</code></pre>
+</li>
+</ol>
+<hr />
+<h4 id="permission-denied-os-error-13"><a class="header" href="#permission-denied-os-error-13">"Permission denied (os error 13)"</a></h4>
+<p><strong>Meaning</strong>: Insufficient permissions</p>
+<p><strong>macOS</strong>: Grant Input Monitoring permission</p>
+<p><strong>Linux</strong>: Add user to <code>plugdev</code> group and create udev rules</p>
+<p><strong>Windows</strong>: Run as Administrator (not recommended for regular use)</p>
+<hr />
+<h2 id="systematic-troubleshooting-procedure"><a class="header" href="#systematic-troubleshooting-procedure">Systematic Troubleshooting Procedure</a></h2>
+<p>When something doesn't work, follow this systematic approach:</p>
+<h3 id="level-1-hardware-connectivity"><a class="header" href="#level-1-hardware-connectivity">Level 1: Hardware Connectivity</a></h3>
+<pre><code class="language-bash"># 1. Check USB enumeration
+system_profiler SPUSBDataType | grep -i mikro
+
+# 2. Test MIDI ports
+cargo run --bin test_midi
+
+# 3. Monitor MIDI events
+cargo run --bin midi_diagnostic 2
+</code></pre>
+<p><strong>If Level 1 fails</strong>: Hardware or driver issue (see <a href="common-issues.html">Common Issues</a>)</p>
+<h3 id="level-2-software-connectivity"><a class="header" href="#level-2-software-connectivity">Level 2: Software Connectivity</a></h3>
+<pre><code class="language-bash"># 4. Test HID access
+cargo run --bin led_diagnostic
+
+# 5. Find note numbers
+cargo run --bin pad_mapper 2
+
+# 6. Run with debug logging
+DEBUG=1 cargo run --release 2
+</code></pre>
+<p><strong>If Level 2 fails</strong>: Permission or configuration issue</p>
+<h3 id="level-3-configuration-validation"><a class="header" href="#level-3-configuration-validation">Level 3: Configuration Validation</a></h3>
+<pre><code class="language-bash"># 7. Validate config syntax
+cargo check
+
+# 8. Test with minimal config
+cat &gt; test.toml &lt;&lt; 'EOF'
+[[modes]]
+name = "Test"
+[[modes.mappings]]
+description = "Test"
+[modes.mappings.trigger]
+type = "Note"
+note = 0
+[modes.mappings.action]
+type = "Shell"
+command = "say test"
+EOF
+
+cargo run --release 2 --config test.toml
+
+# 9. Compare note numbers
+# pad_mapper output vs config.toml
+</code></pre>
+<p><strong>If Level 3 fails</strong>: Config syntax or mapping issue</p>
+<h3 id="level-4-deep-debugging"><a class="header" href="#level-4-deep-debugging">Level 4: Deep Debugging</a></h3>
+<pre><code class="language-bash"># 10. Enable trace-level logging
+RUST_LOG=trace cargo run --release 2
+
+# 11. Check for resource exhaustion
+# Activity Monitor (macOS) / Task Manager (Windows)
+
+# 12. Test on different computer
+# (isolates hardware vs software issues)
+</code></pre>
+<h2 id="performance-profiling"><a class="header" href="#performance-profiling">Performance Profiling</a></h2>
+<h3 id="response-time-analysis"><a class="header" href="#response-time-analysis">Response Time Analysis</a></h3>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2 2&gt;&amp;1 | grep -E 'NoteOn|executed'
+</code></pre>
+<p><strong>Measure latency</strong>:</p>
+<pre><code>[16:32:45.123456] NoteOn
+[16:32:45.124789] Action executed (1.3ms)
+</code></pre>
+<p>Latency = 1.3ms (excellent, &lt;5ms is good)</p>
+<h3 id="cpu-usage-monitoring"><a class="header" href="#cpu-usage-monitoring">CPU Usage Monitoring</a></h3>
+<p><strong>macOS</strong>:</p>
+<pre><code class="language-bash"># Monitor CPU in real-time
+top | grep midimon
+
+# Or use Activity Monitor GUI
+open -a "Activity Monitor"
+</code></pre>
+<p><strong>Expected CPU usage</strong>:</p>
+<ul>
+<li>Idle: &lt;1%</li>
+<li>Active (pad presses): 2-5%</li>
+<li>With animated LEDs: 3-7%</li>
+</ul>
+<p><strong>If &gt;10%</strong>: Performance issue (check debug logging enabled)</p>
+<h3 id="memory-usage"><a class="header" href="#memory-usage">Memory Usage</a></h3>
+<pre><code class="language-bash"># macOS
+ps aux | grep midimon
+
+# Expected RSS: 5-10 MB
+</code></pre>
+<p><strong>If &gt;50MB</strong>: Memory leak (file a bug report)</p>
+<h2 id="logs-and-diagnostics-output"><a class="header" href="#logs-and-diagnostics-output">Logs and Diagnostics Output</a></h2>
+<h3 id="redirecting-output"><a class="header" href="#redirecting-output">Redirecting Output</a></h3>
+<p><strong>Save all output</strong>:</p>
+<pre><code class="language-bash">cargo run --release 2 &gt; midimon.log 2&gt;&amp;1
+</code></pre>
+<p><strong>Save only errors</strong>:</p>
+<pre><code class="language-bash">cargo run --release 2 2&gt; midimon.err
+</code></pre>
+<p><strong>Separate stdout and stderr</strong>:</p>
+<pre><code class="language-bash">cargo run --release 2 &gt; midimon.out 2&gt; midimon.err
+</code></pre>
+<h3 id="analyzing-logs"><a class="header" href="#analyzing-logs">Analyzing Logs</a></h3>
+<p><strong>Count events</strong>:</p>
+<pre><code class="language-bash">grep -c "NoteOn" midimon.log
+</code></pre>
+<p><strong>Find errors</strong>:</p>
+<pre><code class="language-bash">grep -i error midimon.log
+grep -i failed midimon.log
+</code></pre>
+<p><strong>Extract timings</strong>:</p>
+<pre><code class="language-bash">grep "Action executed" midimon.log | sed 's/.*(\(.*\)ms).*/\1/'
+</code></pre>
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="common-issues.html">Common Issues</a> - Quick solutions to frequent problems</li>
+<li><a href="../reference/cli-commands.html">CLI Commands</a> - Complete command reference</li>
+<li><a href="../configuration/overview.html">Configuration Overview</a> - Config syntax validation</li>
+</ul>
+<hr />
+<p><strong>Last Updated</strong>: November 11, 2025
+<strong>Diagnostic Tool Version</strong>: 0.1.0</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../troubleshooting/faq.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../troubleshooting/performance.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../troubleshooting/faq.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../troubleshooting/performance.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,669 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>MIDI Learn - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/getting-started/midi-learn.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="midi-learn-mode"><a class="header" href="#midi-learn-mode">MIDI Learn Mode</a></h1>
+<p><strong>MIDI Learn</strong> is the fastest way to create mappings in MIDIMon v2.0.0. Instead of manually entering note numbers and MIDI parameters, simply press a pad/button on your controller and let MIDIMon auto-detect everything.</p>
+<h2 id="what-is-midi-learn"><a class="header" href="#what-is-midi-learn">What is MIDI Learn?</a></h2>
+<p>MIDI Learn is a one-click workflow:</p>
+<ol>
+<li><strong>Click "Learn"</strong> next to a trigger field</li>
+<li><strong>Press a control</strong> on your MIDI device (pad, encoder, button, etc.)</li>
+<li><strong>MIDIMon auto-fills</strong> the trigger configuration</li>
+<li><strong>Assign an action</strong> and save</li>
+</ol>
+<p>That's it! No need to know note numbers, CC values, or MIDI channels.</p>
+<h2 id="how-to-use-midi-learn"><a class="header" href="#how-to-use-midi-learn">How to Use MIDI Learn</a></h2>
+<h3 id="basic-workflow"><a class="header" href="#basic-workflow">Basic Workflow</a></h3>
+<ol>
+<li>
+<p><strong>Open MIDIMon GUI</strong> and ensure your device is connected</p>
+</li>
+<li>
+<p><strong>Navigate to Mappings</strong> panel</p>
+</li>
+<li>
+<p><strong>Click "Add Mapping"</strong> or edit an existing one</p>
+</li>
+<li>
+<p><strong>Click the "Learn" button</strong> next to the Trigger field</p>
+</li>
+<li>
+<p><strong>MIDI Learn window opens</strong> with a 10-second countdown:</p>
+<pre><code>MIDI Learn Mode
+
+Waiting for MIDI input...
+Press any control on your device
+
+Time remaining: 8 seconds
+[Cancel]
+</code></pre>
+</li>
+<li>
+<p><strong>Press any control</strong> on your MIDI device:</p>
+<ul>
+<li>Pad</li>
+<li>Button</li>
+<li>Encoder/knob</li>
+<li>Fader</li>
+<li>Touch strip</li>
+</ul>
+</li>
+<li>
+<p><strong>Trigger auto-fills</strong>:</p>
+<pre><code>Trigger Type: Note
+Note: 36
+Channel: 0
+</code></pre>
+</li>
+<li>
+<p><strong>Assign an action</strong> (Keystroke, Launch, Text, etc.)</p>
+</li>
+<li>
+<p><strong>Click "Save"</strong></p>
+</li>
+<li>
+<p><strong>Test it!</strong> Press the same control - the action should execute</p>
+</li>
+</ol>
+<h3 id="supported-trigger-types"><a class="header" href="#supported-trigger-types">Supported Trigger Types</a></h3>
+<p>MIDI Learn auto-detects and configures these trigger types:</p>
+<h4 id="1-note-basic-padbutton-press"><a class="header" href="#1-note-basic-padbutton-press">1. Note (Basic Pad/Button Press)</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>Note number</li>
+<li>MIDI channel</li>
+<li>Velocity range (if applicable)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Press pad → Auto-fills: <code>Note: 36, Channel: 0</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Basic pad mappings</li>
+<li>Button presses</li>
+<li>Keyboard keys</li>
+</ul>
+<h4 id="2-velocity-range-pressure-sensitive"><a class="header" href="#2-velocity-range-pressure-sensitive">2. Velocity Range (Pressure-Sensitive)</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>Note number</li>
+<li>Soft/medium/hard press patterns</li>
+<li>Velocity thresholds</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Press pad softly → <code>VelocityRange: Note 36, Min: 0, Max: 40</code></li>
+<li>Press pad hard → <code>VelocityRange: Note 36, Min: 81, Max: 127</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Different actions for soft vs hard hits</li>
+<li>Velocity-sensitive controls</li>
+</ul>
+<h4 id="3-long-press"><a class="header" href="#3-long-press">3. Long Press</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>Note number</li>
+<li>Hold duration (auto-calculated from your press)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Hold pad for 2 seconds → <code>LongPress: Note 36, Duration: 2000ms</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Hold pad to open app</li>
+<li>Long press for alternate action</li>
+</ul>
+<h4 id="4-double-tap"><a class="header" href="#4-double-tap">4. Double-Tap</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>Note number</li>
+<li>Double-tap timing window</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Tap pad twice quickly → <code>DoubleTap: Note 36, Window: 300ms</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Quick double-tap for special actions</li>
+<li>Distinguishing single vs double taps</li>
+</ul>
+<h4 id="5-chord-multiple-notes"><a class="header" href="#5-chord-multiple-notes">5. Chord (Multiple Notes)</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>All pressed notes</li>
+<li>Chord window (how fast notes must be pressed together)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Press pads 36, 40, 43 together → <code>Chord: [36, 40, 43], Window: 100ms</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Shortcuts requiring multiple pads</li>
+<li>Musical chord detection</li>
+</ul>
+<h4 id="6-encoderknob-rotation"><a class="header" href="#6-encoderknob-rotation">6. Encoder/Knob Rotation</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>CC (Control Change) number</li>
+<li>Direction (Clockwise/Counterclockwise)</li>
+<li>Value range</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Turn encoder right → <code>EncoderTurn: CC 1, Direction: Clockwise</code></li>
+<li>Turn encoder left → <code>EncoderTurn: CC 1, Direction: Counterclockwise</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Volume control</li>
+<li>Scrolling</li>
+<li>Parameter adjustment</li>
+</ul>
+<h4 id="7-control-change-cc"><a class="header" href="#7-control-change-cc">7. Control Change (CC)</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>CC number</li>
+<li>Value range</li>
+<li>Continuous vs momentary</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Move fader → <code>CC: 7, Range: 0-127</code></li>
+<li>Press button → <code>CC: 64, Value: 127</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Faders</li>
+<li>Knobs with CC messages</li>
+<li>Sustain pedals</li>
+</ul>
+<h4 id="8-aftertouch-pressure"><a class="header" href="#8-aftertouch-pressure">8. Aftertouch (Pressure)</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>Note number (if channel aftertouch)</li>
+<li>Pressure threshold</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Press pad harder after initial hit → <code>Aftertouch: Note 36, Threshold: 64</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Pressure-sensitive effects</li>
+<li>Dynamic parameter control</li>
+</ul>
+<h4 id="9-pitch-bend"><a class="header" href="#9-pitch-bend">9. Pitch Bend</a></h4>
+<p><strong>What it detects</strong>:</p>
+<ul>
+<li>Pitch bend range</li>
+<li>Direction (Up/Down/Center)</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<ul>
+<li>Move pitch wheel up → <code>PitchBend: Direction: Up, Threshold: 8192</code></li>
+</ul>
+<p><strong>Use cases</strong>:</p>
+<ul>
+<li>Pitch wheel mappings</li>
+<li>Touch strip controls</li>
+</ul>
+<h2 id="advanced-midi-learn-features"><a class="header" href="#advanced-midi-learn-features">Advanced MIDI Learn Features</a></h2>
+<h3 id="countdown-timer"><a class="header" href="#countdown-timer">Countdown Timer</a></h3>
+<p>The MIDI Learn window shows a <strong>10-second countdown</strong>. This gives you time to:</p>
+<ul>
+<li>Position your hand</li>
+<li>Find the right control</li>
+<li>Try different velocities</li>
+</ul>
+<p><strong>Countdown reaches zero</strong> → MIDI Learn cancels automatically</p>
+<h3 id="cancellation"><a class="header" href="#cancellation">Cancellation</a></h3>
+<p>Click <strong>"Cancel"</strong> at any time to abort MIDI Learn without creating a mapping.</p>
+<p><strong>Keyboard shortcut</strong>: Press <code>Esc</code> to cancel</p>
+<h3 id="pattern-detection"><a class="header" href="#pattern-detection">Pattern Detection</a></h3>
+<p>MIDI Learn is <strong>smart</strong> - it detects patterns automatically:</p>
+<p><strong>Long Press Detection</strong>:</p>
+<ul>
+<li>If you hold a pad for &gt;1 second during Learn mode, MIDIMon suggests a Long Press trigger</li>
+</ul>
+<p><strong>Double-Tap Detection</strong>:</p>
+<ul>
+<li>If you tap a pad twice quickly, MIDIMon suggests a Double-Tap trigger</li>
+</ul>
+<p><strong>Chord Detection</strong>:</p>
+<ul>
+<li>If you press multiple pads within 100ms, MIDIMon suggests a Chord trigger</li>
+</ul>
+<p><strong>Velocity Variation</strong>:</p>
+<ul>
+<li>If you press the same pad with varying velocities, MIDIMon suggests a Velocity Range trigger</li>
+</ul>
+<h3 id="velocity-range-suggestions"><a class="header" href="#velocity-range-suggestions">Velocity Range Suggestions</a></h3>
+<p>When MIDI Learn detects a note, it suggests velocity ranges:</p>
+<pre><code>MIDI Learn Complete!
+
+Detected: Note 36
+
+Suggested velocity ranges:
+- Soft (0-40): Gentle tap
+- Medium (41-80): Normal press
+- Hard (81-127): Strong hit
+
+Create separate mappings for each range?
+[Yes] [No, use single Note trigger]
+</code></pre>
+<p>This makes it easy to create pressure-sensitive mappings.</p>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="no-midi-input-detected"><a class="header" href="#no-midi-input-detected">No MIDI Input Detected</a></h3>
+<p><strong>Symptoms</strong>: MIDI Learn countdown reaches zero without detecting anything</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Check device connection</strong>: Ensure MIDI device is connected and showing in Device Panel</li>
+<li><strong>Check Event Console</strong>: Open Event Console and verify MIDI events are being received</li>
+<li><strong>Try different control</strong>: Some controls may not send MIDI (e.g., mode buttons on some devices)</li>
+<li><strong>Check MIDI channel</strong>: Some devices send on non-zero channels</li>
+</ol>
+<h3 id="wrong-note-number-detected"><a class="header" href="#wrong-note-number-detected">Wrong Note Number Detected</a></h3>
+<p><strong>Symptoms</strong>: MIDI Learn detects the wrong note</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Verify in Event Console</strong>: Check what MIDI events are actually being sent</li>
+<li><strong>Check pad page</strong>: Some controllers have multiple pad pages (A-H)</li>
+<li><strong>Load device template</strong>: Use a pre-configured template for your controller</li>
+<li><strong>Manual override</strong>: Click "Advanced" and manually enter the correct note number</li>
+</ol>
+<h3 id="multiple-events-detected"><a class="header" href="#multiple-events-detected">Multiple Events Detected</a></h3>
+<p><strong>Symptoms</strong>: MIDI Learn shows "Multiple events detected, please try again"</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Press only one control</strong> at a time</li>
+<li><strong>Wait for pad to release</strong> before pressing again</li>
+<li><strong>Disable auto-repeat</strong>: Some controllers send rapid-fire messages</li>
+</ol>
+<h3 id="velocity-not-detected"><a class="header" href="#velocity-not-detected">Velocity Not Detected</a></h3>
+<p><strong>Symptoms</strong>: MIDI Learn only creates Note trigger, not Velocity Range</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Vary velocity</strong>: Try pressing soft, medium, and hard during different Learn attempts</li>
+<li><strong>Manual configuration</strong>: Create Velocity Range trigger manually after Learn</li>
+<li><strong>Check controller</strong>: Some pads don't send velocity (always velocity 127)</li>
+</ol>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<h3 id="example-1-basic-pad-mapping"><a class="header" href="#example-1-basic-pad-mapping">Example 1: Basic Pad Mapping</a></h3>
+<p><strong>Goal</strong>: Map pad to copy text (Cmd+C)</p>
+<ol>
+<li>Click "Add Mapping"</li>
+<li>Click "Learn" next to Trigger</li>
+<li>Press pad → Auto-fills <code>Note: 36</code></li>
+<li>Select Action: <strong>Keystroke</strong></li>
+<li>Use Keystroke Picker: Press <code>Cmd+C</code></li>
+<li>Save</li>
+</ol>
+<p><strong>Result</strong>: Pressing pad executes Cmd+C</p>
+<h3 id="example-2-velocity-sensitive-volume"><a class="header" href="#example-2-velocity-sensitive-volume">Example 2: Velocity-Sensitive Volume</a></h3>
+<p><strong>Goal</strong>: Soft press = volume down, hard press = volume up</p>
+<ol>
+<li>
+<p>Click "Add Mapping"</p>
+</li>
+<li>
+<p>Click "Learn" next to Trigger</p>
+</li>
+<li>
+<p>Press pad <strong>softly</strong> → Auto-fills <code>VelocityRange: Note 36, Min: 0, Max: 40</code></p>
+</li>
+<li>
+<p>Action: <strong>Volume Control</strong> → <strong>Down</strong></p>
+</li>
+<li>
+<p>Save</p>
+</li>
+<li>
+<p>Click "Add Mapping" again</p>
+</li>
+<li>
+<p>Click "Learn"</p>
+</li>
+<li>
+<p>Press <strong>same pad hard</strong> → Auto-fills <code>VelocityRange: Note 36, Min: 81, Max: 127</code></p>
+</li>
+<li>
+<p>Action: <strong>Volume Control</strong> → <strong>Up</strong></p>
+</li>
+<li>
+<p>Save</p>
+</li>
+</ol>
+<p><strong>Result</strong>: Soft press = volume down, hard press = volume up</p>
+<h3 id="example-3-long-press-to-launch-app"><a class="header" href="#example-3-long-press-to-launch-app">Example 3: Long Press to Launch App</a></h3>
+<p><strong>Goal</strong>: Hold pad for 2 seconds to open Spotify</p>
+<ol>
+<li>Click "Add Mapping"</li>
+<li>Click "Learn" next to Trigger</li>
+<li><strong>Hold pad for 2+ seconds</strong> → Auto-fills <code>LongPress: Note 36, Duration: 2000ms</code></li>
+<li>Action: <strong>Launch</strong> → Select <code>/Applications/Spotify.app</code></li>
+<li>Save</li>
+</ol>
+<p><strong>Result</strong>: Holding pad for 2 seconds opens Spotify</p>
+<h3 id="example-4-encoder-for-volume"><a class="header" href="#example-4-encoder-for-volume">Example 4: Encoder for Volume</a></h3>
+<p><strong>Goal</strong>: Turn encoder to adjust volume</p>
+<ol>
+<li>
+<p>Click "Add Mapping"</p>
+</li>
+<li>
+<p>Click "Learn" next to Trigger</p>
+</li>
+<li>
+<p><strong>Turn encoder right</strong> → Auto-fills <code>EncoderTurn: CC 1, Direction: Clockwise</code></p>
+</li>
+<li>
+<p>Action: <strong>Volume Control</strong> → <strong>Up</strong></p>
+</li>
+<li>
+<p>Save</p>
+</li>
+<li>
+<p>Click "Add Mapping" again</p>
+</li>
+<li>
+<p>Click "Learn"</p>
+</li>
+<li>
+<p><strong>Turn encoder left</strong> → Auto-fills <code>EncoderTurn: CC 1, Direction: Counterclockwise</code></p>
+</li>
+<li>
+<p>Action: <strong>Volume Control</strong> → <strong>Down</strong></p>
+</li>
+<li>
+<p>Save</p>
+</li>
+</ol>
+<p><strong>Result</strong>: Turning encoder controls system volume</p>
+<h2 id="tips--best-practices"><a class="header" href="#tips--best-practices">Tips &amp; Best Practices</a></h2>
+<h3 id="tip-1-use-event-console"><a class="header" href="#tip-1-use-event-console">Tip 1: Use Event Console</a></h3>
+<p>Before starting MIDI Learn:</p>
+<ol>
+<li>Open <strong>Event Console</strong></li>
+<li>Press your control</li>
+<li>Verify the MIDI event appears</li>
+</ol>
+<p>This helps debug "Learn not detecting" issues.</p>
+<h3 id="tip-2-learn-in-context"><a class="header" href="#tip-2-learn-in-context">Tip 2: Learn in Context</a></h3>
+<p>When creating <strong>per-app profiles</strong>, Learn with that app in focus:</p>
+<ol>
+<li>Switch to target app (e.g., Logic Pro)</li>
+<li>Switch back to MIDIMon GUI</li>
+<li>Use MIDI Learn</li>
+<li>Assign action relevant to that app</li>
+</ol>
+<h3 id="tip-3-batch-learn"><a class="header" href="#tip-3-batch-learn">Tip 3: Batch Learn</a></h3>
+<p>Create multiple mappings quickly:</p>
+<ol>
+<li>Click "Learn"</li>
+<li>Press control</li>
+<li>Assign action</li>
+<li>Save</li>
+<li>Immediately click "Add Mapping" and repeat</li>
+</ol>
+<h3 id="tip-4-device-templates-first"><a class="header" href="#tip-4-device-templates-first">Tip 4: Device Templates First</a></h3>
+<p>Before manual Learn:</p>
+<ol>
+<li>Check if a device template exists for your controller</li>
+<li>Load template to get 90% of mappings</li>
+<li>Use Learn to customize the remaining 10%</li>
+</ol>
+<h3 id="tip-5-test-immediately"><a class="header" href="#tip-5-test-immediately">Tip 5: Test Immediately</a></h3>
+<p>After creating a mapping:</p>
+<ol>
+<li>Click "Save"</li>
+<li><strong>Immediately test</strong> by pressing the control</li>
+<li>Verify action executes correctly</li>
+<li>Adjust if needed</li>
+</ol>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li><a href="../guides/device-templates.html">Device Templates</a> - Pre-configured controller mappings</li>
+<li><a href="../reference/triggers.html">Trigger Reference</a> - All trigger types explained</li>
+<li><a href="../reference/actions.html">Action Reference</a> - All action types explained</li>
+<li><a href="../guides/per-app-profiles.html">Per-App Profiles</a> - Automatic profile switching</li>
+</ul>
+<hr />
+<p><strong>Last Updated</strong>: November 14, 2025 (v2.0.0)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../getting-started/first-mapping.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../getting-started/modes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../getting-started/first-mapping.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../getting-started/modes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

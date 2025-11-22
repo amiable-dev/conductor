@@ -1,0 +1,522 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Device Templates - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/guides/device-templates.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="device-templates-guide"><a class="header" href="#device-templates-guide">Device Templates Guide</a></h1>
+<p>Device templates provide pre-configured mappings for popular MIDI controllers, letting you get started in seconds instead of hours.</p>
+<h2 id="what-are-device-templates"><a class="header" href="#what-are-device-templates">What are Device Templates?</a></h2>
+<p>Device templates are pre-built configuration profiles that include:</p>
+<ul>
+<li><strong>Note mappings</strong> for all pads/buttons</li>
+<li><strong>Common actions</strong> (copy/paste, play/pause, volume control)</li>
+<li><strong>LED configurations</strong> optimized for each device</li>
+<li><strong>Mode layouts</strong> designed for typical workflows</li>
+</ul>
+<p>Instead of manually mapping 16+ pads, load a template and customize only what you need.</p>
+<h2 id="built-in-templates-v200"><a class="header" href="#built-in-templates-v200">Built-In Templates (v2.0.0)</a></h2>
+<p>MIDIMon includes 6 built-in templates for popular controllers:</p>
+<h3 id="1-maschine-mikro-mk3"><a class="header" href="#1-maschine-mikro-mk3">1. Maschine Mikro MK3</a></h3>
+<p><strong>Full RGB LED support, 16 pads, encoder</strong></p>
+<p><strong>Pre-configured</strong>:</p>
+<ul>
+<li>16 velocity-sensitive pads</li>
+<li>Encoder for volume control</li>
+<li>4 modes (Default, Development, Media, Custom)</li>
+<li>Reactive LED feedback</li>
+</ul>
+<p><strong>Best for</strong>: Music production, software development, general productivity</p>
+<h3 id="2-launchpad-mini-mk3"><a class="header" href="#2-launchpad-mini-mk3">2. Launchpad Mini MK3</a></h3>
+<p><strong>RGB LED grid, 64 pads</strong></p>
+<p><strong>Pre-configured</strong>:</p>
+<ul>
+<li>8x8 pad grid</li>
+<li>Scene launch buttons</li>
+<li>Rainbow LED schemes</li>
+<li>Mode selection via top row</li>
+</ul>
+<p><strong>Best for</strong>: Ableton Live control, clip launching, grid-based workflows</p>
+<h3 id="3-novation-launchkey-mini-mk3"><a class="header" href="#3-novation-launchkey-mini-mk3">3. Novation Launchkey Mini MK3</a></h3>
+<p><strong>25 keys, 16 pads, 8 knobs</strong></p>
+<p><strong>Pre-configured</strong>:</p>
+<ul>
+<li>16 drum pads</li>
+<li>8 knobs for parameter control</li>
+<li>Pitch/modulation wheels</li>
+<li>Transport controls</li>
+</ul>
+<p><strong>Best for</strong>: Music production, MIDI sequencing, DAW control</p>
+<h3 id="4-akai-mpk-mini-mk3"><a class="header" href="#4-akai-mpk-mini-mk3">4. AKAI MPK Mini MK3</a></h3>
+<p><strong>25 keys, 8 pads, 8 knobs</strong></p>
+<p><strong>Pre-configured</strong>:</p>
+<ul>
+<li>8 MPC-style pads</li>
+<li>8 assignable knobs</li>
+<li>Arpeggiator controls</li>
+<li>4-way joystick</li>
+</ul>
+<p><strong>Best for</strong>: Beat making, music production, performance</p>
+<h3 id="5-korg-nanokontrol2"><a class="header" href="#5-korg-nanokontrol2">5. Korg nanoKONTROL2</a></h3>
+<p><strong>8 faders, 8 knobs, 24 buttons</strong></p>
+<p><strong>Pre-configured</strong>:</p>
+<ul>
+<li>8-channel mixer layout</li>
+<li>Transport controls</li>
+<li>Scene/marker buttons</li>
+<li>Fader automation</li>
+</ul>
+<p><strong>Best for</strong>: DAW mixing, transport control, automation</p>
+<h3 id="6-apc-mini"><a class="header" href="#6-apc-mini">6. APC Mini</a></h3>
+<p><strong>64 pads, 9 faders</strong></p>
+<p><strong>Pre-configured</strong>:</p>
+<ul>
+<li>8x8 clip launch grid</li>
+<li>Scene launch column</li>
+<li>9 channel faders</li>
+<li>Shift button combinations</li>
+</ul>
+<p><strong>Best for</strong>: Ableton Live, clip launching, mixing</p>
+<h2 id="loading-a-template"><a class="header" href="#loading-a-template">Loading a Template</a></h2>
+<h3 id="via-gui-recommended"><a class="header" href="#via-gui-recommended">Via GUI (Recommended)</a></h3>
+<ol>
+<li>
+<p><strong>Open MIDIMon GUI</strong></p>
+</li>
+<li>
+<p><strong>Go to Settings</strong> → <strong>Device Templates</strong></p>
+</li>
+<li>
+<p><strong>Select your controller</strong> from the dropdown</p>
+</li>
+<li>
+<p><strong>Click "Load Template"</strong></p>
+</li>
+<li>
+<p><strong>Confirm</strong> the load (replaces current config)</p>
+</li>
+<li>
+<p><strong>Test</strong> - Press pads to verify mappings</p>
+</li>
+<li>
+<p><strong>Customize</strong> using MIDI Learn for any changes</p>
+</li>
+</ol>
+<h3 id="via-cli"><a class="header" href="#via-cli">Via CLI</a></h3>
+<p>Templates are stored as TOML files in:</p>
+<pre><code>~/.config/midimon/templates/
+</code></pre>
+<p><strong>Load manually</strong>:</p>
+<pre><code class="language-bash"># Copy template to config location
+cp ~/.config/midimon/templates/maschine-mikro-mk3.toml ~/.config/midimon/config.toml
+
+# Reload daemon
+midimonctl reload
+</code></pre>
+<h2 id="template-structure"><a class="header" href="#template-structure">Template Structure</a></h2>
+<p>Templates are standard <code>config.toml</code> files with device-specific optimizations:</p>
+<pre><code class="language-toml">[device]
+name = "Maschine Mikro MK3"
+template = "maschine-mikro-mk3"
+auto_connect = true
+
+[led_feedback]
+scheme = "reactive"
+default_color = [0, 120, 255]  # Blue
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+[[modes.mappings]]
+description = "Pad 1 - Copy"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+keys = "c"
+modifiers = ["cmd"]
+
+# ... more mappings
+</code></pre>
+<h2 id="customizing-templates"><a class="header" href="#customizing-templates">Customizing Templates</a></h2>
+<p>After loading a template:</p>
+<h3 id="1-use-midi-learn"><a class="header" href="#1-use-midi-learn">1. Use MIDI Learn</a></h3>
+<p>The fastest way to modify mappings:</p>
+<ol>
+<li>Click <strong>Edit</strong> on any mapping</li>
+<li>Click <strong>Learn</strong> next to the trigger</li>
+<li>Press the pad/button you want</li>
+<li>Update the action</li>
+<li>Save</li>
+</ol>
+<h3 id="2-add-new-modes"><a class="header" href="#2-add-new-modes">2. Add New Modes</a></h3>
+<p>Templates include 2-4 modes. Add more:</p>
+<ol>
+<li>Go to <strong>Modes</strong> panel</li>
+<li>Click <strong>Add Mode</strong></li>
+<li>Set name and color</li>
+<li>Add mappings using MIDI Learn</li>
+</ol>
+<h3 id="3-adjust-led-schemes"><a class="header" href="#3-adjust-led-schemes">3. Adjust LED Schemes</a></h3>
+<p>Change LED behavior:</p>
+<ol>
+<li>Go to <strong>Settings</strong> → <strong>LED Feedback</strong></li>
+<li>Select scheme: Reactive, Rainbow, Pulse, etc.</li>
+<li>Customize colors</li>
+<li>Save</li>
+</ol>
+<h3 id="4-export-customized-template"><a class="header" href="#4-export-customized-template">4. Export Customized Template</a></h3>
+<p>Save your modifications:</p>
+<ol>
+<li>Go to <strong>Settings</strong> → <strong>Export Config</strong></li>
+<li>Save as new template file</li>
+<li>Share with others or use on other machines</li>
+</ol>
+<h2 id="creating-custom-templates"><a class="header" href="#creating-custom-templates">Creating Custom Templates</a></h2>
+<p>You can create templates for controllers not included:</p>
+<h3 id="step-1-map-your-device"><a class="header" href="#step-1-map-your-device">Step 1: Map Your Device</a></h3>
+<ol>
+<li><strong>Connect device</strong> and use MIDI Learn for all controls</li>
+<li><strong>Organize into modes</strong> (Default, Media, Development, etc.)</li>
+<li><strong>Configure LED feedback</strong> (if supported)</li>
+<li><strong>Test thoroughly</strong> with real workflows</li>
+</ol>
+<h3 id="step-2-export-template"><a class="header" href="#step-2-export-template">Step 2: Export Template</a></h3>
+<ol>
+<li><strong>Settings</strong> → <strong>Export Config</strong></li>
+<li>Save as <code>my-controller-name.toml</code></li>
+</ol>
+<h3 id="step-3-add-metadata"><a class="header" href="#step-3-add-metadata">Step 3: Add Metadata</a></h3>
+<p>Edit the exported file to add template metadata:</p>
+<pre><code class="language-toml">[template]
+name = "My Controller"
+description = "Template for My MIDI Controller v2"
+author = "Your Name"
+version = "1.0.0"
+created_at = "2025-11-14"
+device_ids = ["USB MIDI Device", "My Controller MIDI 1"]
+</code></pre>
+<h3 id="step-4-test-template"><a class="header" href="#step-4-test-template">Step 4: Test Template</a></h3>
+<ol>
+<li><strong>Reset config</strong> to default</li>
+<li><strong>Load your template</strong></li>
+<li><strong>Verify all mappings</strong> work</li>
+<li><strong>Check LED behavior</strong></li>
+</ol>
+<h3 id="step-5-share-optional"><a class="header" href="#step-5-share-optional">Step 5: Share (Optional)</a></h3>
+<p>Submit to MIDIMon template library:</p>
+<ol>
+<li>Create PR to <code>config/device_templates/</code> directory</li>
+<li>Include template file + documentation</li>
+<li>Add device to compatibility matrix</li>
+</ol>
+<h2 id="template-compatibility"><a class="header" href="#template-compatibility">Template Compatibility</a></h2>
+<p>Templates are forward-compatible across MIDIMon versions:</p>
+<ul>
+<li>✅ v2.0.0 templates work in v2.1.0+</li>
+<li>⚠️ Newer features may not load in older versions</li>
+<li>✅ Missing features gracefully ignored</li>
+</ul>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="template-not-loading"><a class="header" href="#template-not-loading">Template Not Loading</a></h3>
+<p><strong>Symptoms</strong>: "Failed to load template" error</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Check template file</strong> exists in <code>~/.config/midimon/templates/</code></li>
+<li><strong>Validate TOML syntax</strong>: <code>midimonctl validate --config path/to/template.toml</code></li>
+<li><strong>Check permissions</strong>: Template file must be readable</li>
+<li><strong>View error details</strong> in Event Console</li>
+</ol>
+<h3 id="wrong-note-numbers"><a class="header" href="#wrong-note-numbers">Wrong Note Numbers</a></h3>
+<p><strong>Symptoms</strong>: Template loads but pads don't trigger actions</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Check device mode</strong>: Some controllers have multiple MIDI modes</li>
+<li><strong>Verify MIDI channel</strong>: Template may use different channel than device</li>
+<li><strong>Use MIDI Learn</strong> to detect actual note numbers</li>
+<li><strong>Check Event Console</strong> to see incoming MIDI events</li>
+</ol>
+<h3 id="leds-not-working"><a class="header" href="#leds-not-working">LEDs Not Working</a></h3>
+<p><strong>Symptoms</strong>: Template loads but LEDs don't respond</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li><strong>Check device supports RGB</strong>: Some controllers only have single-color LEDs</li>
+<li><strong>Verify HID access</strong>: Grant Input Monitoring permission</li>
+<li><strong>Try different LED scheme</strong>: Some schemes may not work on all devices</li>
+<li><strong>Check template LED config</strong>: May be disabled in template</li>
+</ol>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<h3 id="tip-1-load-template-first"><a class="header" href="#tip-1-load-template-first">Tip 1: Load Template First</a></h3>
+<p>When setting up a new controller:</p>
+<ol>
+<li><strong>Load template first</strong> (if available)</li>
+<li><strong>Test default mappings</strong></li>
+<li><strong>Customize only what you need</strong></li>
+</ol>
+<p>This saves 90% of setup time.</p>
+<h3 id="tip-2-create-per-app-variants"><a class="header" href="#tip-2-create-per-app-variants">Tip 2: Create Per-App Variants</a></h3>
+<p>Use templates as a base for per-app profiles:</p>
+<ol>
+<li>Load template</li>
+<li>Customize for specific app (Logic Pro, VS Code, etc.)</li>
+<li>Export as new template</li>
+<li>Assign to app in Per-App Profiles</li>
+</ol>
+<h3 id="tip-3-version-your-templates"><a class="header" href="#tip-3-version-your-templates">Tip 3: Version Your Templates</a></h3>
+<p>When customizing templates:</p>
+<pre><code class="language-toml">[template]
+version = "1.0.0"
+base_template = "maschine-mikro-mk3"
+customized_by = "Your Name"
+customized_at = "2025-11-14"
+</code></pre>
+<p>This helps track changes over time.</p>
+<h3 id="tip-4-test-before-sharing"><a class="header" href="#tip-4-test-before-sharing">Tip 4: Test Before Sharing</a></h3>
+<p>Before submitting templates:</p>
+<ul>
+<li>✅ Test all mappings</li>
+<li>✅ Verify LED feedback</li>
+<li>✅ Test in multiple apps</li>
+<li>✅ Document any device-specific quirks</li>
+</ul>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<ul>
+<li><a href="../getting-started/midi-learn.html">MIDI Learn Mode</a> - Customize templates</li>
+<li><a href="./per-app-profiles.html">Per-App Profiles</a> - Create app-specific variants</li>
+<li><a href="./led-system.html">LED System</a> - Customize LED behavior</li>
+<li><a href="../configuration/overview.html">Configuration Reference</a> - Template file format</li>
+</ul>
+<hr />
+<p><strong>Last Updated</strong>: November 14, 2025 (v2.0.0)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../guides/gui.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../guides/per-app-profiles.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../guides/gui.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../guides/per-app-profiles.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

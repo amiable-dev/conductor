@@ -1,0 +1,155 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for Conductor
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible to help us understand your request.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What use case does it address?
+      placeholder: |
+        I'm trying to... but currently I can't because...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this feature to work?
+      placeholder: |
+        I would like Conductor to support...
+        Example config:
+        ```toml
+        [[modes.mappings]]
+        trigger = { type = "NewFeature", ... }
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: |
+        - Alternative 1: ...
+        - Alternative 2: ...
+        - Current workaround: ...
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Describe specific scenarios where this feature would be useful
+      placeholder: |
+        1. When working in a DAW, I need to...
+        2. As a developer, I want to...
+        3. For streaming setups, this would enable...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - New Trigger Type
+        - New Action Type
+        - LED Feedback Enhancement
+        - Configuration System
+        - Device Support
+        - Performance/Optimization
+        - Documentation
+        - Developer Tools
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority / Impact
+      description: How important is this feature to your workflow?
+      options:
+        - Critical - Blocking my primary use case
+        - High - Significantly improves workflow
+        - Medium - Nice to have, useful enhancement
+        - Low - Minor improvement or edge case
+    validations:
+      required: true
+
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Breaking Change?
+      description: Would this require breaking changes to config format or API?
+      options:
+        - "No - Backward compatible"
+        - "Yes - Requires config migration"
+        - "Yes - Changes public API"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Ideas
+      description: |
+        If you have thoughts on how to implement this (optional)
+        - What modules would be affected?
+        - Any technical challenges you foresee?
+      placeholder: |
+        This could be implemented by...
+        Potential challenges:
+        - ...
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples from Other Tools
+      description: Are there similar features in other MIDI mapping tools or software?
+      placeholder: |
+        - Tool X has a feature that...
+        - Similar to how DAW Y handles...
+
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Willing to Contribute?
+      description: Would you be interested in implementing this feature?
+      options:
+        - "Yes - I can submit a PR"
+        - "Yes - With guidance"
+        - "No - But happy to test"
+        - "No - Just suggesting"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, diagrams, or links
+      placeholder: Additional information...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please confirm before submitting
+      options:
+        - label: I have searched existing issues and discussions to ensure this is not a duplicate
+          required: true
+        - label: I have described the problem this feature solves, not just the solution
+          required: true
+        - label: I have considered how this fits with Conductor's existing architecture
+          required: false

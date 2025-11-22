@@ -1,0 +1,33 @@
+# MIDIMon Configuration Template
+# Device: Arturia BeatStep
+# Template Version: 1.0.0
+
+[device]
+name = "BeatStep"
+auto_connect = true
+
+[[modes]]
+name = "Default"
+color = "blue"
+
+# Pad example
+[[modes.mappings]]
+description = "Pad 1"
+[modes.mappings.trigger]
+type = "Note"
+note = 36
+[modes.mappings.action]
+type = "Keystroke"
+keys = "1"
+modifiers = []
+
+# Encoder example
+[[modes.mappings]]
+description = "Encoder 1 - Clockwise"
+[modes.mappings.trigger]
+type = "EncoderTurn"
+cc = 10
+direction = "Clockwise"
+[modes.mappings.action]
+type = "VolumeControl"
+operation = "Up"

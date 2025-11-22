@@ -1,0 +1,615 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>LED System - MIDIMon Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Transform MIDI controllers into advanced macro pads with RGB feedback and timing-based triggers">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">MIDIMon Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/midimon/edit/main/docs-site/src/src/reference/led-system.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="led-system-reference"><a class="header" href="#led-system-reference">LED System Reference</a></h1>
+<p>MIDIMon provides comprehensive LED feedback for supported MIDI controllers, with full RGB control for HID devices (Native Instruments Maschine Mikro MK3) and basic on/off control for standard MIDI devices.</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>The LED system consists of four main features:</p>
+<ol>
+<li><strong>F23: LED Lighting Schemes</strong> - 10 pre-defined animation patterns</li>
+<li><strong>F24: LED Velocity Feedback</strong> - Color-coded response based on pad velocity</li>
+<li><strong>F25: LED Mode Indicators</strong> - Visual feedback for active mode</li>
+<li><strong>F26: LED Fade Effects</strong> - Smooth transitions and fade-out animations</li>
+</ol>
+<h2 id="feature-f23-led-lighting-schemes"><a class="header" href="#feature-f23-led-lighting-schemes">Feature F23: LED Lighting Schemes</a></h2>
+<p>MIDIMon supports 10 distinct lighting schemes that can be selected at startup or configured in your config file.</p>
+<h3 id="available-schemes"><a class="header" href="#available-schemes">Available Schemes</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Scheme</th><th>Description</th><th>Use Case</th><th>CPU Impact</th></tr></thead><tbody>
+<tr><td><code>off</code></td><td>All LEDs disabled</td><td>Power saving, minimal distraction</td><td>0%</td></tr>
+<tr><td><code>static</code></td><td>Solid color based on current mode</td><td>Clear mode indication</td><td>&lt;1%</td></tr>
+<tr><td><code>breathing</code></td><td>Slow 2-second breathing effect</td><td>Ambient, relaxed workflow</td><td>~1%</td></tr>
+<tr><td><code>pulse</code></td><td>Fast 500ms pulse</td><td>High-energy, performance</td><td>~1%</td></tr>
+<tr><td><code>rainbow</code></td><td>Rainbow cycle across pads</td><td>Creative sessions, visual appeal</td><td>~2%</td></tr>
+<tr><td><code>wave</code></td><td>Wave animation pattern</td><td>Dynamic feedback</td><td>~2%</td></tr>
+<tr><td><code>sparkle</code></td><td>Random sparkles</td><td>Playful, attention-grabbing</td><td>~3%</td></tr>
+<tr><td><code>reactive</code></td><td>Velocity-based colors (most common)</td><td>Precise feedback, performance</td><td>~1%</td></tr>
+<tr><td><code>vumeter</code></td><td>VU meter style (bottom-up)</td><td>Audio visualization</td><td>~2%</td></tr>
+<tr><td><code>spiral</code></td><td>Spiral pattern animation</td><td>Artistic, mesmerizing</td><td>~2%</td></tr>
+</tbody></table>
+</div>
+<h3 id="command-line-usage"><a class="header" href="#command-line-usage">Command-Line Usage</a></h3>
+<pre><code class="language-bash"># Start with reactive scheme (recommended)
+cargo run --release 2 --led reactive
+
+# Rainbow animation
+cargo run --release 2 --led rainbow
+
+# Disable LEDs
+cargo run --release 2 --led off
+
+# Static mode colors
+cargo run --release 2 --led static
+</code></pre>
+<h3 id="configuration"><a class="header" href="#configuration">Configuration</a></h3>
+<pre><code class="language-toml">[led_settings]
+scheme = "reactive"  # Default scheme on startup
+</code></pre>
+<h3 id="implementation-details"><a class="header" href="#implementation-details">Implementation Details</a></h3>
+<ul>
+<li><strong>Update Rate</strong>: 10fps (100ms per frame) to maintain low CPU usage</li>
+<li><strong>HID Devices</strong>: Full RGB control with 16.7 million colors</li>
+<li><strong>MIDI Devices</strong>: Schemes degrade gracefully to on/off</li>
+<li><strong>Performance</strong>: All schemes designed for &lt;3% CPU usage</li>
+</ul>
+<hr />
+<h2 id="feature-f24-led-velocity-feedback"><a class="header" href="#feature-f24-led-velocity-feedback">Feature F24: LED Velocity Feedback</a></h2>
+<p>Reactive LED feedback provides immediate visual confirmation of pad velocity, using color-coded responses.</p>
+<h3 id="velocity-color-mapping"><a class="header" href="#velocity-color-mapping">Velocity Color Mapping</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Velocity Range</th><th>Color</th><th>Visual</th><th>Meaning</th></tr></thead><tbody>
+<tr><td>0-40</td><td>Green</td><td>🟢</td><td>Soft press</td></tr>
+<tr><td>41-80</td><td>Yellow</td><td>🟡</td><td>Medium press</td></tr>
+<tr><td>81-127</td><td>Red</td><td>🔴</td><td>Hard press</td></tr>
+</tbody></table>
+</div>
+<h3 id="behavior"><a class="header" href="#behavior">Behavior</a></h3>
+<p><strong>On Press:</strong></p>
+<ul>
+<li>Pad immediately lights up in velocity-appropriate color</li>
+<li>Brightness scales with velocity (40% base + 60% velocity-based)</li>
+<li>Color change happens within &lt;1ms for responsive feedback</li>
+</ul>
+<p><strong>On Release:</strong></p>
+<ul>
+<li>Fade-out begins after 1 second</li>
+<li>Fade duration: 200ms (configurable in future versions)</li>
+<li>Pad returns to mode color or off state</li>
+</ul>
+<h3 id="configuration-example"><a class="header" href="#configuration-example">Configuration Example</a></h3>
+<pre><code class="language-toml">[led_settings]
+scheme = "reactive"
+
+# Future: Velocity threshold customization
+[led_settings.reactive]
+soft_color = { r = 0, g = 255, b = 0 }      # Green
+medium_color = { r = 255, g = 255, b = 0 }  # Yellow
+hard_color = { r = 255, g = 0, b = 0 }      # Red
+fade_duration_ms = 1000
+</code></pre>
+<h3 id="use-cases"><a class="header" href="#use-cases">Use Cases</a></h3>
+<ul>
+<li><strong>Performance</strong>: Immediate feedback on hit strength for drum pads</li>
+<li><strong>Practice</strong>: Visual metronome or timing reference</li>
+<li><strong>Recording</strong>: Confirm input without audio monitoring</li>
+<li><strong>Accessibility</strong>: Visual alternative to audio feedback</li>
+</ul>
+<hr />
+<h2 id="feature-f25-led-mode-indicators"><a class="header" href="#feature-f25-led-mode-indicators">Feature F25: LED Mode Indicators</a></h2>
+<p>Visual feedback showing the currently active mode, helping users stay oriented when switching contexts.</p>
+<h3 id="mode-color-scheme"><a class="header" href="#mode-color-scheme">Mode Color Scheme</a></h3>
+<p>Each mode has an associated color that LEDs display when using <code>static</code> or <code>reactive</code> schemes:</p>
+<div class="table-wrapper"><table><thead><tr><th>Mode</th><th>Default Color</th><th>RGB Values</th><th>Visual</th></tr></thead><tbody>
+<tr><td>Mode 0 (Default)</td><td>Blue</td><td>(0, 100, 255)</td><td>🔵</td></tr>
+<tr><td>Mode 1 (Development)</td><td>Green</td><td>(0, 255, 0)</td><td>🟢</td></tr>
+<tr><td>Mode 2 (Media)</td><td>Purple</td><td>(200, 0, 255)</td><td>🟣</td></tr>
+</tbody></table>
+</div>
+<h3 id="configuration-1"><a class="header" href="#configuration-1">Configuration</a></h3>
+<pre><code class="language-toml">[[modes]]
+name = "Default"
+color = "blue"
+led_idle_brightness = 20      # Brightness when idle (0-255)
+led_active_brightness = 255   # Brightness when pressed
+
+[[modes]]
+name = "Development"
+color = "green"
+led_idle_brightness = 30
+led_active_brightness = 255
+
+[[modes]]
+name = "Media"
+color = "purple"
+led_idle_brightness = 15
+led_active_brightness = 200
+</code></pre>
+<h3 id="mode-transition-effects"><a class="header" href="#mode-transition-effects">Mode Transition Effects</a></h3>
+<p>When switching modes, you can apply visual transition effects:</p>
+<pre><code class="language-toml">[[global_mappings]]
+description = "Next Mode with Flash"
+[global_mappings.trigger]
+type = "EncoderTurn"
+cc = 1
+direction = "Clockwise"
+[global_mappings.action]
+type = "ModeChange"
+mode = 1
+relative = true
+transition_effect = "Flash"  # Options: Flash, Sweep, FadeOut, Spiral, None
+</code></pre>
+<p><strong>Transition Effects:</strong></p>
+<ul>
+<li><strong>Flash</strong>: Quick white flash (150ms) - best for rapid mode switching</li>
+<li><strong>Sweep</strong>: Left-to-right wave (120ms) - smooth visual sweep</li>
+<li><strong>FadeOut</strong>: Fade old color to new (200ms) - smooth transition</li>
+<li><strong>Spiral</strong>: Center-outward spiral (240ms) - artistic transition</li>
+</ul>
+<h3 id="optional-mode-indicator-pads"><a class="header" href="#optional-mode-indicator-pads">Optional Mode Indicator Pads</a></h3>
+<p>You can dedicate specific pads to always show the current mode:</p>
+<pre><code class="language-toml">[led_settings]
+mode_indicator_pads = [13, 14, 15, 16]  # Bottom row shows mode
+# Pad 13 lights up for Mode 0
+# Pad 14 lights up for Mode 1
+# Pad 15 lights up for Mode 2
+# Pad 16 lights up for Mode 3
+</code></pre>
+<hr />
+<h2 id="feature-f26-led-fade-effects"><a class="header" href="#feature-f26-led-fade-effects">Feature F26: LED Fade Effects</a></h2>
+<p>Smooth transitions and fade animations provide polished visual feedback.</p>
+<h3 id="fade-out-on-release"><a class="header" href="#fade-out-on-release">Fade-Out on Release</a></h3>
+<p>After pressing a pad, the LED fades out gracefully instead of turning off instantly:</p>
+<p><strong>Default Behavior:</strong></p>
+<ol>
+<li>Pad pressed → Immediate color change (velocity-based)</li>
+<li>Pad released → Wait 1 second</li>
+<li>Fade begins → 200ms smooth fade to mode color or off</li>
+</ol>
+<p><strong>Timeline:</strong></p>
+<pre><code>Press    Release            Fade Start         Complete
+  |---------|-------------------|-----------------|
+  0ms    Variable            +1000ms          +1200ms
+  ↑                              ↑                 ↑
+  Full brightness          Start fade         Dark/Mode color
+</code></pre>
+<h3 id="configurable-fade-parameters"><a class="header" href="#configurable-fade-parameters">Configurable Fade Parameters</a></h3>
+<pre><code class="language-toml">[led_settings.fade]
+delay_after_release_ms = 1000  # How long to wait before fading
+fade_duration_ms = 200         # How long the fade takes
+steps = 10                     # Number of discrete fade steps
+</code></pre>
+<h3 id="fade-applications"><a class="header" href="#fade-applications">Fade Applications</a></h3>
+<p><strong>Reactive Scheme:</strong></p>
+<pre><code class="language-rust">// Pseudo-code for reactive fade
+on_pad_press(pad, velocity) {
+    color = velocity_to_color(velocity)
+    set_pad_color(pad, color)
+    schedule_fade(pad, delay=1000ms, duration=200ms)
+}</code></pre>
+<p><strong>Mode Transition:</strong></p>
+<pre><code class="language-rust">// Pseudo-code for mode transition fade
+on_mode_change(old_mode, new_mode) {
+    // FadeOut transition effect
+    for brightness in (100% down_to 0%).step_by(10%) {
+        set_all_pads(old_mode_color * brightness)
+        wait(10ms)
+    }
+    for brightness in (0% up_to 100%).step_by(10%) {
+        set_all_pads(new_mode_color * brightness)
+        wait(10ms)
+    }
+}</code></pre>
+<hr />
+<h2 id="device-support"><a class="header" href="#device-support">Device Support</a></h2>
+<h3 id="hid-devices-full-rgb-control"><a class="header" href="#hid-devices-full-rgb-control">HID Devices (Full RGB Control)</a></h3>
+<p><strong>Native Instruments Maschine Mikro MK3:</strong></p>
+<ul>
+<li>✅ All 10 lighting schemes</li>
+<li>✅ Full RGB color spectrum (16.7M colors)</li>
+<li>✅ Velocity-based colors</li>
+<li>✅ Smooth fades and transitions</li>
+<li>✅ Shared device mode (works alongside NI Controller Editor)</li>
+</ul>
+<p><strong>Requirements:</strong></p>
+<ul>
+<li>macOS: Input Monitoring permission</li>
+<li>USB connection: Direct HID communication</li>
+<li>Drivers: Native Instruments drivers installed</li>
+</ul>
+<h3 id="midi-devices-onoff-only"><a class="header" href="#midi-devices-onoff-only">MIDI Devices (On/Off Only)</a></h3>
+<p><strong>Supported Controllers:</strong></p>
+<ul>
+<li>Novation Launchpad Mini/Pro</li>
+<li>Akai APC Mini/40</li>
+<li>Generic MIDI pad controllers</li>
+</ul>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>❌ RGB colors (on/off only)</li>
+<li>❌ Smooth fades (instant on/off)</li>
+<li>✅ Reactive feedback (on when pressed, off after delay)</li>
+<li>✅ Mode indicators (basic)</li>
+</ul>
+<p><strong>Note Range:</strong> MIDI LEDs typically respond to notes C1-D#2 (36-51) for 16 pads</p>
+<hr />
+<h2 id="configuration-examples"><a class="header" href="#configuration-examples">Configuration Examples</a></h2>
+<h3 id="minimal-configuration"><a class="header" href="#minimal-configuration">Minimal Configuration</a></h3>
+<pre><code class="language-toml">[device]
+name = "Mikro"
+led_feedback = true
+
+[led_settings]
+scheme = "reactive"
+</code></pre>
+<h3 id="advanced-configuration"><a class="header" href="#advanced-configuration">Advanced Configuration</a></h3>
+<pre><code class="language-toml">[device]
+name = "Mikro"
+led_feedback = true
+
+[led_settings]
+scheme = "reactive"
+brightness = 255
+
+[led_settings.reactive]
+soft_color = { r = 0, g = 255, b = 0 }
+medium_color = { r = 255, g = 255, b = 0 }
+hard_color = { r = 255, g = 0, b = 0 }
+fade_duration_ms = 1000
+
+[led_settings.transitions]
+enable_effects = true
+flash_duration_ms = 150
+sweep_delay_ms = 30
+fadeout_steps = 10
+spiral_delay_ms = 15
+
+[[modes]]
+name = "Default"
+color = "blue"
+led_idle_brightness = 20
+led_active_brightness = 255
+
+[[modes]]
+name = "Development"
+color = "green"
+led_idle_brightness = 30
+led_active_brightness = 255
+</code></pre>
+<hr />
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="leds-not-working-mikro-mk3"><a class="header" href="#leds-not-working-mikro-mk3">LEDs Not Working (Mikro MK3)</a></h3>
+<ol>
+<li>
+<p><strong>Check permissions</strong> (macOS):</p>
+<ul>
+<li>System Settings → Privacy &amp; Security → Input Monitoring</li>
+<li>Enable permission for Terminal or your IDE</li>
+</ul>
+</li>
+<li>
+<p><strong>Verify HID connection</strong>:</p>
+<pre><code class="language-bash">DEBUG=1 cargo run --release 2 --led reactive
+# Look for "✓ Connected to Mikro MK3 LED interface"
+</code></pre>
+</li>
+<li>
+<p><strong>Check for conflicts</strong>:</p>
+<ul>
+<li>Close Native Instruments Controller Editor</li>
+<li>Unplug and replug USB cable</li>
+<li>Try different USB port</li>
+</ul>
+</li>
+</ol>
+<h3 id="wrong-colors"><a class="header" href="#wrong-colors">Wrong Colors</a></h3>
+<ul>
+<li><strong>Issue</strong>: Colors don't match expected values</li>
+<li><strong>Cause</strong>: LED manufacturing variance (±10% color accuracy)</li>
+<li><strong>Solution</strong>: This is normal, colors may vary slightly between units</li>
+</ul>
+<h3 id="flickering-leds"><a class="header" href="#flickering-leds">Flickering LEDs</a></h3>
+<ul>
+<li><strong>Issue</strong>: LEDs flicker or strobe</li>
+<li><strong>Cause</strong>: Update rate too high or USB bandwidth saturation</li>
+<li><strong>Solution</strong>: Use simpler scheme (reactive or static) instead of complex animations</li>
+</ul>
+<h3 id="mode-colors-not-showing"><a class="header" href="#mode-colors-not-showing">Mode Colors Not Showing</a></h3>
+<ul>
+<li><strong>Issue</strong>: All pads same color regardless of mode</li>
+<li><strong>Cause</strong>: Using non-mode-aware scheme</li>
+<li><strong>Solution</strong>: Use <code>static</code> or <code>reactive</code> scheme, not <code>rainbow</code> or <code>sparkle</code></li>
+</ul>
+<hr />
+<h2 id="performance-considerations"><a class="header" href="#performance-considerations">Performance Considerations</a></h2>
+<h3 id="cpu-usage-by-scheme"><a class="header" href="#cpu-usage-by-scheme">CPU Usage by Scheme</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Scheme</th><th>CPU (Idle)</th><th>CPU (Active)</th><th>Memory</th></tr></thead><tbody>
+<tr><td>off</td><td>0%</td><td>0%</td><td>Minimal</td></tr>
+<tr><td>static</td><td>&lt;1%</td><td>&lt;1%</td><td>&lt;1MB</td></tr>
+<tr><td>reactive</td><td>&lt;1%</td><td>~1%</td><td>&lt;1MB</td></tr>
+<tr><td>breathing</td><td>~1%</td><td>~1%</td><td>&lt;1MB</td></tr>
+<tr><td>rainbow</td><td>~2%</td><td>~2%</td><td>&lt;1MB</td></tr>
+<tr><td>sparkle</td><td>~3%</td><td>~3%</td><td>~1MB</td></tr>
+</tbody></table>
+</div>
+<h3 id="usb-bandwidth"><a class="header" href="#usb-bandwidth">USB Bandwidth</a></h3>
+<ul>
+<li><strong>Update Rate</strong>: 10fps (100ms per frame)</li>
+<li><strong>Data per Update</strong>: 51 bytes (1 byte report ID + 50 bytes RGB data)</li>
+<li><strong>Bandwidth</strong>: 510 bytes/sec (~0.004 Mbps)</li>
+<li><strong>Impact</strong>: Negligible on USB 2.0 (480 Mbps)</li>
+</ul>
+<h3 id="recommendations"><a class="header" href="#recommendations">Recommendations</a></h3>
+<ul>
+<li><strong>Performance Mode</strong>: Use <code>reactive</code> or <code>static</code> for lowest CPU usage</li>
+<li><strong>Visual Appeal</strong>: Use <code>rainbow</code> or <code>spiral</code> for presentations/demos</li>
+<li><strong>Battery (USB-powered hubs)</strong>: Use <code>off</code> or <code>static</code> to reduce power draw</li>
+</ul>
+<hr />
+<h2 id="api-reference"><a class="header" href="#api-reference">API Reference</a></h2>
+<h3 id="trait-interface"><a class="header" href="#trait-interface">Trait Interface</a></h3>
+<pre><code class="language-rust">pub trait PadFeedback: Send {
+    fn connect(&amp;mut self) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn set_pad_color(&amp;mut self, pad: u8, color: RGB) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn set_pad_velocity(&amp;mut self, pad: u8, velocity: u8) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn set_mode_colors(&amp;mut self, mode: u8) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn show_velocity_feedback(&amp;mut self, pad: u8, velocity: u8) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn flash_pad(&amp;mut self, pad: u8, color: RGB, duration_ms: u64) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn ripple_effect(&amp;mut self, start_pad: u8, color: RGB) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn clear_all(&amp;mut self) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn show_long_press_feedback(&amp;mut self, pad: u8, elapsed_ms: u128) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+    fn run_scheme(&amp;mut self, scheme: &amp;LightingScheme) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt;;
+}</code></pre>
+<h3 id="rgb-color-structure"><a class="header" href="#rgb-color-structure">RGB Color Structure</a></h3>
+<pre><code class="language-rust">pub struct RGB {
+    pub r: u8,  // Red: 0-255
+    pub g: u8,  // Green: 0-255
+    pub b: u8,  // Blue: 0-255
+}
+
+impl RGB {
+    pub const OFF: RGB = RGB { r: 0, g: 0, b: 0 };
+    pub const RED: RGB = RGB { r: 255, g: 0, b: 0 };
+    pub const GREEN: RGB = RGB { r: 0, g: 255, b: 0 };
+    pub const BLUE: RGB = RGB { r: 0, g: 0, b: 255 };
+    pub const YELLOW: RGB = RGB { r: 255, g: 255, b: 0 };
+    pub const PURPLE: RGB = RGB { r: 255, g: 0, b: 255 };
+}</code></pre>
+<hr />
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="../configuration/led-feedback.html">Configuration → LED Feedback</a></li>
+<li><a href="../devices/mikro-mk3.html">Device Support → Maschine Mikro MK3</a></li>
+<li><a href="action-types.html">Reference → Action Types</a> (ModeChange action)</li>
+<li><a href="../troubleshooting/common-issues.html">Troubleshooting → Common Issues</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../reference/action-types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../reference/cli-commands.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../reference/action-types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../reference/cli-commands.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

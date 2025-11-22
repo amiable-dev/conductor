@@ -1,0 +1,1194 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Gamepad API (Rust) - Conductor Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Multi-protocol input automation for MIDI controllers, game controllers, and custom hardware">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Conductor Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/amiable-dev/conductor/edit/main/docs-site/src/src/reference/gamepad-api.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="game-controllers-hid---rust-api-documentation"><a class="header" href="#game-controllers-hid---rust-api-documentation">Game Controllers (HID) - Rust API Documentation</a></h1>
+<p>This document provides comprehensive API documentation for Conductor v3.0's Game Controller (HID) support. These types enable integration of gamepads, joysticks, racing wheels, flight sticks, HOTAS setups, and other HID-compliant game controllers.</p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Conductor v3.0 introduces a unified input system that supports both MIDI controllers and Game Controllers (HID) simultaneously. The architecture uses protocol-agnostic abstractions to enable hybrid setups where MIDI and gamepad inputs coexist without ID conflicts.</p>
+<p><strong>Key Design Principles:</strong></p>
+<ul>
+<li><strong>Non-overlapping ID ranges</strong>: Gamepad buttons use IDs 128-255, MIDI uses 0-127</li>
+<li><strong>Unified event stream</strong>: Both protocols convert to <code>InputEvent</code> for consistent processing</li>
+<li><strong>Flexible device selection</strong>: Support MIDI-only, gamepad-only, or hybrid (both) modes</li>
+<li><strong>Automatic reconnection</strong>: Background monitoring with exponential backoff</li>
+<li><strong>Thread-safe</strong>: Arc/Mutex patterns for concurrent access</li>
+</ul>
+<h2 id="architecture-diagram"><a class="header" href="#architecture-diagram">Architecture Diagram</a></h2>
+<pre><code class="language-text">┌────────────────────────────────────────────────────────────────┐
+│  InputManager (input_manager.rs)                               │
+│  ┌──────────────────────────────────────────────────────────┐ │
+│  │  InputMode Selection                                     │ │
+│  │  - MidiOnly / GamepadOnly / Both                         │ │
+│  └──────────────────────────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────────────────────────┐ │
+│  │  MidiDeviceManager        GamepadDeviceManager           │ │
+│  │  - MIDI events (0-127)    - Gamepad events (128-255)     │ │
+│  │  - Convert to InputEvent  - Native InputEvent            │ │
+│  └──────────────────────────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────────────────────────┐ │
+│  │  Unified InputEvent Stream                               │ │
+│  │  - Single mpsc channel for all inputs                    │ │
+│  │  - Processed by EventProcessor                           │ │
+│  │  - Dispatched to MappingEngine                           │ │
+│  └──────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="core-types"><a class="header" href="#core-types">Core Types</a></h2>
+<h3 id="inputmode"><a class="header" href="#inputmode">InputMode</a></h3>
+<p><strong>Location</strong>: <code>conductor-daemon/src/input_manager.rs</code></p>
+<p>Enum representing the device selection mode for the unified input system.</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InputMode {
+    /// Use MIDI device only
+    MidiOnly,
+    /// Use gamepad device only
+    GamepadOnly,
+    /// Use both MIDI and gamepad simultaneously
+    Both,
+}</code></pre>
+<h4 id="variants"><a class="header" href="#variants">Variants</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>Variant</th><th>Description</th><th>Use Case</th></tr></thead><tbody>
+<tr><td><code>MidiOnly</code></td><td>Connect to MIDI devices only</td><td>Traditional MIDI controller workflows</td></tr>
+<tr><td><code>GamepadOnly</code></td><td>Connect to gamepad devices only</td><td>Pure gamepad macro pad setup</td></tr>
+<tr><td><code>Both</code></td><td>Connect to both MIDI and gamepad</td><td>Hybrid setups (e.g., MIDI pads + gamepad stick navigation)</td></tr>
+</tbody></table>
+</div>
+<h4 id="examples"><a class="header" href="#examples">Examples</a></h4>
+<pre><code class="language-rust">use conductor_daemon::input_manager::{InputManager, InputMode};
+
+// MIDI-only setup (traditional)
+let midi_manager = InputManager::new(
+    Some("Maschine Mikro MK3".to_string()),
+    true,  // auto_reconnect
+    InputMode::MidiOnly
+);
+
+// Gamepad-only setup
+let gamepad_manager = InputManager::new(
+    None,
+    true,
+    InputMode::GamepadOnly
+);
+
+// Hybrid setup (both MIDI and gamepad)
+let hybrid_manager = InputManager::new(
+    Some("Maschine Mikro MK3".to_string()),
+    true,
+    InputMode::Both
+);</code></pre>
+<hr />
+<h3 id="gamepaddevicemanager"><a class="header" href="#gamepaddevicemanager">GamepadDeviceManager</a></h3>
+<p><strong>Location</strong>: <code>conductor-daemon/src/gamepad_device.rs</code></p>
+<p>Manages the lifecycle of gamepad/HID device connections with automatic reconnection support and robust error handling.</p>
+<h4 id="fields"><a class="header" href="#fields">Fields</a></h4>
+<pre><code class="language-rust">pub struct GamepadDeviceManager {
+    /// Whether to automatically reconnect on disconnect
+    auto_reconnect: bool,
+
+    /// Currently connected gamepad ID (Arc&lt;Mutex&lt;Option&lt;gilrs::GamepadId&gt;&gt;&gt;)
+    gamepad_id: Arc&lt;Mutex&lt;Option&lt;gilrs::GamepadId&gt;&gt;&gt;,
+
+    /// Currently connected gamepad name (Arc&lt;Mutex&lt;Option&lt;String&gt;&gt;&gt;)
+    gamepad_name: Arc&lt;Mutex&lt;Option&lt;String&gt;&gt;&gt;,
+
+    /// Whether currently connected (Arc&lt;AtomicBool&gt;)
+    is_connected: Arc&lt;AtomicBool&gt;,
+
+    /// Flag to signal polling thread to stop (Arc&lt;AtomicBool&gt;)
+    stop_polling: Arc&lt;AtomicBool&gt;,
+
+    /// Handle to polling thread (Arc&lt;Mutex&lt;Option&lt;thread::JoinHandle&lt;()&gt;&gt;&gt;&gt;)
+    polling_thread: Arc&lt;Mutex&lt;Option&lt;thread::JoinHandle&lt;()&gt;&gt;&gt;&gt;,
+}</code></pre>
+<h4 id="constructor"><a class="header" href="#constructor">Constructor</a></h4>
+<pre><code class="language-rust">pub fn new(auto_reconnect: bool) -&gt; Self</code></pre>
+<p>Creates a new gamepad device manager.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>auto_reconnect</code> - Whether to automatically reconnect on disconnect</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li>A new <code>GamepadDeviceManager</code> instance (not yet connected)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use conductor_daemon::gamepad_device::GamepadDeviceManager;
+
+let manager = GamepadDeviceManager::new(true);
+assert!(!manager.is_connected());</code></pre>
+<h4 id="methods"><a class="header" href="#methods">Methods</a></h4>
+<h5 id="connect"><a class="header" href="#connect"><code>connect()</code></a></h5>
+<pre><code class="language-rust">pub fn connect(
+    &amp;mut self,
+    event_tx: mpsc::Sender&lt;InputEvent&gt;,
+    command_tx: mpsc::Sender&lt;DaemonCommand&gt;,
+) -&gt; Result&lt;(gilrs::GamepadId, String), String&gt;</code></pre>
+<p>Connects to the first available gamepad and starts the polling loop.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>event_tx</code> - Channel sender for <code>InputEvent</code> messages</li>
+<li><code>command_tx</code> - Channel sender for <code>DaemonCommand</code> messages (reconnection, etc.)</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><code>Ok((GamepadId, Name))</code> - Tuple of gamepad ID and device name</li>
+<li><code>Err(String)</code> - Error message if connection fails</li>
+</ul>
+<p><strong>Errors:</strong></p>
+<ul>
+<li>gilrs initialization fails</li>
+<li>No gamepads are connected</li>
+<li>Already connected to a gamepad</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use conductor_daemon::gamepad_device::GamepadDeviceManager;
+use tokio::sync::mpsc;
+
+async fn connect_gamepad() -&gt; Result&lt;(), String&gt; {
+    let (event_tx, mut event_rx) = mpsc::channel(1024);
+    let (command_tx, _) = mpsc::channel(32);
+
+    let mut manager = GamepadDeviceManager::new(true);
+    let (id, name) = manager.connect(event_tx, command_tx)?;
+
+    println!("Connected to: {} (ID {:?})", name, id);
+
+    // Process events
+    while let Some(event) = event_rx.recv().await {
+        println!("Received: {:?}", event);
+    }
+
+    Ok(())
+}</code></pre>
+<h5 id="disconnect"><a class="header" href="#disconnect"><code>disconnect()</code></a></h5>
+<pre><code class="language-rust">pub fn disconnect(&amp;mut self)</code></pre>
+<p>Disconnects from the current gamepad and stops the polling thread.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">manager.disconnect();
+assert!(!manager.is_connected());</code></pre>
+<h5 id="is_connected"><a class="header" href="#is_connected"><code>is_connected()</code></a></h5>
+<pre><code class="language-rust">pub fn is_connected(&amp;self) -&gt; bool</code></pre>
+<p>Returns whether the manager is currently connected to a gamepad.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">if manager.is_connected() {
+    println!("Gamepad is connected");
+}</code></pre>
+<h5 id="get_gamepad_name"><a class="header" href="#get_gamepad_name"><code>get_gamepad_name()</code></a></h5>
+<pre><code class="language-rust">pub fn get_gamepad_name(&amp;self) -&gt; Option&lt;String&gt;</code></pre>
+<p>Returns the name of the currently connected gamepad, or <code>None</code> if not connected.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">if let Some(name) = manager.get_gamepad_name() {
+    println!("Connected to: {}", name);
+}</code></pre>
+<h5 id="list_gamepads-static"><a class="header" href="#list_gamepads-static"><code>list_gamepads()</code> (static)</a></h5>
+<pre><code class="language-rust">pub fn list_gamepads() -&gt; Result&lt;Vec&lt;(gilrs::GamepadId, String, String)&gt;, String&gt;</code></pre>
+<p>Lists all connected gamepads. Returns a vector of <code>(GamepadId, Name, UUID)</code> tuples.</p>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><code>Ok(Vec)</code> - List of connected gamepads</li>
+<li><code>Err(String)</code> - Error if gilrs initialization fails</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use conductor_daemon::gamepad_device::GamepadDeviceManager;
+
+fn show_gamepads() -&gt; Result&lt;(), String&gt; {
+    let gamepads = GamepadDeviceManager::list_gamepads()?;
+    for (id, name, uuid) in gamepads {
+        println!("Gamepad: {} (ID: {:?}, UUID: {})", name, id, uuid);
+    }
+    Ok(())
+}</code></pre>
+<h4 id="thread-safety"><a class="header" href="#thread-safety">Thread Safety</a></h4>
+<p>The <code>GamepadDeviceManager</code> uses:</p>
+<ul>
+<li><code>Arc&lt;Mutex&lt;&gt;&gt;</code> for shared state (gamepad ID, name, thread handle)</li>
+<li><code>Arc&lt;AtomicBool&gt;</code> for lock-free flags (is_connected, stop_polling)</li>
+<li>Safe to share across threads</li>
+</ul>
+<h4 id="polling-loop"><a class="header" href="#polling-loop">Polling Loop</a></h4>
+<p>The manager spawns a background thread that:</p>
+<ol>
+<li>Polls for gamepad events at 1ms intervals</li>
+<li>Converts gilrs events to <code>InputEvent</code></li>
+<li>Sends events through the provided channel</li>
+<li>Detects disconnection and triggers reconnection if enabled</li>
+</ol>
+<h4 id="reconnection-logic"><a class="header" href="#reconnection-logic">Reconnection Logic</a></h4>
+<p>When a gamepad disconnects and <code>auto_reconnect</code> is enabled:</p>
+<ol>
+<li>Spawns a reconnection thread</li>
+<li>Uses exponential backoff: 1s, 2s, 4s, 8s, 16s, 30s</li>
+<li>Checks for available gamepads at each interval</li>
+<li>Sends <code>DaemonCommand::ReconnectGamepad</code> when a device is found</li>
+<li>Gives up after 6 attempts</li>
+</ol>
+<hr />
+<h3 id="inputmanager"><a class="header" href="#inputmanager">InputManager</a></h3>
+<p><strong>Location</strong>: <code>conductor-daemon/src/input_manager.rs</code></p>
+<p>Unified manager for both MIDI and gamepad input devices. Provides a single <code>InputEvent</code> stream for all inputs.</p>
+<h4 id="fields-1"><a class="header" href="#fields-1">Fields</a></h4>
+<pre><code class="language-rust">pub struct InputManager {
+    /// MIDI device manager (optional)
+    midi_manager: Option&lt;MidiDeviceManager&gt;,
+
+    /// Gamepad device manager (optional)
+    gamepad_manager: Option&lt;GamepadDeviceManager&gt;,
+
+    /// Input mode selection
+    mode: InputMode,
+}</code></pre>
+<h4 id="constructor-1"><a class="header" href="#constructor-1">Constructor</a></h4>
+<pre><code class="language-rust">pub fn new(
+    midi_device_name: Option&lt;String&gt;,
+    auto_reconnect: bool,
+    mode: InputMode,
+) -&gt; Self</code></pre>
+<p>Creates a new unified input manager.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>midi_device_name</code> - Name of MIDI device to connect to (<code>None</code> = first available)</li>
+<li><code>auto_reconnect</code> - Enable automatic reconnection for both MIDI and gamepad</li>
+<li><code>mode</code> - Input mode selection (<code>MidiOnly</code>, <code>GamepadOnly</code>, or <code>Both</code>)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use conductor_daemon::input_manager::{InputManager, InputMode};
+
+// MIDI + Gamepad hybrid setup
+let manager = InputManager::new(
+    Some("Maschine Mikro MK3".to_string()),
+    true,
+    InputMode::Both
+);
+
+// Gamepad-only setup
+let gamepad_only = InputManager::new(
+    None,
+    true,
+    InputMode::GamepadOnly
+);</code></pre>
+<h4 id="methods-1"><a class="header" href="#methods-1">Methods</a></h4>
+<h5 id="connect-1"><a class="header" href="#connect-1"><code>connect()</code></a></h5>
+<pre><code class="language-rust">pub fn connect(
+    &amp;mut self,
+    event_tx: mpsc::Sender&lt;InputEvent&gt;,
+    command_tx: mpsc::Sender&lt;DaemonCommand&gt;,
+) -&gt; Result&lt;String, String&gt;</code></pre>
+<p>Connects to input devices based on the configured mode.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><code>event_tx</code> - Channel sender for unified <code>InputEvent</code> stream</li>
+<li><code>command_tx</code> - Channel sender for daemon commands</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul>
+<li><code>Ok(String)</code> - Status message describing connected devices</li>
+<li><code>Err(String)</code> - Error if no devices could be connected</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use conductor_daemon::input_manager::{InputManager, InputMode};
+use tokio::sync::mpsc;
+
+async fn start_unified_input() -&gt; Result&lt;(), String&gt; {
+    let (event_tx, mut event_rx) = mpsc::channel(1024);
+    let (command_tx, _) = mpsc::channel(32);
+
+    let mut manager = InputManager::new(None, true, InputMode::Both);
+    let status = manager.connect(event_tx, command_tx)?;
+
+    println!("Connected: {}", status);
+    // Output: "MIDI: Maschine Mikro MK3 (port 0) | Gamepad: Xbox Controller (ID 0)"
+
+    // Process unified event stream
+    while let Some(event) = event_rx.recv().await {
+        match event {
+            InputEvent::PadPressed { pad, velocity, .. } =&gt; {
+                if pad &lt; 128 {
+                    println!("MIDI pad {} pressed (velocity {})", pad, velocity);
+                } else {
+                    println!("Gamepad button {} pressed", pad);
+                }
+            }
+            _ =&gt; {}
+        }
+    }
+
+    Ok(())
+}</code></pre>
+<h5 id="is_connected-1"><a class="header" href="#is_connected-1"><code>is_connected()</code></a></h5>
+<pre><code class="language-rust">pub fn is_connected(&amp;self) -&gt; bool</code></pre>
+<p>Returns <code>true</code> if any input device is connected.</p>
+<h5 id="get_status"><a class="header" href="#get_status"><code>get_status()</code></a></h5>
+<pre><code class="language-rust">pub fn get_status(&amp;self) -&gt; (bool, bool)</code></pre>
+<p>Returns connection status for both devices as <code>(midi_connected, gamepad_connected)</code>.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">let (midi, gamepad) = manager.get_status();
+println!("MIDI: {}, Gamepad: {}", midi, gamepad);</code></pre>
+<h5 id="disconnect-1"><a class="header" href="#disconnect-1"><code>disconnect()</code></a></h5>
+<pre><code class="language-rust">pub fn disconnect(&amp;mut self)</code></pre>
+<p>Disconnects all input devices.</p>
+<h5 id="mode"><a class="header" href="#mode"><code>mode()</code></a></h5>
+<pre><code class="language-rust">pub fn mode(&amp;self) -&gt; InputMode</code></pre>
+<p>Returns the current input mode.</p>
+<h5 id="get_connected_gamepads"><a class="header" href="#get_connected_gamepads"><code>get_connected_gamepads()</code></a></h5>
+<pre><code class="language-rust">pub fn get_connected_gamepads(&amp;self) -&gt; Vec&lt;(String, String)&gt;</code></pre>
+<p>Returns a list of <code>(ID, Name)</code> tuples for connected gamepads.</p>
+<h5 id="list_gamepads-static-1"><a class="header" href="#list_gamepads-static-1"><code>list_gamepads()</code> (static)</a></h5>
+<pre><code class="language-rust">pub fn list_gamepads() -&gt; Result&lt;Vec&lt;(gilrs::GamepadId, String, String)&gt;, String&gt;</code></pre>
+<p>Lists all available gamepads (delegates to <code>GamepadDeviceManager::list_gamepads()</code>).</p>
+<hr />
+<h2 id="event-types"><a class="header" href="#event-types">Event Types</a></h2>
+<h3 id="inputevent"><a class="header" href="#inputevent">InputEvent</a></h3>
+<p><strong>Location</strong>: <code>conductor-core/src/events.rs</code></p>
+<p>Protocol-agnostic input event abstraction. All gamepad events are converted to this type.</p>
+<pre><code class="language-rust">#[derive(Debug, Clone, PartialEq)]
+pub enum InputEvent {
+    /// Pad pressed (button on controller)
+    PadPressed {
+        pad: u8,
+        velocity: u8,
+        time: Instant,
+    },
+
+    /// Pad released (button released)
+    PadReleased {
+        pad: u8,
+        time: Instant,
+    },
+
+    /// Encoder turned (analog stick or trigger)
+    EncoderTurned {
+        encoder: u8,
+        value: u8,
+        time: Instant,
+    },
+
+    /// Polyphonic aftertouch/pressure (specific pad)
+    PolyPressure {
+        pad: u8,
+        pressure: u8,
+        time: Instant,
+    },
+
+    /// Aftertouch/pressure (channel-wide)
+    Aftertouch {
+        pressure: u8,
+        time: Instant,
+    },
+
+    /// Pitch bend/touch strip
+    PitchBend {
+        value: u16,
+        time: Instant,
+    },
+
+    /// Program change
+    ProgramChange {
+        program: u8,
+        time: Instant,
+    },
+
+    /// Generic control change
+    ControlChange {
+        control: u8,
+        value: u8,
+        time: Instant,
+    },
+}</code></pre>
+<h4 id="gamepad-event-mapping"><a class="header" href="#gamepad-event-mapping">Gamepad Event Mapping</a></h4>
+<p>Gamepad events are converted to <code>InputEvent</code> as follows:</p>
+<div class="table-wrapper"><table><thead><tr><th>Gamepad Event</th><th>InputEvent Variant</th><th>ID Range</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Button Press</td><td><code>PadPressed</code></td><td>128-255</td><td>Velocity = 100 (default)</td></tr>
+<tr><td>Button Release</td><td><code>PadReleased</code></td><td>128-255</td><td>N/A</td></tr>
+<tr><td>Analog Stick</td><td><code>EncoderTurned</code></td><td>128-131</td><td>-1.0..1.0 → 0..127 (64 = center)</td></tr>
+<tr><td>Analog Trigger</td><td><code>EncoderTurned</code></td><td>132-133</td><td>0.0..1.0 → 0..127</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="button-and-axis-ids"><a class="header" href="#button-and-axis-ids">Button and Axis IDs</a></h2>
+<h3 id="button-id-constants"><a class="header" href="#button-id-constants">Button ID Constants</a></h3>
+<p><strong>Location</strong>: <code>conductor-core/src/gamepad_events.rs</code></p>
+<p>Gamepad buttons use IDs 128-255 to avoid conflicts with MIDI note numbers (0-127).</p>
+<pre><code class="language-rust">pub mod button_ids {
+    // Face buttons (128-131)
+    pub const SOUTH: u8 = 128;         // A (Xbox), Cross (PS), B (Nintendo)
+    pub const EAST: u8 = 129;          // B (Xbox), Circle (PS), A (Nintendo)
+    pub const WEST: u8 = 130;          // X (Xbox), Square (PS), Y (Nintendo)
+    pub const NORTH: u8 = 131;         // Y (Xbox), Triangle (PS), X (Nintendo)
+
+    // D-Pad (132-135)
+    pub const DPAD_UP: u8 = 132;
+    pub const DPAD_DOWN: u8 = 133;
+    pub const DPAD_LEFT: u8 = 134;
+    pub const DPAD_RIGHT: u8 = 135;
+
+    // Shoulder buttons (136-137)
+    pub const LEFT_SHOULDER: u8 = 136;  // L1, LB
+    pub const RIGHT_SHOULDER: u8 = 137; // R1, RB
+
+    // Stick clicks (138-139)
+    pub const LEFT_THUMB: u8 = 138;    // L3
+    pub const RIGHT_THUMB: u8 = 139;   // R3
+
+    // Menu buttons (140-142)
+    pub const START: u8 = 140;         // Start, Options, +
+    pub const SELECT: u8 = 141;        // Back, Share, -
+    pub const GUIDE: u8 = 142;         // Xbox, PS, Home
+
+    // Trigger digital fallback (143-144)
+    pub const LEFT_TRIGGER: u8 = 143;  // L2, LT (digital threshold)
+    pub const RIGHT_TRIGGER: u8 = 144; // R2, RT (digital threshold)
+}</code></pre>
+<h3 id="cross-platform-button-mapping"><a class="header" href="#cross-platform-button-mapping">Cross-Platform Button Mapping</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Standard Name</th><th>Xbox</th><th>PlayStation</th><th>Nintendo Switch</th></tr></thead><tbody>
+<tr><td>128</td><td>SOUTH</td><td>A</td><td>Cross (×)</td><td>B</td></tr>
+<tr><td>129</td><td>EAST</td><td>B</td><td>Circle (○)</td><td>A</td></tr>
+<tr><td>130</td><td>WEST</td><td>X</td><td>Square (□)</td><td>Y</td></tr>
+<tr><td>131</td><td>NORTH</td><td>Y</td><td>Triangle (△)</td><td>X</td></tr>
+<tr><td>132</td><td>DPAD_UP</td><td>D-Pad Up</td><td>D-Pad Up</td><td>D-Pad Up</td></tr>
+<tr><td>133</td><td>DPAD_DOWN</td><td>D-Pad Down</td><td>D-Pad Down</td><td>D-Pad Down</td></tr>
+<tr><td>134</td><td>DPAD_LEFT</td><td>D-Pad Left</td><td>D-Pad Left</td><td>D-Pad Left</td></tr>
+<tr><td>135</td><td>DPAD_RIGHT</td><td>D-Pad Right</td><td>D-Pad Right</td><td>D-Pad Right</td></tr>
+<tr><td>136</td><td>LEFT_SHOULDER</td><td>LB</td><td>L1</td><td>L</td></tr>
+<tr><td>137</td><td>RIGHT_SHOULDER</td><td>RB</td><td>R1</td><td>R</td></tr>
+<tr><td>138</td><td>LEFT_THUMB</td><td>Left Stick</td><td>L3</td><td>Left Stick</td></tr>
+<tr><td>139</td><td>RIGHT_THUMB</td><td>Right Stick</td><td>R3</td><td>Right Stick</td></tr>
+<tr><td>140</td><td>START</td><td>Start</td><td>Options</td><td>+ (Plus)</td></tr>
+<tr><td>141</td><td>SELECT</td><td>Back</td><td>Share</td><td>- (Minus)</td></tr>
+<tr><td>142</td><td>GUIDE</td><td>Xbox Button</td><td>PS Button</td><td>Home Button</td></tr>
+<tr><td>143</td><td>LEFT_TRIGGER</td><td>LT (digital)</td><td>L2 (digital)</td><td>ZL (digital)</td></tr>
+<tr><td>144</td><td>RIGHT_TRIGGER</td><td>RT (digital)</td><td>R2 (digital)</td><td>ZR (digital)</td></tr>
+</tbody></table>
+</div>
+<h3 id="encoderaxis-id-constants"><a class="header" href="#encoderaxis-id-constants">Encoder/Axis ID Constants</a></h3>
+<pre><code class="language-rust">pub mod encoder_ids {
+    // Analog stick axes (128-131)
+    pub const LEFT_STICK_X: u8 = 128;
+    pub const LEFT_STICK_Y: u8 = 129;
+    pub const RIGHT_STICK_X: u8 = 130;
+    pub const RIGHT_STICK_Y: u8 = 131;
+
+    // Trigger axes (132-133)
+    pub const LEFT_TRIGGER: u8 = 132;  // L2, LT analog value
+    pub const RIGHT_TRIGGER: u8 = 133; // R2, RT analog value
+}</code></pre>
+<h3 id="axis-mapping-table"><a class="header" href="#axis-mapping-table">Axis Mapping Table</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>ID</th><th>Axis Name</th><th>Range</th><th>Normalized</th><th>Notes</th></tr></thead><tbody>
+<tr><td>128</td><td>LEFT_STICK_X</td><td>-1.0 to 1.0</td><td>0 to 127</td><td>64 = center, 0 = left, 127 = right</td></tr>
+<tr><td>129</td><td>LEFT_STICK_Y</td><td>-1.0 to 1.0</td><td>0 to 127</td><td>64 = center, 0 = up, 127 = down</td></tr>
+<tr><td>130</td><td>RIGHT_STICK_X</td><td>-1.0 to 1.0</td><td>0 to 127</td><td>64 = center, 0 = left, 127 = right</td></tr>
+<tr><td>131</td><td>RIGHT_STICK_Y</td><td>-1.0 to 1.0</td><td>0 to 127</td><td>64 = center, 0 = up, 127 = down</td></tr>
+<tr><td>132</td><td>LEFT_TRIGGER</td><td>0.0 to 1.0</td><td>0 to 127</td><td>Analog pressure (L2/LT)</td></tr>
+<tr><td>133</td><td>RIGHT_TRIGGER</td><td>0.0 to 1.0</td><td>0 to 127</td><td>Analog pressure (R2/RT)</td></tr>
+</tbody></table>
+</div>
+<p><strong>Note:</strong> A 0.1 deadzone is applied to analog sticks to reduce drift. Values within ±0.1 of center return 64.</p>
+<hr />
+<h2 id="helper-functions"><a class="header" href="#helper-functions">Helper Functions</a></h2>
+<h3 id="button-conversion"><a class="header" href="#button-conversion">Button Conversion</a></h3>
+<p><strong>Location</strong>: <code>conductor-core/src/gamepad_events.rs</code></p>
+<h4 id="button_to_id"><a class="header" href="#button_to_id"><code>button_to_id()</code></a></h4>
+<pre><code class="language-rust">pub fn button_to_id(button: gilrs::Button) -&gt; u8</code></pre>
+<p>Converts gilrs <code>Button</code> enum to Conductor button ID (128-255 range).</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use gilrs::Button;
+use conductor_core::gamepad_events::button_to_id;
+
+let id = button_to_id(Button::South);
+assert_eq!(id, 128); // SOUTH (A/Cross/B)</code></pre>
+<h4 id="button_pressed_to_input"><a class="header" href="#button_pressed_to_input"><code>button_pressed_to_input()</code></a></h4>
+<pre><code class="language-rust">pub fn button_pressed_to_input(button: gilrs::Button) -&gt; InputEvent</code></pre>
+<p>Converts gilrs <code>ButtonPressed</code> event to <code>InputEvent::PadPressed</code> with default velocity 100.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use gilrs::Button;
+use conductor_core::gamepad_events::button_pressed_to_input;
+
+let event = button_pressed_to_input(Button::South);
+// Returns: InputEvent::PadPressed { pad: 128, velocity: 100, time: now() }</code></pre>
+<h4 id="button_released_to_input"><a class="header" href="#button_released_to_input"><code>button_released_to_input()</code></a></h4>
+<pre><code class="language-rust">pub fn button_released_to_input(button: gilrs::Button) -&gt; InputEvent</code></pre>
+<p>Converts gilrs <code>ButtonReleased</code> event to <code>InputEvent::PadReleased</code>.</p>
+<h3 id="axis-conversion"><a class="header" href="#axis-conversion">Axis Conversion</a></h3>
+<h4 id="axis_to_encoder_id"><a class="header" href="#axis_to_encoder_id"><code>axis_to_encoder_id()</code></a></h4>
+<pre><code class="language-rust">pub fn axis_to_encoder_id(axis: gilrs::Axis) -&gt; u8</code></pre>
+<p>Converts gilrs <code>Axis</code> enum to Conductor encoder ID (128-133 range).</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use gilrs::Axis;
+use conductor_core::gamepad_events::axis_to_encoder_id;
+
+let id = axis_to_encoder_id(Axis::LeftStickX);
+assert_eq!(id, 128); // LEFT_STICK_X</code></pre>
+<h4 id="normalize_axis"><a class="header" href="#normalize_axis"><code>normalize_axis()</code></a></h4>
+<pre><code class="language-rust">pub fn normalize_axis(value: f32) -&gt; u8</code></pre>
+<p>Normalizes gilrs axis values (-1.0 to 1.0) to MIDI-compatible range (0-127).</p>
+<p><strong>Normalization Rules:</strong></p>
+<ul>
+<li>Input range: -1.0 to 1.0</li>
+<li>Output range: 0 to 127</li>
+<li>Center point: 64</li>
+<li>Deadzone: ±0.1 (returns 64 if within deadzone)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use conductor_core::gamepad_events::normalize_axis;
+
+assert_eq!(normalize_axis(0.0), 64);   // Center
+assert_eq!(normalize_axis(1.0), 127);  // Max right/up
+assert_eq!(normalize_axis(-1.0), 0);   // Max left/down
+assert_eq!(normalize_axis(0.05), 64);  // Deadzone (&lt; 0.1)</code></pre>
+<h4 id="axis_changed_to_input"><a class="header" href="#axis_changed_to_input"><code>axis_changed_to_input()</code></a></h4>
+<pre><code class="language-rust">pub fn axis_changed_to_input(axis: gilrs::Axis, value: f32) -&gt; InputEvent</code></pre>
+<p>Converts gilrs <code>AxisChanged</code> event to <code>InputEvent::EncoderTurned</code>.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-rust">use gilrs::Axis;
+use conductor_core::gamepad_events::axis_changed_to_input;
+
+let event = axis_changed_to_input(Axis::LeftStickX, 0.5);
+// Returns: InputEvent::EncoderTurned { encoder: 128, value: 95, time: now() }</code></pre>
+<hr />
+<h2 id="integration-examples"><a class="header" href="#integration-examples">Integration Examples</a></h2>
+<h3 id="basic-gamepad-connection"><a class="header" href="#basic-gamepad-connection">Basic Gamepad Connection</a></h3>
+<pre><code class="language-rust">use conductor_daemon::gamepad_device::GamepadDeviceManager;
+use tokio::sync::mpsc;
+use conductor_core::events::InputEvent;
+use conductor_daemon::DaemonCommand;
+
+async fn basic_gamepad_example() -&gt; Result&lt;(), String&gt; {
+    // Create channels
+    let (event_tx, mut event_rx) = mpsc::channel::&lt;InputEvent&gt;(1024);
+    let (command_tx, _) = mpsc::channel::&lt;DaemonCommand&gt;(32);
+
+    // Create manager with auto-reconnect
+    let mut manager = GamepadDeviceManager::new(true);
+
+    // Connect to first available gamepad
+    let (gamepad_id, gamepad_name) = manager.connect(
+        event_tx.clone(),
+        command_tx.clone()
+    )?;
+
+    println!("Connected to gamepad: {} (ID {:?})", gamepad_name, gamepad_id);
+
+    // Process events
+    while let Some(event) = event_rx.recv().await {
+        match event {
+            InputEvent::PadPressed { pad, velocity, .. } =&gt; {
+                println!("Button {} pressed (velocity {})", pad, velocity);
+            }
+            InputEvent::PadReleased { pad, .. } =&gt; {
+                println!("Button {} released", pad);
+            }
+            InputEvent::EncoderTurned { encoder, value, .. } =&gt; {
+                println!("Encoder {} value: {}", encoder, value);
+            }
+            _ =&gt; {}
+        }
+    }
+
+    Ok(())
+}</code></pre>
+<h3 id="hybrid-midi--gamepad-setup"><a class="header" href="#hybrid-midi--gamepad-setup">Hybrid MIDI + Gamepad Setup</a></h3>
+<pre><code class="language-rust">use conductor_daemon::input_manager::{InputManager, InputMode};
+use conductor_core::events::InputEvent;
+use conductor_core::gamepad_events::button_ids;
+use tokio::sync::mpsc;
+
+async fn hybrid_example() -&gt; Result&lt;(), String&gt; {
+    let (event_tx, mut event_rx) = mpsc::channel(1024);
+    let (command_tx, _) = mpsc::channel(32);
+
+    // Create hybrid manager (both MIDI and gamepad)
+    let mut manager = InputManager::new(
+        Some("Maschine Mikro MK3".to_string()),
+        true,
+        InputMode::Both
+    );
+
+    // Connect to both devices
+    let status = manager.connect(event_tx, command_tx)?;
+    println!("Connected: {}", status);
+
+    // Process unified event stream
+    while let Some(event) = event_rx.recv().await {
+        match event {
+            InputEvent::PadPressed { pad, velocity, .. } =&gt; {
+                if pad &lt; 128 {
+                    // MIDI pad (0-127)
+                    println!("MIDI pad {} pressed (velocity {})", pad, velocity);
+                } else {
+                    // Gamepad button (128-255)
+                    let button_name = match pad {
+                        button_ids::SOUTH =&gt; "A/Cross",
+                        button_ids::EAST =&gt; "B/Circle",
+                        button_ids::WEST =&gt; "X/Square",
+                        button_ids::NORTH =&gt; "Y/Triangle",
+                        button_ids::START =&gt; "Start",
+                        _ =&gt; "Unknown",
+                    };
+                    println!("Gamepad button {} ({}) pressed", pad, button_name);
+                }
+            }
+            InputEvent::EncoderTurned { encoder, value, .. } =&gt; {
+                if encoder &lt; 128 {
+                    // MIDI encoder/knob
+                    println!("MIDI encoder {} value: {}", encoder, value);
+                } else {
+                    // Gamepad analog stick/trigger
+                    println!("Gamepad axis {} value: {}", encoder, value);
+                }
+            }
+            _ =&gt; {}
+        }
+    }
+
+    Ok(())
+}</code></pre>
+<h3 id="integrating-with-mappingengine"><a class="header" href="#integrating-with-mappingengine">Integrating with MappingEngine</a></h3>
+<pre><code class="language-rust">use conductor_core::event_processor::EventProcessor;
+use conductor_core::mapping::MappingEngine;
+use conductor_core::config::Config;
+use conductor_daemon::input_manager::{InputManager, InputMode};
+use tokio::sync::mpsc;
+
+async fn full_integration_example() -&gt; Result&lt;(), String&gt; {
+    // Load configuration
+    let config = Config::load_from_path("config.toml")?;
+
+    // Create event processor and mapping engine
+    let mut event_processor = EventProcessor::new();
+    let mut mapping_engine = MappingEngine::new(config);
+
+    // Set up unified input
+    let (event_tx, mut event_rx) = mpsc::channel(1024);
+    let (command_tx, _) = mpsc::channel(32);
+
+    let mut input_manager = InputManager::new(
+        None,
+        true,
+        InputMode::Both
+    );
+
+    input_manager.connect(event_tx, command_tx)?;
+
+    // Process events through the full pipeline
+    while let Some(input_event) = event_rx.recv().await {
+        // InputEvent → ProcessedEvent
+        if let Some(processed) = event_processor.process(input_event) {
+            // ProcessedEvent → Action execution
+            mapping_engine.handle_event(&amp;processed);
+        }
+    }
+
+    Ok(())
+}</code></pre>
+<h3 id="listing-available-gamepads"><a class="header" href="#listing-available-gamepads">Listing Available Gamepads</a></h3>
+<pre><code class="language-rust">use conductor_daemon::gamepad_device::GamepadDeviceManager;
+
+fn list_gamepads_example() -&gt; Result&lt;(), String&gt; {
+    let gamepads = GamepadDeviceManager::list_gamepads()?;
+
+    if gamepads.is_empty() {
+        println!("No gamepads connected");
+    } else {
+        println!("Connected gamepads:");
+        for (id, name, uuid) in gamepads {
+            println!("  - {} (ID: {:?}, UUID: {})", name, id, uuid);
+        }
+    }
+
+    Ok(())
+}</code></pre>
+<hr />
+<h2 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h2>
+<h3 id="common-errors"><a class="header" href="#common-errors">Common Errors</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Error</th><th>Cause</th><th>Solution</th></tr></thead><tbody>
+<tr><td>"Failed to initialize gilrs"</td><td>SDL2 not available or system error</td><td>Install SDL2, check system permissions</td></tr>
+<tr><td>"No gamepads connected"</td><td>No physical gamepad detected</td><td>Connect a gamepad, check USB connection</td></tr>
+<tr><td>"Already connected to a gamepad"</td><td>Attempted to connect twice</td><td>Call <code>disconnect()</code> before reconnecting</td></tr>
+<tr><td>"No input devices could be connected"</td><td>Both MIDI and gamepad failed</td><td>Check device connections, verify drivers</td></tr>
+</tbody></table>
+</div>
+<h3 id="handling-disconnections"><a class="header" href="#handling-disconnections">Handling Disconnections</a></h3>
+<p>The <code>GamepadDeviceManager</code> automatically handles disconnections when <code>auto_reconnect</code> is enabled:</p>
+<pre><code class="language-rust">let mut manager = GamepadDeviceManager::new(true); // auto_reconnect = true
+
+// Disconnection is detected automatically
+// Reconnection attempts occur with exponential backoff:
+// 1s, 2s, 4s, 8s, 16s, 30s (max 6 attempts)
+
+// Listen for reconnection commands
+while let Some(command) = command_rx.recv().await {
+    match command {
+        DaemonCommand::ReconnectGamepad =&gt; {
+            println!("Gamepad reconnected!");
+            // Manager automatically reconnects
+        }
+        _ =&gt; {}
+    }
+}</code></pre>
+<h3 id="manual-error-handling"><a class="header" href="#manual-error-handling">Manual Error Handling</a></h3>
+<pre><code class="language-rust">use conductor_daemon::gamepad_device::GamepadDeviceManager;
+
+fn safe_connect() {
+    let mut manager = GamepadDeviceManager::new(false); // no auto-reconnect
+
+    loop {
+        match manager.connect(event_tx.clone(), command_tx.clone()) {
+            Ok((id, name)) =&gt; {
+                println!("Connected to: {}", name);
+                break;
+            }
+            Err(e) =&gt; {
+                eprintln!("Connection failed: {}", e);
+                std::thread::sleep(std::time::Duration::from_secs(5));
+                // Retry after 5 seconds
+            }
+        }
+    }
+}</code></pre>
+<hr />
+<h2 id="configuration-examples"><a class="header" href="#configuration-examples">Configuration Examples</a></h2>
+<h3 id="toml-configuration-for-gamepad-mappings"><a class="header" href="#toml-configuration-for-gamepad-mappings">TOML Configuration for Gamepad Mappings</a></h3>
+<pre><code class="language-toml"># config.toml
+
+[device]
+name = "Hybrid Controller"
+auto_connect = true
+
+[[global_mappings]]
+[global_mappings.trigger]
+type = "Note"
+note = 128  # Gamepad SOUTH button (A/Cross)
+
+[[global_mappings.actions]]
+type = "Keystroke"
+key = "Space"
+
+[[global_mappings]]
+[global_mappings.trigger]
+type = "Note"
+note = 140  # Gamepad START button
+
+[[global_mappings.actions]]
+type = "Launch"
+app = "Terminal"
+
+[[global_mappings]]
+[global_mappings.trigger]
+type = "EncoderTurn"
+encoder = 128  # Left stick X-axis
+direction = "Clockwise"
+
+[[global_mappings.actions]]
+type = "VolumeControl"
+action = "Up"
+</code></pre>
+<h3 id="velocity-sensitive-gamepad-triggers-future-enhancement"><a class="header" href="#velocity-sensitive-gamepad-triggers-future-enhancement">Velocity-Sensitive Gamepad Triggers (Future Enhancement)</a></h3>
+<p>Currently, gamepad buttons use a fixed velocity of 100. Future versions may support pressure-sensitive triggers:</p>
+<pre><code class="language-toml"># Future feature (not yet implemented)
+[[global_mappings]]
+[global_mappings.trigger]
+type = "VelocityRange"
+note = 132  # Left trigger (analog)
+min_velocity = 80
+max_velocity = 127
+
+[[global_mappings.actions]]
+type = "Keystroke"
+key = "F"
+modifiers = ["Shift"]  # Hard press = Shift+F
+</code></pre>
+<hr />
+<h2 id="thread-safety-and-concurrency"><a class="header" href="#thread-safety-and-concurrency">Thread Safety and Concurrency</a></h2>
+<h3 id="arcmutex-patterns"><a class="header" href="#arcmutex-patterns">Arc/Mutex Patterns</a></h3>
+<p>The gamepad system uses Rust's <code>Arc&lt;Mutex&lt;&gt;&gt;</code> and <code>Arc&lt;AtomicBool&gt;</code> for safe concurrent access:</p>
+<pre><code class="language-rust">// Internal state (Arc&lt;Mutex&lt;&gt;&gt;)
+gamepad_id: Arc&lt;Mutex&lt;Option&lt;gilrs::GamepadId&gt;&gt;&gt;
+gamepad_name: Arc&lt;Mutex&lt;Option&lt;String&gt;&gt;&gt;
+polling_thread: Arc&lt;Mutex&lt;Option&lt;thread::JoinHandle&lt;()&gt;&gt;&gt;&gt;
+
+// Atomic flags (Arc&lt;AtomicBool&gt;)
+is_connected: Arc&lt;AtomicBool&gt;
+stop_polling: Arc&lt;AtomicBool&gt;</code></pre>
+<h3 id="polling-thread-architecture"><a class="header" href="#polling-thread-architecture">Polling Thread Architecture</a></h3>
+<pre><code class="language-text">┌─────────────────────────────────────────────────────────┐
+│  Main Thread                                            │
+│  - Creates GamepadDeviceManager                         │
+│  - Calls connect()                                      │
+│  - Receives InputEvents via mpsc channel                │
+└─────────────────────────────────────────────────────────┘
+                        │
+                        ▼ spawns
+┌─────────────────────────────────────────────────────────┐
+│  Polling Thread                                         │
+│  - Polls gilrs at 1ms intervals                         │
+│  - Converts gilrs events → InputEvent                   │
+│  - Sends via mpsc::Sender&lt;InputEvent&gt;                   │
+│  - Detects disconnection                                │
+│  - Stops on stop_polling signal                         │
+└─────────────────────────────────────────────────────────┘
+                        │
+                        ▼ spawns on disconnect
+┌─────────────────────────────────────────────────────────┐
+│  Reconnection Thread (if auto_reconnect = true)         │
+│  - Exponential backoff (1s, 2s, 4s, 8s, 16s, 30s)      │
+│  - Checks for available gamepads                        │
+│  - Sends DaemonCommand::ReconnectGamepad when found     │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="performance-characteristics"><a class="header" href="#performance-characteristics">Performance Characteristics</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Metric</th><th>Value</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Polling Interval</td><td>1ms</td><td>Balances latency and CPU usage</td></tr>
+<tr><td>Reconnect Attempts</td><td>6</td><td>Exponential backoff schedule</td></tr>
+<tr><td>Max Reconnect Time</td><td>~60s</td><td>Sum of backoff delays</td></tr>
+<tr><td>Event Channel Capacity</td><td>1024</td><td>Default mpsc buffer size</td></tr>
+<tr><td>Event Latency</td><td>&lt;5ms</td><td>gilrs → InputEvent → channel</td></tr>
+<tr><td>CPU Usage (Idle)</td><td>&lt;1%</td><td>Efficient polling loop</td></tr>
+<tr><td>Memory Overhead</td><td>~100KB</td><td>Per GamepadDeviceManager</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="device-compatibility"><a class="header" href="#device-compatibility">Device Compatibility</a></h2>
+<h3 id="tested-controllers"><a class="header" href="#tested-controllers">Tested Controllers</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Controller</th><th>Status</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Xbox One/Series Controllers</td><td>✅ Fully Supported</td><td>SDL2 GameController mapping</td></tr>
+<tr><td>PlayStation 4/5 DualShock/DualSense</td><td>✅ Fully Supported</td><td>Standard button layout</td></tr>
+<tr><td>Nintendo Switch Pro Controller</td><td>✅ Fully Supported</td><td>Button labels differ (A/B swapped)</td></tr>
+<tr><td>Generic USB Gamepads</td><td>✅ Supported</td><td>May require custom SDL2 mapping</td></tr>
+<tr><td>Logitech F310/F710</td><td>✅ Supported</td><td>Switch to XInput mode</td></tr>
+<tr><td>8BitDo Controllers</td><td>✅ Supported</td><td>Use XInput/Switch mode</td></tr>
+</tbody></table>
+</div>
+<h3 id="hid-device-types"><a class="header" href="#hid-device-types">HID Device Types</a></h3>
+<p>The gamepad system supports any HID-compliant game controller:</p>
+<ul>
+<li><strong>Gamepads</strong>: Xbox, PlayStation, Nintendo, generic USB pads</li>
+<li><strong>Joysticks</strong>: Flight sticks, arcade sticks</li>
+<li><strong>Racing Wheels</strong>: Logitech G29, Thrustmaster T300</li>
+<li><strong>HOTAS</strong>: Hands-On Throttle-and-Stick setups</li>
+<li><strong>Custom Controllers</strong>: Any SDL2-compatible HID device</li>
+</ul>
+<h3 id="platform-support"><a class="header" href="#platform-support">Platform Support</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Platform</th><th>Status</th><th>Requirements</th></tr></thead><tbody>
+<tr><td>macOS</td><td>✅ Supported</td><td>Native HID support</td></tr>
+<tr><td>Linux</td><td>✅ Supported</td><td>SDL2 + udev rules</td></tr>
+<tr><td>Windows</td><td>✅ Supported</td><td>SDL2 + XInput</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="debugging-and-diagnostics"><a class="header" href="#debugging-and-diagnostics">Debugging and Diagnostics</a></h2>
+<h3 id="enabling-debug-logging"><a class="header" href="#enabling-debug-logging">Enabling Debug Logging</a></h3>
+<pre><code class="language-bash"># Enable tracing logs
+RUST_LOG=debug cargo run
+
+# Filter for gamepad-specific logs
+RUST_LOG=conductor_daemon::gamepad_device=trace cargo run
+</code></pre>
+<h3 id="diagnostic-commands"><a class="header" href="#diagnostic-commands">Diagnostic Commands</a></h3>
+<pre><code class="language-bash"># List connected gamepads
+cargo run --bin list_gamepads
+
+# Test gamepad input
+cargo run --bin test_gamepad_input
+
+# Monitor unified event stream
+cargo run --bin event_console
+</code></pre>
+<h3 id="example-debug-output"><a class="header" href="#example-debug-output">Example Debug Output</a></h3>
+<pre><code>[DEBUG conductor_daemon::gamepad_device] Connecting to gamepad: Xbox Controller (ID: GamepadId(0))
+[TRACE conductor_daemon::gamepad_device] Gamepad event: Event { id: GamepadId(0), event: ButtonPressed(South, 0) }
+[DEBUG conductor_daemon::gamepad_device] Button 128 (SOUTH) pressed
+[TRACE conductor_daemon::gamepad_device] Sent InputEvent::PadPressed { pad: 128, velocity: 100 }
+[TRACE conductor_daemon::gamepad_device] Gamepad event: Event { id: GamepadId(0), event: AxisChanged(LeftStickX, 0.523, 0) }
+[DEBUG conductor_daemon::gamepad_device] Encoder 128 (LEFT_STICK_X) value: 95
+</code></pre>
+<hr />
+<h2 id="future-enhancements"><a class="header" href="#future-enhancements">Future Enhancements</a></h2>
+<h3 id="planned-features-not-yet-implemented"><a class="header" href="#planned-features-not-yet-implemented">Planned Features (Not Yet Implemented)</a></h3>
+<ol>
+<li><strong>Pressure-Sensitive Buttons</strong>: Variable velocity based on analog button pressure</li>
+<li><strong>Gyroscope/Accelerometer Support</strong>: Motion controls for advanced controllers</li>
+<li><strong>Haptic Feedback</strong>: Rumble/vibration control via actions</li>
+<li><strong>Custom Button Mappings</strong>: Override default button-to-ID mappings</li>
+<li><strong>Multi-Controller Support</strong>: Connect multiple gamepads simultaneously</li>
+<li><strong>Per-Controller Profiles</strong>: Different mappings for different gamepad models</li>
+<li><strong>Axis Inversion/Scaling</strong>: Fine-tune analog stick sensitivity</li>
+<li><strong>Macro Recording</strong>: Record gamepad input sequences</li>
+</ol>
+<h3 id="experimental-features"><a class="header" href="#experimental-features">Experimental Features</a></h3>
+<pre><code class="language-rust">// Future API (not yet available)
+pub struct GamepadConfig {
+    pub deadzone: f32,
+    pub sensitivity: f32,
+    pub invert_y_axis: bool,
+    pub button_mappings: HashMap&lt;gilrs::Button, u8&gt;,
+}
+
+impl GamepadDeviceManager {
+    pub fn new_with_config(
+        auto_reconnect: bool,
+        config: GamepadConfig
+    ) -&gt; Self { /* ... */ }
+}</code></pre>
+<hr />
+<h2 id="see-also"><a class="header" href="#see-also">See Also</a></h2>
+<ul>
+<li><a href="../guides/gamepad-support.html">Gamepad Support Guide</a> - User-facing documentation</li>
+<li><a href="config-schema.html">Configuration Schema</a> - TOML configuration reference</li>
+<li><a href="trigger-types.html">Trigger Types</a> - Available trigger configurations</li>
+<li><a href="action-types.html">Action Types</a> - Available action types</li>
+<li><a href="../development/architecture.html">Architecture Overview</a> - System design</li>
+</ul>
+<hr />
+<h2 id="glossary"><a class="header" href="#glossary">Glossary</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody>
+<tr><td><strong>HID</strong></td><td>Human Interface Device - USB standard for input devices</td></tr>
+<tr><td><strong>gilrs</strong></td><td>Rust library for game controller input (built on SDL2)</td></tr>
+<tr><td><strong>SDL2</strong></td><td>Simple DirectMedia Layer - cross-platform game controller API</td></tr>
+<tr><td><strong>InputEvent</strong></td><td>Protocol-agnostic event abstraction</td></tr>
+<tr><td><strong>GamepadId</strong></td><td>gilrs identifier for a specific connected gamepad</td></tr>
+<tr><td><strong>Arc/Mutex</strong></td><td>Rust concurrency primitives for shared state</td></tr>
+<tr><td><strong>mpsc</strong></td><td>Multi-Producer, Single-Consumer channel for thread communication</td></tr>
+</tbody></table>
+</div>
+<hr />
+<p><strong>Last Updated</strong>: 2025-11-21
+<strong>API Version</strong>: v3.0
+<strong>Crate Versions</strong>:</p>
+<ul>
+<li><code>conductor-core</code>: 3.0.0</li>
+<li><code>conductor-daemon</code>: 3.0.0</li>
+<li><code>gilrs</code>: 0.11.0</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../reference/environment.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../devices/compatibility.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../reference/environment.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../devices/compatibility.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
